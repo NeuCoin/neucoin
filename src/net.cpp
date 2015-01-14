@@ -4,6 +4,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "constants.h"
+#include "macros.h"
 #include "irc.h"
 #include "db.h"
 #include "net.h"
@@ -60,7 +62,7 @@ CCriticalSection cs_vNodes;
 map<CInv, CDataStream> mapRelay;
 deque<pair<int64, CInv> > vRelayExpiration;
 CCriticalSection cs_mapRelay;
-map<CInv, int64> mapAlreadyAskedFor;
+map<CInv, timestamp_t> mapAlreadyAskedFor;
 
 
 set<CNetAddr> setservAddNodeAddresses;
@@ -145,7 +147,11 @@ bool GetMyExternalIP2(const CService& addrConnect, const char* pszGet, const cha
     if (!ConnectSocket(addrConnect, hSocket))
         return error("GetMyExternalIP() : connection to %s failed", addrConnect.ToString().c_str());
 
+#ifdef MSG_NOSIGNAL
     send(hSocket, pszGet, strlen(pszGet), MSG_NOSIGNAL);
+#else
+    send(hSocket, pszGet, strlen(pszGet), SO_NOSIGPIPE);
+#endif
 
     string strLine;
     while (RecvLine(hSocket, strLine))
@@ -317,7 +323,7 @@ CNode* FindNode(const CService& addr)
     return NULL;
 }
 
-CNode* ConnectNode(CAddress addrConnect, int64 nTimeout)
+CNode* ConnectNode(CAddress addrConnect, timestamp_t nTimeout)
 {
     if ((CNetAddr)addrConnect == (CNetAddr)addrLocalHost)
         return NULL;
@@ -769,7 +775,12 @@ void ThreadSocketHandler2(void* parg)
                     CDataStream& vSend = pnode->vSend;
                     if (!vSend.empty())
                     {
+#ifdef MSG_NOSIGNAL
                         int nBytes = send(pnode->hSocket, &vSend[0], vSend.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+#else
+                        int nBytes = send(pnode->hSocket, &vSend[0], vSend.size(), SO_NOSIGPIPE | MSG_DONTWAIT);
+#endif
+
                         if (nBytes > 0)
                         {
                             vSend.erase(vSend.begin(), vSend.begin() + nBytes);
@@ -904,7 +915,7 @@ void ThreadMapPort2(void* parg)
             }
         }
 
-        string strDesc = "PPCoin " + FormatFullVersion();
+        string strDesc = COIN_NAME " " + FormatFullVersion();
 #ifndef UPNPDISCOVER_SUCCESS
         /* miniupnpc 1.5 */
         r = UPNP_AddPortMapping(urls.controlURL, data.first.servicetype,
@@ -995,16 +1006,7 @@ void MapPort(bool /* unused fMapPort */)
 // Each pair gives a source name and a seed name.
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
-// testnet dns seed begins with 't', all else are ppcoin dns seeds.
-static const char *strDNSSeed[][2] = {
-    {"seed", "seed.ppcoin.net"},
-    {"seedppc", "seedppc.ppcoin.net"},
-    {"7server", "ppcseed.ns.7server.net"},
-    {"altcointech", "dnsseed.ppc.altcointech.net"},
-    {"diandianbi", "seed.diandianbi.org"},
-    {"tnseed", "tnseed.ppcoin.net"},
-    {"tnseedppc", "tnseedppc.ppcoin.net"},
-};
+static const char *strDNSSeed[][2] = AUTO_DNS_SEEDS;
 
 void ThreadDNSAddressSeed(void* parg)
 {
@@ -1030,29 +1032,25 @@ void ThreadDNSAddressSeed2(void* parg)
     printf("ThreadDNSAddressSeed started\n");
     int found = 0;
 
-    if (true /*!fTestNet*/)  // ppcoin enables dns seeding with testnet too
-    {
-        printf("Loading addresses from DNS seeds (could take a while)\n");
+    printf("Loading addresses from DNS seeds (could take a while)\n");
 
-        for (unsigned int seed_idx = 0; seed_idx < ARRAYLEN(strDNSSeed); seed_idx++) {
-            if (fTestNet && strDNSSeed[seed_idx][1][0] != 't') continue;
-            if ((!fTestNet) && strDNSSeed[seed_idx][1][0] == 't') continue;
+    for (unsigned int seed_idx = 0; seed_idx < ARRAYLEN(strDNSSeed); seed_idx++) {
+        if (strDNSSeed[seed_idx][1][0] == 't') continue;
 
-            vector<CNetAddr> vaddr;
-            vector<CAddress> vAdd;
-            if (LookupHost(strDNSSeed[seed_idx][1], vaddr))
+        vector<CNetAddr> vaddr;
+        vector<CAddress> vAdd;
+        if (LookupHost(strDNSSeed[seed_idx][1], vaddr))
+        {
+            BOOST_FOREACH(CNetAddr& ip, vaddr)
             {
-                BOOST_FOREACH(CNetAddr& ip, vaddr)
-                {
-                    int nOneDay = 24*3600;
-                    CAddress addr = CAddress(CService(ip, GetDefaultPort()));
-                    addr.nTime = GetTime() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
-                    vAdd.push_back(addr);
-                    found++;
-                }
+                int nOneDay = 24*3600;
+                CAddress addr = CAddress(CService(ip, GetDefaultPort()));
+                addr.nTime = GetTime() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
+                vAdd.push_back(addr);
+                found++;
             }
-            addrman.Add(vAdd, CNetAddr(strDNSSeed[seed_idx][0], true));
         }
+        addrman.Add(vAdd, CNetAddr(strDNSSeed[seed_idx][0], true));
     }
 
     printf("%d addresses found from DNS seeds\n", found);
@@ -1067,15 +1065,7 @@ void ThreadDNSAddressSeed2(void* parg)
 
 
 
-
-
-// Physical IP seeds: 32-bit IPv4 addresses: e.g. 178.33.22.32 = 0x201621b2
-unsigned int pnSeed[] =
-{
-    0x36a3b545, 0x3c1c26d8, 0x4031eb6d, 0x4d3463d1, 0x586a6854, 0x5da9ae65,
-    0x6deb7318, 0x9083fb63, 0x961bf618, 0xcabd2e4e, 0xcb766dd5, 0xdd514518,
-    0xdff010b8, 0xe9bb6044, 0xedb24a4c,
-};
+unsigned int pnSeed[] = AUTO_IP_SEEDS;
 
 void DumpAddresses()
 {
@@ -1171,7 +1161,7 @@ void ThreadOpenConnections2(void* parg)
 
         // Add seed nodes if IRC isn't working
         bool fTOR = (fUseProxy && addrProxy.GetPort() == 9050);
-        if (addrman.size()==0 && (GetTime() - nStart > 60 || fTOR) && !fTestNet)
+        if (addrman.size()==0 && (GetTime() - nStart > 60 || fTOR))
         {
             std::vector<CAddress> vAdd;
             for (unsigned int i = 0; i < ARRAYLEN(pnSeed); i++)
@@ -1523,7 +1513,7 @@ bool BindListenPort(string& strError)
     {
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
-            strError = strprintf(_("Unable to bind to port %d on this computer.  PPCoin is probably already running."), ntohs(sockaddr.sin_port));
+            strError = strprintf(_("Unable to bind to port %d on this computer. " COIN_NAME " is probably already running."), ntohs(sockaddr.sin_port));
         else
             strError = strprintf("Error: Unable to bind to port %d on this computer (bind returned error %d)", ntohs(sockaddr.sin_port), nErr);
         printf("%s\n", strError.c_str());
@@ -1672,8 +1662,9 @@ void StartNode(void* parg)
     GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain);
 
     // ppcoin: mint proof-of-stake blocks in the background
-    if (!CreateThread(ThreadStakeMinter, pwalletMain))
+    if (!CreateThread(ThreadStakeMinter, pwalletMain)) {
         printf("Error: CreateThread(ThreadStakeMinter) failed\n");
+    }
 }
 
 bool StopNode()

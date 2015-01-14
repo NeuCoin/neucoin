@@ -1,0 +1,76 @@
+BOOST_SUFFIX ?= #NO SUFFIX
+SHELL = bash
+
+CPPFLAGS += \
+  -I ./
+
+LDFLAGS += \
+  -lboost_system$(BOOST_SUFFIX) \
+  -lboost_filesystem$(BOOST_SUFFIX) \
+  -lboost_program_options$(BOOST_SUFFIX) \
+  -lboost_thread$(BOOST_SUFFIX) \
+  -ldb_cxx \
+  -lssl \
+  -lcrypto
+
+SOURCES= \
+  CheckClientSanity.cpp \
+  GetNextTargetRequired.cpp \
+  GetProofOfStakeReward.cpp \
+  GetProofOfWorkReward.cpp \
+  IsValidAmount.cpp \
+  version.cpp \
+  checkpoints.cpp \
+  netbase.cpp \
+  addrman.cpp \
+  crypter.cpp \
+  key.cpp \
+  db.cpp \
+  init.cpp \
+  irc.cpp \
+  keystore.cpp \
+  main.cpp \
+  net.cpp \
+  protocol.cpp \
+  bitcoinrpc.cpp \
+  rpcdump.cpp \
+  script.cpp \
+  util.cpp \
+  wallet.cpp \
+  walletdb.cpp \
+  noui.cpp \
+  kernel.cpp
+
+OBJECTS=$(addsuffix .o, $(SOURCES))
+DEPENDENCIES=$(addsuffix .d, $(SOURCES))
+
+ifeq ($(DEBUG),1)
+
+  CPPFLAGS += -g -O0
+
+endif
+
+all: $(TARGET)
+
+-include $(DEPENDENCIES)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+%.cpp.d: %.cpp Makefile.common $(MAKEFILE)
+	$(CXX) -M -MT "${@:.cpp.d=.cpp.o}" -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
+
+%.cpp.o: %.cpp Makefile.common $(MAKEFILE)
+	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
+
+clean:
+	$(RM) -f **/*.o
+	$(RM) -f **/*.d
+
+fclean: clean
+	$(RM) -f $(TARGET)
+
+re: fclean
+	$(MAKE) -f $(MAKEFILE) all
+
+.PHONY: all clean fclean re

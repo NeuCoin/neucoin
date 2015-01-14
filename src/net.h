@@ -15,10 +15,11 @@
 #include <arpa/inet.h>
 #endif
 
+#include "addrman.h"
 #include "mruset.h"
 #include "netbase.h"
 #include "protocol.h"
-#include "addrman.h"
+#include "types.h"
 
 class CAddrDB;
 class CRequestTracker;
@@ -36,7 +37,7 @@ bool GetMyExternalIP(CNetAddr& ipRet);
 void AddressCurrentlyConnected(const CService& addr);
 CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CService& ip);
-CNode* ConnectNode(CAddress addrConnect, int64 nTimeout=0);
+CNode* ConnectNode(CAddress addrConnect, timestamp_t nTimeout=0);
 void MapPort(bool fMapPort);
 bool BindListenPort(std::string& strError=REF(std::string()));
 void StartNode(void* parg);
@@ -98,7 +99,7 @@ extern CCriticalSection cs_vNodes;
 extern std::map<CInv, CDataStream> mapRelay;
 extern std::deque<std::pair<int64, CInv> > vRelayExpiration;
 extern CCriticalSection cs_mapRelay;
-extern std::map<CInv, int64> mapAlreadyAskedFor;
+extern std::map<CInv, timestamp_t> mapAlreadyAskedFor;
 
 
 
@@ -114,7 +115,7 @@ public:
     int nVersion;
     std::string strSubVer;
     bool fInbound;
-    int64 nReleaseTime;
+    timestamp_t nReleaseTime;
     int nStartingHeight;
     int nMisbehavior;
 };
@@ -160,7 +161,7 @@ protected:
     int nMisbehavior;
 
 public:
-    int64 nReleaseTime;
+    timestamp_t nReleaseTime;
     std::map<uint256, CRequestTracker> mapRequests;
     CCriticalSection cs_mapRequests;
     uint256 hashContinue;
@@ -237,7 +238,7 @@ public:
         return std::max(nRefCount, 0) + (GetTime() < nReleaseTime ? 1 : 0);
     }
 
-    CNode* AddRef(int64 nTimeout=0)
+    CNode* AddRef(timestamp_t nTimeout=0)
     {
         if (nTimeout != 0)
             nReleaseTime = std::max(nReleaseTime, GetTime() + nTimeout);
@@ -289,12 +290,12 @@ public:
     {
         // We're using mapAskFor as a priority queue,
         // the key is the earliest time the request can be sent
-        int64& nRequestTime = mapAlreadyAskedFor[inv];
+        timestamp_t& nRequestTime = mapAlreadyAskedFor[inv];
         printf("askfor %s   %"PRI64d"\n", inv.ToString().c_str(), nRequestTime);
 
         // Make sure not to reuse time indexes to keep things in the same order
-        int64 nNow = (GetTime() - 1) * 1000000;
-        static int64 nLastTime;
+        timestamp_t nNow = (GetTime() - 1) * 1000000;
+        static timestamp_t nLastTime;
         ++nLastTime;
         nNow = std::max(nNow, nLastTime);
         nLastTime = nNow;

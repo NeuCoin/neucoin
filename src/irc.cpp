@@ -64,15 +64,24 @@ static bool Send(SOCKET hSocket, const char* pszSend)
 {
     if (strstr(pszSend, "PONG") != pszSend)
         printf("IRC SENDING: %s\n", pszSend);
+
     const char* psz = pszSend;
     const char* pszEnd = psz + strlen(psz);
+
     while (psz < pszEnd)
     {
+#ifdef MSG_NOSIGNAL
         int ret = send(hSocket, psz, pszEnd - psz, MSG_NOSIGNAL);
+#else
+        int ret = send(hSocket, psz, pszEnd - psz, SO_NOSIGPIPE);
+#endif
+
         if (ret < 0)
             return false;
+
         psz += ret;
     }
+
     return true;
 }
 
@@ -291,16 +300,11 @@ void ThreadIRCSeed2(void* parg)
                 Send(hSocket, strprintf("NICK %s\r", strMyName.c_str()).c_str());
             }
         }
-        
-        if (fTestNet) {
-            Send(hSocket, "JOIN #bitcoinTEST\r");
-            Send(hSocket, "WHO #bitcoinTEST\r");
-        } else {
-            // randomly join #bitcoin00-#bitcoin99
-            int channel_number = GetRandInt(100);
-            Send(hSocket, strprintf("JOIN #bitcoin%02d\r", channel_number).c_str());
-            Send(hSocket, strprintf("WHO #bitcoin%02d\r", channel_number).c_str());
-        }
+
+        // randomly join #bitcoin00-#bitcoin99
+        int channel_number = GetRandInt(100);
+        Send(hSocket, strprintf("JOIN #bitcoin%02d\r", channel_number).c_str());
+        Send(hSocket, strprintf("WHO #bitcoin%02d\r", channel_number).c_str());
 
         int64 nStart = GetTime();
         string strLine;

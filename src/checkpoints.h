@@ -11,7 +11,6 @@
 
 #define CHECKPOINT_MAX_SPAN (60 * 60 * 4) // max 4 hours before latest block
 
-class uint256;
 class CBlockIndex;
 class CSyncCheckpoint;
 
@@ -21,30 +20,30 @@ class CSyncCheckpoint;
 namespace Checkpoints
 {
     // Returns true if block passes checkpoint checks
-    bool CheckHardened(int nHeight, const uint256& hash);
+    bool CheckHardened(int nHeight, hash_t hash);
 
     // Return conservative estimate of total number of blocks, 0 if unknown
     int GetTotalBlocksEstimate();
 
     // Returns last CBlockIndex* in mapBlockIndex that is a checkpoint
-    CBlockIndex* GetLastCheckpoint(const std::map<uint256, CBlockIndex*>& mapBlockIndex);
+    CBlockIndex* GetLastCheckpoint(const std::map<hash_t, CBlockIndex*>& mapBlockIndex);
 
-    extern uint256 hashSyncCheckpoint;
+    extern hash_t hashSyncCheckpoint;
     extern CSyncCheckpoint checkpointMessage;
-    extern uint256 hashInvalidCheckpoint;
+    extern hash_t hashInvalidCheckpoint;
     extern CCriticalSection cs_hashSyncCheckpoint;
 
     CBlockIndex* GetLastSyncCheckpoint();
-    bool WriteSyncCheckpoint(const uint256& hashCheckpoint);
+    bool WriteSyncCheckpoint(hash_t hashCheckpoint);
     bool AcceptPendingSyncCheckpoint();
-    uint256 AutoSelectSyncCheckpoint();
-    bool CheckSync(const uint256& hashBlock, const CBlockIndex* pindexPrev);
-    bool WantedByPendingSyncCheckpoint(uint256 hashBlock);
+    hash_t AutoSelectSyncCheckpoint();
+    bool CheckSync(hash_t hashBlock, const CBlockIndex* pindexPrev);
+    bool WantedByPendingSyncCheckpoint(hash_t hashBlock);
     bool ResetSyncCheckpoint();
     void AskForPendingSyncCheckpoint(CNode* pfrom);
     bool SetCheckpointPrivKey(std::string strPrivKey);
-    bool SendSyncCheckpoint(uint256 hashCheckpoint);
-    bool IsMatureSyncCheckpoint();
+    bool SendSyncCheckpoint(hash_t hashCheckpoint);
+    bool IsSyncCheckpointMature();
     bool IsSyncCheckpointTooOld(unsigned int nSeconds);
 }
 
@@ -53,7 +52,7 @@ class CUnsignedSyncCheckpoint
 {
 public:
     int nVersion;
-    uint256 hashCheckpoint;      // checkpoint block
+    hash_t hashCheckpoint;      // checkpoint block
 
     IMPLEMENT_SERIALIZE
     (
@@ -117,7 +116,7 @@ public:
         return (hashCheckpoint == 0);
     }
 
-    uint256 GetHash() const
+    hash_t GetHash() const
     {
         return SerializeHash(*this);
     }

@@ -4,17 +4,17 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="14"/>
-        <source>About PPCoin</source>
-        <translation>Om PPCoin</translation>
+        <source>About NeuCoin</source>
+        <translation>Om NeuCoin</translation>
     </message>
     <message>
         <location filename="../forms/aboutdialog.ui" line="53"/>
-        <source>&lt;b&gt;PPCoin&lt;/b&gt; version</source>
-        <translation>&lt;b&gt;PPCoin&lt;/b&gt; version</translation>
+        <source>&lt;b&gt;NeuCoin&lt;/b&gt; version</source>
+        <translation>&lt;b&gt;NeuCoin&lt;/b&gt; version</translation>
     </message>
     <message>
         <location filename="../forms/aboutdialog.ui" line="85"/>
-        <source>Copyright © 2011-2013 PPCoin Developers
+        <source>Copyright © 2011-2013 NeuCoin Developers
 
 This is experimental software.
 
@@ -33,8 +33,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location filename="../forms/addressbookpage.ui" line="20"/>
-        <source>These are your PPCoin addresses for receiving payments.  You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Detta är dina PPCoin-adresser för att ta emot betalningar. Du kan ge varje avsändare en egen adress så att du kan hålla reda på vem som betalar dig.</translation>
+        <source>These are your NeuCoin addresses for receiving payments.  You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <translation>Detta är dina NeuCoin-adresser för att ta emot betalningar. Du kan ge varje avsändare en egen adress så att du kan hålla reda på vem som betalar dig.</translation>
     </message>
     <message>
         <location filename="../forms/addressbookpage.ui" line="33"/>
@@ -220,9 +220,9 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="102"/>
-        <source>WARNING: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PPCoinS&lt;/b&gt;!
+        <source>WARNING: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR NeuCoinS&lt;/b&gt;!
 Are you sure you wish to encrypt your wallet?</source>
-        <translation>VARNING: Om du krypterar din plånbok och glömmer din lösenfras, kommer du att &lt;b&gt;förlora alla dina PPCoinS!&lt;/b&gt; Är du säker på att du vill kryptera din plånbok?</translation>
+        <translation>VARNING: Om du krypterar din plånbok och glömmer din lösenfras, kommer du att &lt;b&gt;förlora alla dina NeuCoinS!&lt;/b&gt; Är du säker på att du vill kryptera din plånbok?</translation>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="111"/>
@@ -232,7 +232,7 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="112"/>
-        <source>PPCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your PPCoins from being stolen by malware infecting your computer.</source>
+        <source>NeuCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your NeuCoins from being stolen by malware infecting your computer.</source>
         <translation>Programmet kommer nu att stänga ner för att göra färdigt krypteringen. Notera att en krypterat konto inte skyddar mot all form av stöld på en infekterad dator. </translation>
     </message>
     <message>
@@ -284,11 +284,11 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
 </context>
 <context>
-    <name>PPCoinGUI</name>
+    <name>NeuCoinGUI</name>
     <message>
         <location filename="../bitcoingui.cpp" line="69"/>
-        <source>PPCoin Wallet</source>
-        <translation>PPCoin-plånbok</translation>
+        <source>NeuCoin Wallet</source>
+        <translation>NeuCoin-plånbok</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="142"/>
@@ -334,7 +334,7 @@ Are you sure you wish to encrypt your wallet?</source>
     <message>
         <location filename="../bitcoingui.cpp" line="194"/>
         <source>&amp;Receive coins</source>
-        <translation>&amp;amp; Ta emot PPCoins</translation>
+        <translation>&amp;amp; Ta emot NeuCoins</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="195"/>
@@ -344,12 +344,12 @@ Are you sure you wish to encrypt your wallet?</source>
     <message>
         <location filename="../bitcoingui.cpp" line="200"/>
         <source>&amp;Send coins</source>
-        <translation>&amp;amp; Skicka PPCoins</translation>
+        <translation>&amp;amp; Skicka NeuCoins</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="201"/>
-        <source>Send coins to a PPCoin address</source>
-        <translation>Skicka PPCoins till en PPCoinadress</translation>
+        <source>Send coins to a NeuCoin address</source>
+        <translation>Skicka NeuCoins till en NeuCoinadress</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="206"/>
@@ -378,8 +378,8 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="231"/>
-        <source>Show information about PPCoin</source>
-        <translation>Visa information om PPCoin</translation>
+        <source>Show information about NeuCoin</source>
+        <translation>Visa information om NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="233"/>
@@ -398,18 +398,18 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="237"/>
-        <source>Modify configuration options for PPCoin</source>
-        <translation>Ändra konfigurationsalternativ för PPCoin</translation>
+        <source>Modify configuration options for NeuCoin</source>
+        <translation>Ändra konfigurationsalternativ för NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="239"/>
-        <source>Open &amp;PPCoin</source>
-        <translation>Öppna &amp;amp;PPCoin</translation>
+        <source>Open &amp;NeuCoin</source>
+        <translation>Öppna &amp;amp;NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="240"/>
-        <source>Show the PPCoin window</source>
-        <translation>Visa PPCoin-fönster</translation>
+        <source>Show the NeuCoin window</source>
+        <translation>Visa NeuCoin-fönster</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="241"/>
@@ -477,19 +477,14 @@ Are you sure you wish to encrypt your wallet?</source>
         <translation>Verktygsfältet för Handlingar</translation>
     </message>
     <message>
-        <location filename="../bitcoingui.cpp" line="317"/>
-        <source>[testnet]</source>
-        <translation>[testnet]</translation>
-    </message>
-    <message>
         <location filename="../bitcoingui.cpp" line="407"/>
-        <source>PPCoin-qt</source>
-        <translation>PPCoin-qt</translation>
+        <source>NeuCoin-qt</source>
+        <translation>NeuCoin-qt</translation>
     </message>
     <message numerus="yes">
         <location filename="../bitcoingui.cpp" line="449"/>
-        <source>%n active connection(s) to PPCoin network</source>
-        <translation><numerusform>%n aktiv anslutning till PPCoin-nätverket.</numerusform><numerusform>%n aktiva anslutningar till PPCoin-nätverket.</numerusform></translation>
+        <source>%n active connection(s) to NeuCoin network</source>
+        <translation><numerusform>%n aktiv anslutning till NeuCoin-nätverket.</numerusform><numerusform>%n aktiva anslutningar till NeuCoin-nätverket.</numerusform></translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="475"/>
@@ -676,8 +671,8 @@ Adress:%4
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="96"/>
-        <source>The entered address &quot;%1&quot; is not a valid PPCoin address.</source>
-        <translation>Den angivna adressen &quot;%1&quot; är inte en giltig PPCoin-adress.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid NeuCoin address.</source>
+        <translation>Den angivna adressen &quot;%1&quot; är inte en giltig NeuCoin-adress.</translation>
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="101"/>
@@ -694,13 +689,13 @@ Adress:%4
     <name>MainOptionsPage</name>
     <message>
         <location filename="../optionsdialog.cpp" line="170"/>
-        <source>&amp;Start PPCoin on window system startup</source>
-        <translation>&amp;Starta PPCoin vid systemstart</translation>
+        <source>&amp;Start NeuCoin on window system startup</source>
+        <translation>&amp;Starta NeuCoin vid systemstart</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="171"/>
-        <source>Automatically start PPCoin after the computer is turned on</source>
-        <translation>Starta PPCoin automatiskt när datorn startas.</translation>
+        <source>Automatically start NeuCoin after the computer is turned on</source>
+        <translation>Starta NeuCoin automatiskt när datorn startas.</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="175"/>
@@ -719,8 +714,8 @@ Adress:%4
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="181"/>
-        <source>Automatically open the PPCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Öppna automatiskt PPCoin-klientens port på routern. Detta fungerar endast om din router har UPnP aktiverat.</translation>
+        <source>Automatically open the NeuCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Öppna automatiskt NeuCoin-klientens port på routern. Detta fungerar endast om din router har UPnP aktiverat.</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="185"/>
@@ -740,7 +735,7 @@ Adress:%4
     <message>
         <location filename="../optionsdialog.cpp" line="191"/>
         <source>Connect to the Bitcon network through a SOCKS4 proxy (e.g. when connecting through Tor)</source>
-        <translation>Anslut till PPCoin-nätverket genom en SOCKS4-proxy (t.ex. när du ansluter genom Tor).</translation>
+        <translation>Anslut till NeuCoin-nätverket genom en SOCKS4-proxy (t.ex. när du ansluter genom Tor).</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="196"/>
@@ -1180,8 +1175,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="25"/>
-        <source>Enter a PPCoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</source>
-        <translation>Ange en PPCoin adress (t.ex. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</translation>
+        <source>Enter a NeuCoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</source>
+        <translation>Ange en NeuCoin adress (t.ex. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</translation>
     </message>
 </context>
 <context>
@@ -1629,11 +1624,11 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>PPCoin-core</name>
+    <name>NeuCoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="3"/>
-        <source>PPCoin version</source>
-        <translation>PPCoin version</translation>
+        <source>NeuCoin version</source>
+        <translation>NeuCoin version</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="4"/>
@@ -1642,8 +1637,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="5"/>
-        <source>Send command to -server or ppcoind</source>
-        <translation>Skicka kommando till -server eller ppcoind</translation>
+        <source>Send command to -server or neucoind</source>
+        <translation>Skicka kommando till -server eller neucoind</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="6"/>
@@ -1662,13 +1657,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="9"/>
-        <source>Specify configuration file (default: PPCoin.conf)</source>
-        <translation>Ange konfigurationsfil (standard:PPCoin.conf)</translation>
+        <source>Specify configuration file (default: NeuCoin.conf)</source>
+        <translation>Ange konfigurationsfil (standard:NeuCoin.conf)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="10"/>
-        <source>Specify pid file (default: ppcoind.pid)</source>
-        <translation>Ange pid fil (standard:ppcoind.pid)</translation>
+        <source>Specify pid file (default: neucoind.pid)</source>
+        <translation>Ange pid fil (standard:neucoind.pid)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="11"/>
@@ -1707,7 +1702,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="18"/>
-        <source>Listen for connections on &lt;port&gt; (default: 8333 or testnet: 18333)</source>
+        <source>Listen for connections on &lt;port&gt; (default: 8333)</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1843,7 +1838,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../bitcoinstrings.cpp" line="47"/>
         <source>
-SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
+SSL options: (see the NeuCoin Wiki for SSL setup instructions)</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1873,7 +1868,7 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="57"/>
-        <source>Cannot obtain a lock on data directory %s.  PPCoin is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s.  NeuCoin is probably already running.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1898,12 +1893,12 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="66"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of PPCoin</source>
-        <translation>Fel vid inläsningen av wallet.dat: Kontofilen kräver en senare version av PPCoin</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of NeuCoin</source>
+        <translation>Fel vid inläsningen av wallet.dat: Kontofilen kräver en senare version av NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="67"/>
-        <source>Wallet needed to be rewritten: restart PPCoin to complete</source>
+        <source>Wallet needed to be rewritten: restart NeuCoin to complete</source>
         <translation>Kontot behöver sparas om: Starta om Programmet</translation>
     </message>
     <message>
@@ -1958,12 +1953,12 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="78"/>
-        <source>Unable to bind to port %d on this computer.  PPCoin is probably already running.</source>
+        <source>Unable to bind to port %d on this computer.  NeuCoin is probably already running.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="81"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct.  If your clock is wrong PPCoin will not work properly.</source>
+        <source>Warning: Please check that your computer&apos;s date and time are correct.  If your clock is wrong NeuCoin will not work properly.</source>
         <translation type="unfinished"/>
     </message>
     <message>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>About PPCoin</string>
+   <string>About NeuCoin</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
@@ -50,7 +50,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>&lt;b&gt;PPCoin&lt;/b&gt; version</string>
+          <string>&lt;b&gt;NeuCoin&lt;/b&gt; version</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -86,9 +86,9 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="label_ppcoin_copyright">
+      <widget class="QLabel" name="label_copyright_neucoin">
        <property name="text">
-        <string>Copyright © 2011-2014 PPCoin Developers</string>
+        <string>Copyright © 2014-2015 NeuCoin Developers</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -99,7 +99,20 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="label_copyright_ppcoin">
+       <property name="text">
+        <string>Copyright © 2011-2014 Peercoin Developers</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_copyright_bitcoin">
        <property name="text">
         <string>Copyright © 2009-2012 Bitcoin Developers
 

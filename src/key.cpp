@@ -267,13 +267,18 @@ bool CKey::Sign(uint256 hash, std::vector<unsigned char>& vchSig)
 {
     unsigned int nSize = ECDSA_size(pkey);
     vchSig.resize(nSize); // Make sure it is big enough
-    if (!ECDSA_sign(0, (unsigned char*)&hash, sizeof(hash), &vchSig[0], &nSize, pkey))
-    {
+
+    if (!ECDSA_sign(0, (unsigned char*)&hash, sizeof(hash), &vchSig[0], &nSize, pkey)) {
+
         vchSig.clear();
         return false;
+
+    } else {
+
+        vchSig.resize(nSize); // Shrink to fit actual size
+        return true;
+
     }
-    vchSig.resize(nSize); // Shrink to fit actual size
-    return true;
 }
 
 // create a compact signature (65 bytes), which allows reconstructing the used public key

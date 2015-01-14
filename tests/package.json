@@ -1,0 +1,9 @@
+{
+    "dependencies" : {
+        "babel" : "*",
+        "chai" : "*",
+        "lodash" : "*",
+        "mkdirp" : "*",
+        "rimraf" : "*"
+    }
+}

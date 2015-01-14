@@ -8,6 +8,7 @@
 #include "optionsmodel.h"
 #include "guiutil.h"
 
+#include "constants.h"
 #include "init.h"
 #include "ui_interface.h"
 #include "qtipcserver.h"
@@ -21,6 +22,8 @@
 #include <QLibraryInfo>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
+
+#include "CheckClientSanity.h"
 
 #if defined(BITCOIN_NEED_QT_PLUGINS) && !defined(_BITCOIN_QT_PLUGINS_INCLUDED)
 #define _BITCOIN_QT_PLUGINS_INCLUDED
@@ -64,7 +67,7 @@ bool ThreadSafeAskFee(int64 nFeeRequired, const std::string& strCaption)
 {
     if(!guiref)
         return false;
-    if(nFeeRequired < MIN_TX_FEE || nFeeRequired <= nTransactionFee || fDaemon)
+    if(nFeeRequired < MIN_TX_FEES || nFeeRequired <= nTransactionFee || fDaemon)
         return true;
     bool payFee = false;
 
@@ -125,7 +128,7 @@ std::string _(const char* psz)
 static void handleRunawayException(std::exception *e)
 {
     PrintExceptionContinue(e, "Runaway exception");
-    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occured. PPCoin can no longer continue safely and will quit.") + QString("\n\n") + QString::fromStdString(strMiscWarning));
+    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occured. " COIN_NAME " can no longer continue safely and will quit.") + QString("\n\n") + QString::fromStdString(strMiscWarning));
     exit(1);
 }
 
@@ -135,13 +138,16 @@ static void handleRunawayException(std::exception *e)
 #ifndef BITCOIN_QT_TEST
 int main(int argc, char *argv[])
 {
+    if (!CheckClientSanity())
+        return 1;
+
 #if !defined(MAC_OSX) && !defined(WIN32)
 // TODO: implement qtipcserver.cpp for Mac and Windows
 
     // Do this early as we don't want to bother initializing if we are just calling IPC
     for (int i = 1; i < argc; i++)
     {
-        if (strlen(argv[i]) >= 7 && strncasecmp(argv[i], "ppcoin:", 7) == 0)
+        if (strlen(argv[i]) >= 7 && strncasecmp(argv[i], COIN_SCHEME ":", 7) == 0)
         {
             const char *strURI = argv[i];
             try {
@@ -178,12 +184,11 @@ int main(int argc, char *argv[])
 
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)
-    app.setOrganizationName("PPCoin");
-    app.setOrganizationDomain("ppcoin.org");
-    if(GetBoolArg("-testnet")) // Separate UI settings for testnet
-        app.setApplicationName("PPCoin-Qt-testnet");
-    else
-        app.setApplicationName("PPCoin-Qt");
+
+    app.setApplicationName(COIN_NAME);
+
+    app.setOrganizationName(COIN_NAME);
+    app.setOrganizationDomain(COIN_DOMAIN);
 
     // ... then GUI settings:
     OptionsModel optionsModel;
@@ -268,7 +273,7 @@ int main(int argc, char *argv[])
                 // Check for URI in argv
                 for (int i = 1; i < argc; i++)
                 {
-                    if (strlen(argv[i]) >= 7 && strncasecmp(argv[i], "ppcoin:", 7) == 0)
+                    if (strlen(argv[i]) >= 7 && strncasecmp(argv[i], COIN_SCHEME, 7) == 0)
                     {
                         const char *strURI = argv[i];
                         try {

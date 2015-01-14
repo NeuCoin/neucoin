@@ -1,24 +1,25 @@
-#include "optionsdialog.h"
-#include "optionsmodel.h"
-#include "bitcoinamountfield.h"
-#include "monitoreddatamapper.h"
-#include "guiutil.h"
-#include "bitcoinunits.h"
-#include "qvaluecombobox.h"
-
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QListWidget>
-#include <QStackedWidget>
-
 #include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QDoubleValidator>
+#include <QHBoxLayout>
+#include <QIntValidator>
 #include <QLabel>
 #include <QLineEdit>
-#include <QIntValidator>
-#include <QDoubleValidator>
+#include <QListWidget>
+#include <QPushButton>
 #include <QRegExpValidator>
-#include <QDialogButtonBox>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+
+#include "../constants.h"
+
+#include "bitcoinamountfield.h"
+#include "bitcoinunits.h"
+#include "guiutil.h"
+#include "monitoreddatamapper.h"
+#include "optionsdialog.h"
+#include "optionsmodel.h"
+#include "qvaluecombobox.h"
 
 /* First page of options */
 class MainOptionsPage : public QWidget
@@ -168,8 +169,8 @@ MainOptionsPage::MainOptionsPage(QWidget *parent):
 {
     QVBoxLayout *layout = new QVBoxLayout();
 
-    bitcoin_at_startup = new QCheckBox(tr("&Start PPCoin on window system startup"));
-    bitcoin_at_startup->setToolTip(tr("Automatically start PPCoin after the computer is turned on"));
+    bitcoin_at_startup = new QCheckBox(tr("&Start " COIN_CLIENT_QT " on window system startup"));
+    bitcoin_at_startup->setToolTip(tr("Automatically start " COIN_CLIENT_QT " after the computer is turned on"));
     layout->addWidget(bitcoin_at_startup);
 
 #ifndef Q_WS_MAC
@@ -183,7 +184,7 @@ MainOptionsPage::MainOptionsPage(QWidget *parent):
 #endif
 
     map_port_upnp = new QCheckBox(tr("Map port using &UPnP"));
-    map_port_upnp->setToolTip(tr("Automatically open the PPCoin client port on the router. This only works when your router supports UPnP and it is enabled."));
+    map_port_upnp->setToolTip(tr("Automatically open the " COIN_CLIENT_QT " client port on the router. This only works when your router supports UPnP and it is enabled."));
     layout->addWidget(map_port_upnp);
 
     connect_socks4 = new QCheckBox(tr("&Connect through SOCKS4 proxy:"));
@@ -282,7 +283,7 @@ DisplayOptionsPage::DisplayOptionsPage(QWidget *parent):
     layout->addLayout(unit_hbox);
 
     display_addresses = new QCheckBox(tr("&Display addresses in transaction list"), this);
-    display_addresses->setToolTip(tr("Whether to show PPCoin addresses in the transaction list"));
+    display_addresses->setToolTip(tr("Whether to show " COIN_NAME " addresses in the transaction list"));
     layout->addWidget(display_addresses);
 
     layout->addStretch();

@@ -1,0 +1,8 @@
+TARGET = neucoind
+
+MAKEFILE = Makefile.unix
+
+LDFLAGS += \
+  -lpthread
+
+include Makefile.common

@@ -1,6 +1,8 @@
-#include "bitcoinunits.h"
-
 #include <QStringList>
+
+#include "../constants.h"
+
+#include "bitcoinunits.h"
 
 BitcoinUnits::BitcoinUnits(QObject *parent):
         QAbstractListModel(parent),
@@ -34,9 +36,9 @@ QString BitcoinUnits::name(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("PPC");
-    case mBTC: return QString("mPPC");
-    case uBTC: return QString::fromUtf8("μPPC");
+    case BTC: return QString(COIN_UNIT);
+    case mBTC: return QString(COIN_UNIT_M);
+    case uBTC: return QString::fromUtf8(COIN_UNIT_U);
     default: return QString("???");
     }
 }
@@ -45,9 +47,9 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("PPCoins");
-    case mBTC: return QString("Milli-PPCoins (1 / 1,000)");
-    case uBTC: return QString("Micro-PPCoins (1 / 1,000,000)");
+    case BTC: return QString(COIN_UNIT_NAME);
+    case mBTC: return QString(COIN_UNIT_NAME_M " (1 / 1,000)");
+    case uBTC: return QString(COIN_UNIT_NAME_U " (1 / 1,000,000)");
     default: return QString("???");
     }
 }

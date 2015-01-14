@@ -1,14 +1,17 @@
-#include "sendcoinsentry.h"
-#include "ui_sendcoinsentry.h"
-#include "guiutil.h"
-#include "bitcoinunits.h"
-#include "addressbookpage.h"
-#include "walletmodel.h"
-#include "optionsmodel.h"
-#include "addresstablemodel.h"
-
 #include <QApplication>
 #include <QClipboard>
+
+#include "../constants.h"
+
+#include "ui_sendcoinsentry.h"
+
+#include "addressbookpage.h"
+#include "addresstablemodel.h"
+#include "bitcoinunits.h"
+#include "sendcoinsentry.h"
+#include "guiutil.h"
+#include "optionsmodel.h"
+#include "walletmodel.h"
 
 SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     QFrame(parent),
@@ -22,7 +25,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
 #endif
 
 #if QT_VERSION >= 0x040700
-    ui->payTo->setPlaceholderText(tr("Enter a PPCoin address"));
+    ui->payTo->setPlaceholderText(tr("Enter a " COIN_NAME " address"));
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
 #endif
     setFocusPolicy(Qt::TabFocus);
@@ -159,4 +162,3 @@ void SendCoinsEntry::setFocus()
 {
     ui->payTo->setFocus();
 }
-

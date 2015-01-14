@@ -4,24 +4,24 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="14"/>
-        <source>About PPCoin</source>
-        <translation>Apie PPCoiną</translation>
+        <source>About NeuCoin</source>
+        <translation>Apie NeuCoiną</translation>
     </message>
     <message>
         <location filename="../forms/aboutdialog.ui" line="53"/>
-        <source>&lt;b&gt;PPCoin&lt;/b&gt; version</source>
-        <translation>&lt;b&gt;PPCoin&lt;/b&gt; versija</translation>
+        <source>&lt;b&gt;NeuCoin&lt;/b&gt; version</source>
+        <translation>&lt;b&gt;NeuCoin&lt;/b&gt; versija</translation>
     </message>
     <message>
         <location filename="../forms/aboutdialog.ui" line="85"/>
-        <source>Copyright © 2011-2013 PPCoin Developers
+        <source>Copyright © 2011-2013 NeuCoin Developers
 
 This is experimental software.
 
 Distributed under the MIT/X11 software license, see the accompanying file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/) and cryptographic software written by Eric Young (eay@cryptsoft.com) and UPnP software written by Thomas Bernard.</source>
-        <translation>Autorystės teisės© 2011-2013 PPCoin Developers
+        <translation>Autorystės teisės© 2011-2013 NeuCoin Developers
 DĖMESIO: programa eksperimentinė!
 
 Platinama pagal licenziją MIT/X11, papildomą informaciją rasite faile license.txt arba dokumente pagal nuorodą: http://www.opensource.org/licenses/mit-license.php.
@@ -39,7 +39,7 @@ Platinama pagal licenziją MIT/X11, papildomą informaciją rasite faile license
     </message>
     <message>
         <location filename="../forms/addressbookpage.ui" line="20"/>
-        <source>These are your PPCoin addresses for receiving payments.  You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <source>These are your NeuCoin addresses for receiving payments.  You may want to give a different one to each sender so you can keep track of who is paying you.</source>
         <translation>Čia yra Jūsų adresai skirti mokėjimams gauti.  Jūs galite skirtingiems žmonėms duoti skirtingus adresus. Tai Jums palengvins kontroliuoti mokėjimus bei padidins anonimiškumą.
     </translation>
     </message>
@@ -227,7 +227,7 @@ Platinama pagal licenziją MIT/X11, papildomą informaciją rasite faile license
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="102"/>
-        <source>WARNING: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PPCoinS&lt;/b&gt;!
+        <source>WARNING: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR NeuCoinS&lt;/b&gt;!
 Are you sure you wish to encrypt your wallet?</source>
         <translation>ĮSPĖJIMAS: Jei užšifruosite savo piniginę ir prarasite savo slaptažodį, Jūs &lt;b&gt; PRARASITE VISUS SAVO BITKOINUS, &lt;/b&gt;!
 Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
@@ -240,8 +240,8 @@ Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="112"/>
-        <source>PPCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your PPCoins from being stolen by malware infecting your computer.</source>
-        <translation>PPCoin dabar užsidarys šifravimo proceso pabaigai. Atminkite, kad piniginės šifravimas  negali pilnai apsaugoti PPCoinų vagysčių kai tinkle esančios kenkėjiškos programos patenka į jūsų kompiuterį.</translation>
+        <source>NeuCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your NeuCoins from being stolen by malware infecting your computer.</source>
+        <translation>NeuCoin dabar užsidarys šifravimo proceso pabaigai. Atminkite, kad piniginės šifravimas  negali pilnai apsaugoti NeuCoinų vagysčių kai tinkle esančios kenkėjiškos programos patenka į jūsų kompiuterį.</translation>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="208"/>
@@ -292,10 +292,10 @@ Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
     </message>
 </context>
 <context>
-    <name>PPCoinGUI</name>
+    <name>NeuCoinGUI</name>
     <message>
         <location filename="../bitcoingui.cpp" line="69"/>
-        <source>PPCoin Wallet</source>
+        <source>NeuCoin Wallet</source>
         <translation>Bitkoinų piniginė</translation>
     </message>
     <message>
@@ -356,7 +356,7 @@ Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="201"/>
-        <source>Send coins to a PPCoin address</source>
+        <source>Send coins to a NeuCoin address</source>
         <translation>Siųsti monetas bitkoinų adresu</translation>
     </message>
     <message>
@@ -386,7 +386,7 @@ Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="231"/>
-        <source>Show information about PPCoin</source>
+        <source>Show information about NeuCoin</source>
         <translation>Rodyti informaciją apie Bitkoiną</translation>
     </message>
     <message>
@@ -406,18 +406,18 @@ Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="237"/>
-        <source>Modify configuration options for PPCoin</source>
-        <translation>Keisti PPCoin konfigūracijos galimybes</translation>
+        <source>Modify configuration options for NeuCoin</source>
+        <translation>Keisti NeuCoin konfigūracijos galimybes</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="239"/>
-        <source>Open &amp;PPCoin</source>
-        <translation>Atidaryti &amp;PPCoin</translation>
+        <source>Open &amp;NeuCoin</source>
+        <translation>Atidaryti &amp;NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="240"/>
-        <source>Show the PPCoin window</source>
-        <translation>Rodyti PPCoin langą</translation>
+        <source>Show the NeuCoin window</source>
+        <translation>Rodyti NeuCoin langą</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="241"/>
@@ -485,19 +485,14 @@ Ar jūs tikrai norite užšifruoti savo piniginę?</translation>
         <translation>Veiksmų įrankių juosta</translation>
     </message>
     <message>
-        <location filename="../bitcoingui.cpp" line="317"/>
-        <source>[testnet]</source>
-        <translation>[testavimotinklas]</translation>
-    </message>
-    <message>
         <location filename="../bitcoingui.cpp" line="407"/>
-        <source>PPCoin-qt</source>
-        <translation>PPCoin-qt</translation>
+        <source>NeuCoin-qt</source>
+        <translation>NeuCoin-qt</translation>
     </message>
     <message numerus="yes">
         <location filename="../bitcoingui.cpp" line="449"/>
-        <source>%n active connection(s) to PPCoin network</source>
-        <translation><numerusform>%n PPCoin tinklo aktyvus ryšys</numerusform><numerusform>%n PPCoin tinklo aktyvūs ryšiai</numerusform><numerusform>%n PPCoin tinklo aktyvūs ryšiai</numerusform></translation>
+        <source>%n active connection(s) to NeuCoin network</source>
+        <translation><numerusform>%n NeuCoin tinklo aktyvus ryšys</numerusform><numerusform>%n NeuCoin tinklo aktyvūs ryšiai</numerusform><numerusform>%n NeuCoin tinklo aktyvūs ryšiai</numerusform></translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="475"/>
@@ -679,7 +674,7 @@ Adresas: %4</translation>
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="96"/>
-        <source>The entered address &quot;%1&quot; is not a valid PPCoin address.</source>
+        <source>The entered address &quot;%1&quot; is not a valid NeuCoin address.</source>
         <translation>Įvestas adresas &quot;%1&quot;nėra galiojantis bitkoinų adresas</translation>
     </message>
     <message>
@@ -697,12 +692,12 @@ Adresas: %4</translation>
     <name>MainOptionsPage</name>
     <message>
         <location filename="../optionsdialog.cpp" line="170"/>
-        <source>&amp;Start PPCoin on window system startup</source>
-        <translation>&amp;S Paleisti  PPCoin programą su window sistemos paleidimu</translation>
+        <source>&amp;Start NeuCoin on window system startup</source>
+        <translation>&amp;S Paleisti  NeuCoin programą su window sistemos paleidimu</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="171"/>
-        <source>Automatically start PPCoin after the computer is turned on</source>
+        <source>Automatically start NeuCoin after the computer is turned on</source>
         <translation>Automatiškai paleisti Bitkoin programą kai yra įjungiamas kompiuteris</translation>
     </message>
     <message>
@@ -722,8 +717,8 @@ Adresas: %4</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="181"/>
-        <source>Automatically open the PPCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automatiškai atidaryti PPCoin kliento maršrutizatoriaus prievadą. Tai veikia tik tada, kai jūsų maršrutizatorius palaiko UPnP ir ji įjungta.</translation>
+        <source>Automatically open the NeuCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Automatiškai atidaryti NeuCoin kliento maršrutizatoriaus prievadą. Tai veikia tik tada, kai jūsų maršrutizatorius palaiko UPnP ir ji įjungta.</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="185"/>
@@ -1183,7 +1178,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="25"/>
-        <source>Enter a PPCoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</source>
+        <source>Enter a NeuCoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</source>
         <translation>Įveskite bitkoinų adresą (pvz. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</translation>
     </message>
 </context>
@@ -1632,11 +1627,11 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>PPCoin-core</name>
+    <name>NeuCoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="3"/>
-        <source>PPCoin version</source>
-        <translation>PPCoin versija</translation>
+        <source>NeuCoin version</source>
+        <translation>NeuCoin versija</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="4"/>
@@ -1645,8 +1640,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="5"/>
-        <source>Send command to -server or ppcoind</source>
-        <translation>Siųsti komandą serveriui arba ppcoind</translation>
+        <source>Send command to -server or neucoind</source>
+        <translation>Siųsti komandą serveriui arba neucoind</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="6"/>
@@ -1665,13 +1660,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="9"/>
-        <source>Specify configuration file (default: PPCoin.conf)</source>
-        <translation>Nurodyti konfigūracijos failą (pagal nutylėjimąt: PPCoin.conf)</translation>
+        <source>Specify configuration file (default: NeuCoin.conf)</source>
+        <translation>Nurodyti konfigūracijos failą (pagal nutylėjimąt: NeuCoin.conf)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="10"/>
-        <source>Specify pid file (default: ppcoind.pid)</source>
-        <translation>Nurodyti pid failą  (pagal nutylėjimą: ppcoind.pid)</translation>
+        <source>Specify pid file (default: neucoind.pid)</source>
+        <translation>Nurodyti pid failą  (pagal nutylėjimą: neucoind.pid)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="11"/>
@@ -1710,8 +1705,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="18"/>
-        <source>Listen for connections on &lt;port&gt; (default: 8333 or testnet: 18333)</source>
-        <translation>Sujungimo klausymas prijungčiai  &lt;port&gt; (pagal nutylėjimą: 8333 arba testnet: 18333)</translation>
+        <source>Listen for connections on &lt;port&gt; (default: 8333)</source>
+        <translation>Sujungimo klausymas prijungčiai  &lt;port&gt; (pagal nutylėjimą: 8333)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="19"/>
@@ -1846,8 +1841,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../bitcoinstrings.cpp" line="47"/>
         <source>
-SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
-        <translation>SSL opcijos (žr.e PPCoin Wiki for SSL setup instructions)</translation>
+SSL options: (see the NeuCoin Wiki for SSL setup instructions)</source>
+        <translation>SSL opcijos (žr.e NeuCoin Wiki for SSL setup instructions)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="50"/>
@@ -1876,8 +1871,8 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="57"/>
-        <source>Cannot obtain a lock on data directory %s.  PPCoin is probably already running.</source>
-        <translation>Negali gauti duomenų katalogo %s rakto. PPCoin tikriausiai jau veikia.</translation>
+        <source>Cannot obtain a lock on data directory %s.  NeuCoin is probably already running.</source>
+        <translation>Negali gauti duomenų katalogo %s rakto. NeuCoin tikriausiai jau veikia.</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="60"/>
@@ -1901,13 +1896,13 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="66"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of PPCoin</source>
-        <translation> wallet.dat pakrovimo klaida,  wallet.dat reikalauja naujasnės PPCoin versijos</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of NeuCoin</source>
+        <translation> wallet.dat pakrovimo klaida,  wallet.dat reikalauja naujasnės NeuCoin versijos</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="67"/>
-        <source>Wallet needed to be rewritten: restart PPCoin to complete</source>
-        <translation>Piniginė turi būti prrašyta: įvykdymui perkraukite PPCoin</translation>
+        <source>Wallet needed to be rewritten: restart NeuCoin to complete</source>
+        <translation>Piniginė turi būti prrašyta: įvykdymui perkraukite NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="68"/>
@@ -1961,13 +1956,13 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="78"/>
-        <source>Unable to bind to port %d on this computer.  PPCoin is probably already running.</source>
-        <translation>Nepavyko susieti šiame kompiuteryje prievado %d. PPCoin tikriausiai jau veikia.</translation>
+        <source>Unable to bind to port %d on this computer.  NeuCoin is probably already running.</source>
+        <translation>Nepavyko susieti šiame kompiuteryje prievado %d. NeuCoin tikriausiai jau veikia.</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="81"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct.  If your clock is wrong PPCoin will not work properly.</source>
-        <translation>Įspėjimas: Patikrinkite, kad kompiuterio data ir laikas yra teisingi.Jei Jūsų laikrodis neteisingai nustatytas PPCoin, veiks netinkamai.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct.  If your clock is wrong NeuCoin will not work properly.</source>
+        <translation>Įspėjimas: Patikrinkite, kad kompiuterio data ir laikas yra teisingi.Jei Jūsų laikrodis neteisingai nustatytas NeuCoin, veiks netinkamai.</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="84"/>

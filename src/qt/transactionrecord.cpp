@@ -1,5 +1,6 @@
 #include "transactionrecord.h"
 
+#include "main.h"
 #include "wallet.h"
 #include "base58.h"
 
@@ -196,7 +197,7 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
 
     if (!wtx.IsFinal())
     {
-        if (wtx.nLockTime < LOCKTIME_THRESHOLD)
+        if (wtx.nLockTime < LOCKTIMESTAMP_THRESHOLD)
         {
             status.status = TransactionStatus::OpenUntilBlock;
             status.open_for = nBestHeight - wtx.nLockTime;
@@ -260,4 +261,3 @@ std::string TransactionRecord::getTxID()
 {
     return hash.ToString() + strprintf("-%03d", idx);
 }
-

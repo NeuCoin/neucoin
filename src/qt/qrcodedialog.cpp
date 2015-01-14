@@ -1,12 +1,15 @@
-#include "qrcodedialog.h"
-#include "ui_qrcodedialog.h"
-#include "guiutil.h"
-
 #include <QPixmap>
-#include <QUrl>
 #include <QDebug>
+#include <QUrl>
 
 #include <qrencode.h>
+
+#include "ui_qrcodedialog.h"
+
+#include "../constants.h"
+
+#include "guiutil.h"
+#include "qrcodedialog.h"
 
 #define EXPORT_IMAGE_SIZE 256
 
@@ -66,7 +69,7 @@ void QRCodeDialog::genCode()
 
 QString QRCodeDialog::getURI()
 {
-    QString ret = QString("ppcoin:%1").arg(address);
+    QString ret = QString(COIN_SCHEME ":%1").arg(address);
 
     int paramCount = 0;
     if (ui->chkReqPayment->isChecked() && !ui->lnReqAmount->text().isEmpty())

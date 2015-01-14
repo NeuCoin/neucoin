@@ -11,6 +11,8 @@
 #include "keystore.h"
 #include "script.h"
 
+#include "IsValidAmount.h"
+
 extern bool fWalletUnlockMintOnly;
 
 class CWalletTx;
@@ -178,14 +180,14 @@ public:
     }
     int64 GetCredit(const CTxOut& txout) const
     {
-        if (!MoneyRange(txout.nValue))
+        if (!IsValidAmount(txout.nValue))
             throw std::runtime_error("CWallet::GetCredit() : value out of range");
         return (IsMine(txout) ? txout.nValue : 0);
     }
     bool IsChange(const CTxOut& txout) const;
     int64 GetChange(const CTxOut& txout) const
     {
-        if (!MoneyRange(txout.nValue))
+        if (!IsValidAmount(txout.nValue))
             throw std::runtime_error("CWallet::GetChange() : value out of range");
         return (IsChange(txout) ? txout.nValue : 0);
     }
@@ -206,7 +208,7 @@ public:
         BOOST_FOREACH(const CTxIn& txin, tx.vin)
         {
             nDebit += GetDebit(txin);
-            if (!MoneyRange(nDebit))
+            if (!IsValidAmount(nDebit))
                 throw std::runtime_error("CWallet::GetDebit() : value out of range");
         }
         return nDebit;
@@ -217,7 +219,7 @@ public:
         BOOST_FOREACH(const CTxOut& txout, tx.vout)
         {
             nCredit += GetCredit(txout);
-            if (!MoneyRange(nCredit))
+            if (!IsValidAmount(nCredit))
                 throw std::runtime_error("CWallet::GetCredit() : value out of range");
         }
         return nCredit;
@@ -228,7 +230,7 @@ public:
         BOOST_FOREACH(const CTxOut& txout, tx.vout)
         {
             nChange += GetChange(txout);
-            if (!MoneyRange(nChange))
+            if (!IsValidAmount(nChange))
                 throw std::runtime_error("CWallet::GetChange() : value out of range");
         }
         return nChange;
@@ -309,7 +311,7 @@ public:
 };
 
 
-/** A transaction with a bunch of additional info that only the owner cares about. 
+/** A transaction with a bunch of additional info that only the owner cares about.
  * It includes any unrecorded transactions needed to link it back to the block chain.
  */
 class CWalletTx : public CMerkleTx
@@ -533,8 +535,10 @@ public:
             {
                 const CTxOut &txout = vout[i];
                 nCredit += pwallet->GetCredit(txout);
-                if (!MoneyRange(nCredit))
+
+                if (!IsValidAmount(nCredit)) {
                     throw std::runtime_error("CWalletTx::GetAvailableCredit() : value out of range");
+                }
             }
         }
 
@@ -556,7 +560,7 @@ public:
     void GetAmounts(int64& nGeneratedImmature, int64& nGeneratedMature, std::list<std::pair<CTxDestination, int64> >& listReceived,
                     std::list<std::pair<CTxDestination, int64> >& listSent, int64& nFee, std::string& strSentAccount) const;
 
-    void GetAccountAmounts(const std::string& strAccount, int64& nGenerated, int64& nReceived, 
+    void GetAccountAmounts(const std::string& strAccount, int64& nGenerated, int64& nReceived,
                            int64& nSent, int64& nFee) const;
 
     bool IsFromMe() const

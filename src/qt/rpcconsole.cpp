@@ -1,17 +1,19 @@
-#include "rpcconsole.h"
+#include <QKeyEvent>
+#include <QTextEdit>
+#include <QThread>
+#include <QTimer>
+#include <QTime>
+#include <QScrollBar>
+#include <QUrl>
+
+#include "../constants.h"
+
 #include "ui_rpcconsole.h"
 
-#include "clientmodel.h"
 #include "bitcoinrpc.h"
+#include "clientmodel.h"
 #include "guiutil.h"
-
-#include <QTime>
-#include <QTimer>
-#include <QThread>
-#include <QTextEdit>
-#include <QKeyEvent>
-#include <QUrl>
-#include <QScrollBar>
+#include "rpcconsole.h"
 
 // TODO: add a scrollback limit, as there is currently none
 // TODO: make it possible to filter out categories (esp debug messages when implemented)
@@ -258,7 +260,6 @@ void RPCConsole::setClientModel(ClientModel *model)
         ui->buildDate->setText(model->formatBuildDate());
 
         setNumConnections(model->getNumConnections());
-        ui->isTestNet->setChecked(model->isTestNet());
 
         setNumBlocks(model->getNumBlocks());
     }
@@ -303,7 +304,7 @@ void RPCConsole::clear()
                 "b { color: #006060; } "
                 );
 
-    message(CMD_REPLY, tr("Welcome to the PPCoin RPC console.<br>"
+    message(CMD_REPLY, tr("Welcome to the " COIN_CLIENT_QT " RPC console.<br>"
                           "Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.<br>"
                           "Type <b>help</b> for an overview of available commands."), true);
 }

@@ -4,6 +4,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "constants.h"
+#include "types.h"
 #include "util.h"
 #include "strlcpy.h"
 #include "version.h"
@@ -72,7 +74,6 @@ bool fDaemon = false;
 bool fServer = false;
 bool fCommandLine = false;
 string strMiscWarning;
-bool fTestNet = false;
 bool fNoListen = false;
 bool fLogTimestamps = false;
 CMedianFilter<int64> vTimeOffsets(200,0);
@@ -777,14 +778,14 @@ void FormatException(char* pszMessage, std::exception* pex, const char* pszThrea
     pszModule[0] = '\0';
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "ppcoin";
+    const char* pszModule = COIN_SLUG;
 #endif
-    if (pex)
-        snprintf(pszMessage, 1000,
-            "EXCEPTION: %s       \n%s       \n%s in %s       \n", typeid(*pex).name(), pex->what(), pszModule, pszThread);
-    else
-        snprintf(pszMessage, 1000,
-            "UNKNOWN EXCEPTION       \n%s in %s       \n", pszModule, pszThread);
+
+    if (pex) {
+        snprintf(pszMessage, 1000, "EXCEPTION: %s       \n%s       \n%s in %s       \n", typeid(*pex).name(), pex->what(), pszModule, pszThread);
+    } else {
+        snprintf(pszMessage, 1000, "UNKNOWN EXCEPTION       \n%s in %s       \n", pszModule, pszThread);
+    }
 }
 
 void LogException(std::exception* pex, const char* pszThread)
@@ -852,12 +853,12 @@ boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
 
-    // Windows: C:\Documents and Settings\username\Application Data\PPCoin
-    // Mac: ~/Library/Application Support/PPCoin
-    // Unix: ~/.ppcoin
+    // Windows: C:\Documents and Settings\username\Application Data\{Coin Name}
+    // Mac: ~/Library/Application Support/{Coin Name}
+    // Unix: ~/.{Coin Slug}
 #ifdef WIN32
     // Windows
-    return MyGetSpecialFolderPath(CSIDL_APPDATA, true) / "PPCoin";
+    return MyGetSpecialFolderPath(CSIDL_APPDATA, true) / COIN_NAME;
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -869,10 +870,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     fs::create_directory(pathRet);
-    return pathRet / "PPCoin";
+    return pathRet / COIN_NAME;
 #else
     // Unix
-    return pathRet / ".ppcoin";
+    return pathRet / "." COIN_SLUG;
 #endif
 #endif
 }
@@ -903,8 +904,6 @@ const boost::filesystem::path &GetDataDir(bool fNetSpecific)
     } else {
         path = GetDefaultDataDir();
     }
-    if (fNetSpecific && GetBoolArg("-testnet", false))
-        path /= "testnet";
 
     fs::create_directory(path);
 
@@ -916,7 +915,7 @@ boost::filesystem::path GetConfigFile()
 {
     namespace fs = boost::filesystem;
 
-    fs::path pathConfigFile(GetArg("-conf", "ppcoin.conf"));
+    fs::path pathConfigFile(GetArg("-conf", COIN_SLUG ".conf"));
     if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir(false) / pathConfigFile;
     return pathConfigFile;
 }
@@ -952,7 +951,7 @@ boost::filesystem::path GetPidFile()
 {
     namespace fs = boost::filesystem;
 
-    fs::path pathPidFile(GetArg("-pid", "ppcoind.pid"));
+    fs::path pathPidFile(GetArg("-pid", COIN_SLUG "d.pid"));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }
@@ -1013,30 +1012,30 @@ void ShrinkDebugFile()
 //  - Median of other nodes's clocks
 //  - The user (asking the user to fix the system clock if the first two disagree)
 //
-static int64 nMockTime = 0;  // For unit testing
+static timestamp_t nMockTime = 0;  // For unit testing
 
-int64 GetTime()
+timestamp_t GetTime()
 {
     if (nMockTime) return nMockTime;
 
     return time(NULL);
 }
 
-void SetMockTime(int64 nMockTimeIn)
+void SetMockTime(timestamp_t nMockTimeIn)
 {
     nMockTime = nMockTimeIn;
 }
 
-static int64 nTimeOffset = 0;
+static timestamp_t nTimeOffset = 0;
 
-int64 GetAdjustedTime()
+timestamp_t GetAdjustedTime()
 {
     return GetTime() + nTimeOffset;
 }
 
-void AddTimeData(const CNetAddr& ip, int64 nTime)
+void AddTimeData(const CNetAddr& ip, timestamp_t nTime)
 {
-    int64 nOffsetSample = nTime - GetTime();
+    timestamp_t nOffsetSample = nTime - GetTime();
 
     // Ignore duplicates
     static set<CNetAddr> setKnown;
@@ -1071,10 +1070,10 @@ void AddTimeData(const CNetAddr& ip, int64 nTime)
                 if (!fMatch)
                 {
                     fDone = true;
-                    string strMessage = _("Warning: Please check that your computer's date and time are correct.  If your clock is wrong PPCoin will not work properly.");
+                    string strMessage = _("Warning: Please check that your computer's date and time are correct. If your clock is wrong, the client will not work properly.");
                     strMiscWarning = strMessage;
                     printf("*** %s\n", strMessage.c_str());
-                    ThreadSafeMessageBox(strMessage+" ", string("PPCoin"), wxOK | wxICON_EXCLAMATION);
+                    ThreadSafeMessageBox(strMessage+" ", string(COIN_NAME), wxOK | wxICON_EXCLAMATION);
                 }
             }
         }
@@ -1116,7 +1115,7 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
     if (!comments.empty())
         ss << "(" << boost::algorithm::join(comments, "; ") << ")";
     ss << "/";
-    ss << "Peercoin:" << FormatVersion(PPCOIN_VERSION);
+    ss << COIN_NAME ":" << FormatVersion(COIN_VERSION);
     ss << "(" << CLIENT_BUILD << ")/";
     return ss.str();
 }
@@ -1124,7 +1123,7 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
 #ifdef WIN32
 boost::filesystem::path static StartupShortcutPath()
 {
-    return MyGetSpecialFolderPath(CSIDL_STARTUP, true) / "PPCoin.lnk";
+    return MyGetSpecialFolderPath(CSIDL_STARTUP, true) / COIN_NAME ".lnk";
 }
 
 bool GetStartOnSystemStartup()
@@ -1205,7 +1204,7 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
-    return GetAutostartDir() / "ppcoin.desktop";
+    return GetAutostartDir() / COIN_SLUG ".desktop";
 }
 
 bool GetStartOnSystemStartup()
@@ -1246,7 +1245,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         // Write a bitcoin.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
-        optionFile << "Name=PPCoin\n";
+        optionFile << "Name=" COIN_NAME "\n";
         optionFile << "Exec=" << pszExePath << " -min\n";
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -1356,7 +1355,7 @@ static void push_lock(void* c, const CLockLocation& locklocation, bool fTry)
 
 static void pop_lock()
 {
-    if (fDebug) 
+    if (fDebug)
     {
         const CLockLocation& locklocation = (*lockstack).rbegin()->second;
         printf("Unlocked: %s\n", locklocation.ToString().c_str());
@@ -1385,4 +1384,3 @@ void runCommand(std::string strCommand)
     if (nErr)
         printf("runCommand error: system(%s) returned %d\n", strCommand.c_str(), nErr);
 }
-

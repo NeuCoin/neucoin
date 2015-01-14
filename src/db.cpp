@@ -219,7 +219,7 @@ bool CDB::Rewrite(const string& strFile, const char* pszSkip)
                 { // surround usage of db with extra {}
                     CDB db(strFile.c_str(), "r");
                     Db* pdbCopy = new Db(&dbenv, 0);
-    
+
                     int ret = pdbCopy->open(NULL,                 // Txn pointer
                                             strFileRes.c_str(),   // Filename
                                             "main",    // Logical db name
@@ -231,7 +231,7 @@ bool CDB::Rewrite(const string& strFile, const char* pszSkip)
                         printf("Cannot create database file %s\n", strFileRes.c_str());
                         fSuccess = false;
                     }
-    
+
                     Dbc* pcursor = db.GetCursor();
                     if (pcursor)
                         while (fSuccess)
@@ -603,7 +603,7 @@ bool CTxDB::LoadBlockIndex()
             pindexNew->nNonce         = diskindex.nNonce;
 
             // Watch for genesis block
-            if (pindexGenesisBlock == NULL && diskindex.GetBlockHash() == hashGenesisBlock)
+            if (pindexGenesisBlock == NULL && diskindex.GetBlockHash() == GENESIS_HASH)
                 pindexGenesisBlock = pindexNew;
 
             if (!pindexNew->CheckIndex())
@@ -816,7 +816,7 @@ bool CAddrDB::LoadAddresses()
         printf("Loaded %i addresses\n", addrman.size());
         return true;
     }
-    
+
     // Read pre-0.6 addr records
 
     vector<CAddress> vAddr;
@@ -864,5 +864,3 @@ bool LoadAddresses()
 {
     return CAddrDB("cr+").LoadAddresses();
 }
-
-

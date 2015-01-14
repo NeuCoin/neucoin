@@ -15,6 +15,8 @@
 #include "base58.h"
 #include "bitcoinrpc.h"
 
+#include "IsValidAmount.h"
+
 #undef printf
 #include <boost/asio.hpp>
 #include <boost/assign/list_of.hpp>
@@ -23,7 +25,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/asio/ssl.hpp> 
+#include <boost/asio/ssl.hpp>
 #include <boost/filesystem/fstream.hpp>
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> SSLStream;
 
@@ -98,7 +100,7 @@ int64 AmountFromValue(const Value& value)
     if (dAmount <= 0.0 || dAmount > MAX_MONEY)
         throw JSONRPCError(-3, "Invalid amount");
     int64 nAmount = roundint64(dAmount * COIN);
-    if (!MoneyRange(nAmount))
+    if (!IsValidAmount(nAmount))
         throw JSONRPCError(-3, "Invalid amount");
     return nAmount;
 }
@@ -238,11 +240,11 @@ void TxToJSON(const CTransaction& tx, Object& txdata)
     {
         Object vin;
 
-        if (txin.prevout.IsNull()) 
+        if (txin.prevout.IsNull())
         {
             vin.push_back(Pair("coinbase", HexStr(txin.scriptSig).c_str()));
         }
-        else 
+        else
         {
             vin.push_back(Pair("txid", txin.prevout.hash.ToString().c_str()));
             vin.push_back(Pair("vout", (int)txin.prevout.n));
@@ -290,127 +292,12 @@ void TxToJSON(const CTransaction& tx, Object& txdata)
 
         vout.push_back(Pair("scriptPubKey",scriptpubkey));
 
-        vouts.push_back(vout);   
-        n++;             
+        vouts.push_back(vout);
+        n++;
     }
     txdata.push_back(Pair("vout", vouts));
 }
 
-/*
-<<<<<<< HEAD
-
-void TxToJSON(const CTransaction& tx, Object& txdata)
-{
-    // tx data
-    txdata.push_back(Pair("txid", tx.GetHash().ToString().c_str()));
-    txdata.push_back(Pair("version", (int)tx.nVersion));
-    txdata.push_back(Pair("locktime", (int)tx.nLockTime));
-    txdata.push_back(Pair("is_coinbase", tx.IsCoinBase()));
-    txdata.push_back(Pair("is_coinstake", tx.IsCoinStake()));
-=======
-    txnouttype type;
-    vector<CTxDestination> addresses;
-    int nRequired;
-
-    if (!ExtractDestinations(txprev.vout[txin.prevout.n].scriptPubKey, type,
-                          addresses, nRequired))
-    {
-        out.push_back(Pair("type", GetTxnOutputType(TX_NONSTANDARD)));
-        return;
-    }
->>>>>>> 1025440... Refactor: split CKeyID/CScriptID/CTxDestination from CBitcoinAddress
-
-    // add inputs
-    Array vins;
-    BOOST_FOREACH(const CTxIn& txin, tx.vin)
-    {
-        Object vin;
-
-<<<<<<< HEAD
-        if (txin.prevout.IsNull()) 
-        {
-            vin.push_back(Pair("coinbase", HexStr(txin.scriptSig).c_str()));
-        }
-        else 
-        {
-            vin.push_back(Pair("txid", txin.prevout.hash.ToString().c_str()));
-            vin.push_back(Pair("vout", (int)txin.prevout.n));
-        }
-
-        vin.push_back(Pair("sequence", (boost::uint64_t)txin.nSequence));
-=======
-    Array a;
-    BOOST_FOREACH(const CTxDestination& addr, addresses)
-        a.push_back(CBitcoinAddress(addr).ToString());
-    out.push_back(Pair("addresses", a));
-}
-
-void
-ScriptPubKeyToJSON(const CScript& scriptPubKey, Object& out)
-{
-    txnouttype type;
-    vector<CTxDestination> addresses;
-    int nRequired;
->>>>>>> 1025440... Refactor: split CKeyID/CScriptID/CTxDestination from CBitcoinAddress
-
-        vins.push_back(vin);
-    }
-    txdata.push_back(Pair("vin", vins));
-
-<<<<<<< HEAD
-    // add outputs
-    Array vouts;
-    int n = 0;
-    BOOST_FOREACH(const CTxOut& txout, tx.vout)
-=======
-    if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired))
->>>>>>> 1025440... Refactor: split CKeyID/CScriptID/CTxDestination from CBitcoinAddress
-    {
-        Object vout;
-
-        std::vector<CBitcoinAddress> addresses;
-        txnouttype txtype;
-        int nRequired;
-
-<<<<<<< HEAD
-        vout.push_back(Pair("value", ValueFromAmount(txout.nValue)));
-        vout.push_back(Pair("n", n));
-=======
-    Array a;
-    BOOST_FOREACH(const CTxDestination& addr, addresses)
-        a.push_back(CBitcoinAddress(addr).ToString());
-    out.push_back(Pair("addresses", a));
-}
->>>>>>> 1025440... Refactor: split CKeyID/CScriptID/CTxDestination from CBitcoinAddress
-
-        Object scriptpubkey;
-
-        scriptpubkey.push_back(Pair("asm", txout.scriptPubKey.ToString()));
-        scriptpubkey.push_back(Pair("hex", HexStr(txout.scriptPubKey.begin(), txout.scriptPubKey.end())));
-
-        if (ExtractAddresses(txout.scriptPubKey, txtype, addresses, nRequired))
-        {
-            scriptpubkey.push_back(Pair("type", GetTxnOutputType(txtype)));
-            scriptpubkey.push_back(Pair("reqSig", nRequired));
-
-            Array addrs;
-            BOOST_FOREACH(const CBitcoinAddress& addr, addresses)
-                addrs.push_back(addr.ToString());
-            scriptpubkey.push_back(Pair("addresses", addrs));
-        }
-        else
-        {
-            scriptpubkey.push_back(Pair("type", GetTxnOutputType(TX_NONSTANDARD)));
-        }
-
-        vout.push_back(Pair("scriptPubKey",scriptpubkey));
-
-        vouts.push_back(vout);   
-        n++;             
-    }
-    txdata.push_back(Pair("vout", vouts));
-}
-*/
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fTxInfo, bool fTxDetails)
 {
     Object result;
@@ -445,7 +332,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fTxI
             BOOST_FOREACH(const CTxOut& txout, tx.vout)
                 txinfo.push_back(txout.ToStringShort());
         }
-        else if (fTxDetails) 
+        else if (fTxDetails)
         {
             Object txdata;
             TxToJSON(tx, txdata);
@@ -521,10 +408,10 @@ Value stop(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "stop\n"
-            "Stop ppcoin server.");
+            "Stop " COIN_NAME " server.");
     // Shutdown will take long enough that the response should get back
     StartShutdown();
-    return "ppcoin server stopping";
+    return COIN_NAME " server stopping";
 }
 
 
@@ -604,7 +491,7 @@ Value getpeerinfo(const Array& params, bool fHelp)
 
         ret.push_back(obj);
     }
-    
+
     return ret;
 }
 
@@ -699,7 +586,7 @@ Value getnetworkghps(const Array& params, bool fHelp)
         }
         pindex = pindex->pnext;
     }
-    double dNetworkGhps = GetDifficulty() * 4.294967296 / nTargetSpacingWork; 
+    double dNetworkGhps = GetDifficulty() * 4.294967296 / nTargetSpacingWork;
     return dNetworkGhps;
 }
 
@@ -724,7 +611,6 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("proxy",         (fUseProxy ? addrProxy.ToStringIPPort() : string())));
     obj.push_back(Pair("ip",            addrSeenByPeer.ToStringIP()));
     obj.push_back(Pair("difficulty",    (double)GetDifficulty()));
-    obj.push_back(Pair("testnet",       fTestNet));
     obj.push_back(Pair("keypoololdest", (boost::int64_t)pwalletMain->GetOldestKeyPoolTime()));
     obj.push_back(Pair("keypoolsize",   pwalletMain->GetKeyPoolSize()));
     obj.push_back(Pair("paytxfee",      ValueFromAmount(nTransactionFee)));
@@ -753,7 +639,6 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("hashespersec",  gethashespersec(params, false)));
     obj.push_back(Pair("networkghps",   getnetworkghps(params, false)));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
-    obj.push_back(Pair("testnet",       fTestNet));
     return obj;
 }
 
@@ -763,7 +648,7 @@ Value getnewaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress [account]\n"
-            "Returns a new ppcoin address for receiving payments.  "
+            "Returns a new " COIN_NAME " address for receiving payments.  "
             "If [account] is specified (recommended), it is added to the address book "
             "so payments received with the address will be credited to [account].");
 
@@ -830,7 +715,7 @@ Value getaccountaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccountaddress <account>\n"
-            "Returns the current ppcoin address for receiving payments to this account.");
+            "Returns the current " COIN_NAME " address for receiving payments to this account.");
 
     // Parse the account first so we don't generate a key if there's an error
     string strAccount = AccountFromValue(params[0]);
@@ -848,12 +733,12 @@ Value setaccount(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
-            "setaccount <ppcoinaddress> <account>\n"
+            "setaccount <address> <account>\n"
             "Sets the account associated with the given address.");
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(-5, "Invalid ppcoin address");
+        throw JSONRPCError(-5, "Invalid " COIN_NAME " address");
 
 
     string strAccount;
@@ -878,12 +763,12 @@ Value getaccount(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "getaccount <ppcoinaddress>\n"
+            "getaccount <address>\n"
             "Returns the account associated with the given address.");
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(-5, "Invalid ppcoin address");
+        throw JSONRPCError(-5, "Invalid coin address");
 
     string strAccount;
     map<CTxDestination, string>::iterator mi = pwalletMain->mapAddressBook.find(address.Get());
@@ -916,7 +801,7 @@ Value getaddressesbyaccount(const Array& params, bool fHelp)
 
 Value settxfee(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() < 1 || params.size() > 1 || AmountFromValue(params[0]) < MIN_TX_FEE)
+    if (fHelp || params.size() < 1 || params.size() > 1 || AmountFromValue(params[0]) < MIN_TX_FEES)
         throw runtime_error(
             "settxfee <amount>\n"
             "<amount> is a real and is rounded to 0.01 (cent)\n"
@@ -931,17 +816,17 @@ Value sendtoaddress(const Array& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 4))
         throw runtime_error(
-            "sendtoaddress <ppcoinaddress> <amount> [comment] [comment-to]\n"
+            "sendtoaddress <address> <amount> [comment] [comment-to]\n"
             "<amount> is a real and is rounded to the nearest 0.000001\n"
             "requires wallet passphrase to be set with walletpassphrase first");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 4))
         throw runtime_error(
-            "sendtoaddress <ppcoinaddress> <amount> [comment] [comment-to]\n"
+            "sendtoaddress <address> <amount> [comment] [comment-to]\n"
             "<amount> is a real and is rounded to the nearest 0.000001");
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(-5, "Invalid ppcoin address");
+        throw JSONRPCError(-5, "Invalid " COIN_NAME " address");
 
     // Amount
     int64 nAmount = AmountFromValue(params[1]);
@@ -969,7 +854,7 @@ Value signmessage(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
         throw runtime_error(
-            "signmessage <ppcoinaddress> <message>\n"
+            "signmessage <address> <message>\n"
             "Sign a message with the private key of an address");
 
     if (pwalletMain->IsLocked())
@@ -1005,7 +890,7 @@ Value verifymessage(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 3)
         throw runtime_error(
-            "verifymessage <ppcoinaddress> <signature> <message>\n"
+            "verifymessage <address> <signature> <message>\n"
             "Verify a signed message");
 
     string strAddress  = params[0].get_str();
@@ -1042,14 +927,14 @@ Value getreceivedbyaddress(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
-            "getreceivedbyaddress <ppcoinaddress> [minconf=1]\n"
-            "Returns the total amount received by <ppcoinaddress> in transactions with at least [minconf] confirmations.");
+            "getreceivedbyaddress <address> [minconf=1]\n"
+            "Returns the total amount received by <address> in transactions with at least [minconf] confirmations.");
 
     // Bitcoin address
     CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
     CScript scriptPubKey;
     if (!address.IsValid())
-        throw JSONRPCError(-5, "Invalid Peercoin address");
+        throw JSONRPCError(-5, "Invalid " COIN_NAME " address");
     scriptPubKey.SetDestination(address.Get());
     if (!IsMine(*pwalletMain,scriptPubKey))
         return (double)0.0;
@@ -1075,7 +960,6 @@ Value getreceivedbyaddress(const Array& params, bool fHelp)
 
     return  ValueFromAmount(nAmount);
 }
-
 
 void GetAccountAddresses(string strAccount, set<CTxDestination>& setAddress)
 {
@@ -1263,18 +1147,18 @@ Value sendfrom(const Array& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() < 3 || params.size() > 6))
         throw runtime_error(
-            "sendfrom <fromaccount> <toppcoinaddress> <amount> [minconf=1] [comment] [comment-to]\n"
+            "sendfrom <from address> <to address> <amount> [minconf=1] [comment] [comment-to]\n"
             "<amount> is a real and is rounded to the nearest 0.000001\n"
             "requires wallet passphrase to be set with walletpassphrase first");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() < 3 || params.size() > 6))
         throw runtime_error(
-            "sendfrom <fromaccount> <toppcoinaddress> <amount> [minconf=1] [comment] [comment-to]\n"
+            "sendfrom <from address> <to address> <amount> [minconf=1] [comment] [comment-to]\n"
             "<amount> is a real and is rounded to the nearest 0.000001");
 
     string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(-5, "Invalid ppcoin address");
+        throw JSONRPCError(-5, "Invalid " COIN_NAME " address");
     int64 nAmount = AmountFromValue(params[2]);
     if (nAmount < MIN_TXOUT_AMOUNT)
         throw JSONRPCError(-101, "Send amount too small");
@@ -1337,7 +1221,7 @@ Value sendmany(const Array& params, bool fHelp)
     {
         CBitcoinAddress address(s.name_);
         if (!address.IsValid())
-            throw JSONRPCError(-5, string("Invalid ppcoin address:")+s.name_);
+            throw JSONRPCError(-5, string("Invalid " COIN_NAME " address:")+s.name_);
 
         if (setAddress.count(address))
             throw JSONRPCError(-8, string("Invalid parameter, duplicated address: ")+s.name_);
@@ -1345,7 +1229,7 @@ Value sendmany(const Array& params, bool fHelp)
 
         CScript scriptPubKey;
         scriptPubKey.SetDestination(address.Get());
-        int64 nAmount = AmountFromValue(s.value_); 
+        int64 nAmount = AmountFromValue(s.value_);
         if (nAmount < MIN_TXOUT_AMOUNT)
             throw JSONRPCError(-101, "Send amount too small");
         totalAmount += nAmount;
@@ -1731,7 +1615,7 @@ Value listtransactions(const Array& params, bool fHelp)
         if (ret.size() >= (nCount+nFrom)) break;
     }
     // ret is newest to oldest
-    
+
     if (nFrom > (int)ret.size())
         nFrom = ret.size();
     if ((nFrom + nCount) > (int)ret.size())
@@ -2112,7 +1996,7 @@ Value encryptwallet(const Array& params, bool fHelp)
     // slack space in .dat files; that is bad if the old data is
     // unencrypted private keys.  So:
     StartShutdown();
-    return "wallet encrypted; ppcoin server stopping, restart to run with encrypted wallet";
+    return "wallet encrypted; " COIN_NAME " server stopping, restart to run with encrypted wallet";
 }
 
 class DescribeAddressVisitor : public boost::static_visitor<Object>
@@ -2154,8 +2038,8 @@ Value validateaddress(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "validateaddress <ppcoinaddress>\n"
-            "Return information about <ppcoinaddress>.");
+            "validateaddress <address>\n"
+            "Return information about <address>.");
 
     CBitcoinAddress address(params[0].get_str());
     bool isValid = address.IsValid();
@@ -2192,10 +2076,10 @@ Value getwork(const Array& params, bool fHelp)
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
 
     if (vNodes.empty())
-        throw JSONRPCError(-9, "PPCoin is not connected!");
+        throw JSONRPCError(-9, COIN_NAME " is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(-10, "PPCoin is downloading blocks...");
+        throw JSONRPCError(-10, COIN_NAME " is downloading blocks...");
 
     typedef map<uint256, pair<CBlock*, CScript> > mapNewBlock_t;
     static mapNewBlock_t mapNewBlock;
@@ -2225,6 +2109,7 @@ Value getwork(const Array& params, bool fHelp)
 
             // Create new block
             pblock = CreateNewBlock(*pMiningKey, pwalletMain);
+
             if (!pblock)
                 throw JSONRPCError(-7, "Out of memory");
             vNewBlock.push_back(pblock);
@@ -2262,6 +2147,7 @@ Value getwork(const Array& params, bool fHelp)
         vector<unsigned char> vchData = ParseHex(params[0].get_str());
         if (vchData.size() != 128)
             throw JSONRPCError(-8, "Invalid parameter");
+
         CBlock* pdata = (CBlock*)&vchData[0];
 
         // Byte reverse
@@ -2325,10 +2211,10 @@ Value getblocktemplate(const Array& params, bool fHelp)
 
     {
         if (vNodes.empty())
-            throw JSONRPCError(-9, "PPCoin is not connected!");
+            throw JSONRPCError(-9, COIN_NAME " is not connected!");
 
         if (IsInitialBlockDownload())
-            throw JSONRPCError(-10, "PPCoin is downloading blocks...");
+            throw JSONRPCError(-10, COIN_NAME " is downloading blocks...");
 
         // Update block
         static unsigned int nTransactionsUpdatedLast;
@@ -2452,6 +2338,7 @@ Value submitblock(const Array& params, bool fHelp)
     vector<unsigned char> blockData(ParseHex(params[0].get_str()));
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
     CBlock block;
+
     try {
         ssBlock >> block;
     }
@@ -2525,11 +2412,12 @@ Value getcheckpoint(const Array& params, bool fHelp)
 
     Object result;
     CBlockIndex* pindexCheckpoint;
-    
+
     result.push_back(Pair("synccheckpoint", Checkpoints::hashSyncCheckpoint.ToString().c_str()));
-    pindexCheckpoint = mapBlockIndex[Checkpoints::hashSyncCheckpoint];        
+    pindexCheckpoint = mapBlockIndex[Checkpoints::hashSyncCheckpoint];
     result.push_back(Pair("height", pindexCheckpoint->nHeight));
     result.push_back(Pair("timestamp", DateTimeStrFormat(pindexCheckpoint->GetBlockTime()).c_str()));
+
     if (mapArgs.count("-checkpointkey"))
         result.push_back(Pair("checkpointmaster", true));
 
@@ -2636,7 +2524,7 @@ Value makekeypair(const Array& params, bool fHelp)
     string strPrefix = "";
     if (params.size() > 0)
         strPrefix = params[0].get_str();
- 
+
     CKey key;
     int nCount = 0;
     do
@@ -2658,7 +2546,7 @@ Value makekeypair(const Array& params, bool fHelp)
 extern CCriticalSection cs_mapAlerts;
 extern map<uint256, CAlert> mapAlerts;
 
-// ppcoin: send alert.  
+// ppcoin: send alert.
 // There is a known deadlock situation with ThreadMessageHandler
 // ThreadMessageHandler: holds cs_vSend and acquiring cs_main in SendMessages()
 // ThreadRPCServer: holds cs_main and acquiring cs_vSend in alert.RelayTo()/PushMessage()/BeginMessage()
@@ -2693,13 +2581,13 @@ Value sendalert(const Array& params, bool fHelp)
     CDataStream sMsg(SER_NETWORK, PROTOCOL_VERSION);
     sMsg << (CUnsignedAlert)alert;
     alert.vchMsg = vector<unsigned char>(sMsg.begin(), sMsg.end());
-    
+
     vector<unsigned char> vchPrivKey = ParseHex(params[1].get_str());
     key.SetPrivKey(CPrivKey(vchPrivKey.begin(), vchPrivKey.end())); // if key is not correct openssl may crash
     if (!key.Sign(Hash(alert.vchMsg.begin(), alert.vchMsg.end()), alert.vchSig))
         throw runtime_error(
-            "Unable to sign alert, check private key?\n");  
-    if(!alert.ProcessAlert()) 
+            "Unable to sign alert, check private key?\n");
+    if(!alert.ProcessAlert())
         throw runtime_error(
             "Failed to process alert.\n");
     // Relay alert
@@ -3290,7 +3178,7 @@ string HTTPPost(const string& strMsg, const map<string,string>& mapRequestHeader
 {
     ostringstream s;
     s << "POST / HTTP/1.1\r\n"
-      << "User-Agent: ppcoin-json-rpc/" << FormatFullVersion() << "\r\n"
+      << "User-Agent: " COIN_SLUG "-json-rpc/" << FormatFullVersion() << "\r\n"
       << "Host: 127.0.0.1\r\n"
       << "Content-Type: application/json\r\n"
       << "Content-Length: " << strMsg.size() << "\r\n"
@@ -3321,7 +3209,7 @@ static string HTTPReply(int nStatus, const string& strMsg)
     if (nStatus == 401)
         return strprintf("HTTP/1.0 401 Authorization Required\r\n"
             "Date: %s\r\n"
-            "Server: ppcoin-json-rpc/%s\r\n"
+            "Server: " COIN_SLUG "-json-rpc/%s\r\n"
             "WWW-Authenticate: Basic realm=\"jsonrpc\"\r\n"
             "Content-Type: text/html\r\n"
             "Content-Length: 296\r\n"
@@ -3348,7 +3236,7 @@ static string HTTPReply(int nStatus, const string& strMsg)
             "Connection: close\r\n"
             "Content-Length: %d\r\n"
             "Content-Type: application/json\r\n"
-            "Server: ppcoin-json-rpc/%s\r\n"
+            "Server: " COIN_SLUG "-json-rpc/%s\r\n"
             "\r\n"
             "%s",
         nStatus,
@@ -3569,7 +3457,7 @@ void ThreadRPCServer2(void* parg)
     {
         unsigned char rand_pwd[32];
         RAND_bytes(rand_pwd, 32);
-        string strWhatAmI = "To use ppcoind";
+        string strWhatAmI = "To use " COIN_CLIENT;
         if (mapArgs.count("-server"))
             strWhatAmI = strprintf(_("To use the %s option"), "\"-server\"");
         else if (mapArgs.count("-daemon"))
@@ -3577,7 +3465,7 @@ void ThreadRPCServer2(void* parg)
         ThreadSafeMessageBox(strprintf(
             _("%s, you must set a rpcpassword in the configuration file:\n %s\n"
               "It is recommended you use the following random password:\n"
-              "rpcuser=bitcoinrpc\n"
+              "rpcuser=rpcmaster\n"
               "rpcpassword=%s\n"
               "(you do not need to remember this password)\n"
               "If the file does not exist, create it with owner-readable-only file permissions.\n"),
@@ -3593,7 +3481,7 @@ void ThreadRPCServer2(void* parg)
     asio::ip::address bindAddress = mapArgs.count("-rpcallowip") ? asio::ip::address_v4::any() : asio::ip::address_v4::loopback();
 
     asio::io_service io_service;
-    ip::tcp::endpoint endpoint(bindAddress, GetArg("-rpcport", fTestNet? TESTNET_RPC_PORT : RPC_PORT));
+    ip::tcp::endpoint endpoint(bindAddress, GetArg("-rpcport", RPC_PORT));
     ip::tcp::acceptor acceptor(io_service);
     try
     {
@@ -3777,7 +3665,8 @@ Object CallRPC(const string& strMethod, const Array& params)
     SSLStream sslStream(io_service, context);
     SSLIOStreamDevice d(sslStream, fUseSSL);
     iostreams::stream<SSLIOStreamDevice> stream(d);
-    if (!d.connect(GetArg("-rpcconnect", "127.0.0.1"), GetArg("-rpcport", CBigNum(fTestNet? TESTNET_RPC_PORT : RPC_PORT).ToString().c_str())))
+
+    if (!d.connect(GetArg("-rpcconnect", "127.0.0.1"), GetArg("-rpcport", CBigNum(RPC_PORT).ToString().c_str())))
         throw runtime_error("couldn't connect to server");
 
     // HTTP basic authentication

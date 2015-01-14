@@ -1,0 +1,27 @@
+TARGET = neucoind
+
+MAKEFILE = Makefile.osx
+
+BREW_PATH = /usr/local/opt
+
+BOOST_SUFFIX = -mt
+
+LDFLAGS += \
+  -L $(BREW_PATH)/boost/lib \
+  -L $(BREW_PATH)/berkeley-db/lib \
+  -L $(BREW_PATH)/openssl/lib \
+  -L $(BREW_PATH)/qt5/lib
+
+CPPFLAGS += \
+  -I $(BREW_PATH)/boost/include \
+  -I $(BREW_PATH)/berkeley-db/include \
+  -I $(BREW_PATH)/openssl/include \
+  -I $(BREW_PATH)/qt5/include/QtCore \
+  -I $(BREW_PATH)/qt5/include/QtGui \
+  -I $(BREW_PATH)/qt5/include/QtWidgets \
+  -I $(BREW_PATH)/qt5/include
+
+CPPFLAGS += \
+  -DMAC_OSX
+
+include Makefile.common

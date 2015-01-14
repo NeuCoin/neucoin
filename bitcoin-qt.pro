@@ -1,17 +1,17 @@
 TEMPLATE = app
-TARGET = ppcoin-qt
+TARGET = neucoin-qt
 VERSION = 0.6.3.0
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 
-# for boost 1.37, add -mt to the boost libraries 
+# for boost 1.37, add -mt to the boost libraries
 # use: qmake BOOST_LIB_SUFFIX=-mt
 # for boost thread win32 with _win32 sufix
 # use: BOOST_THREAD_LIB_SUFFIX=_win32-...
 # or when linking against a specific BerkelyDB version: BDB_LIB_SUFFIX=-4.8
 
-# Dependency library locations can be customized with BOOST_INCLUDE_PATH, 
+# Dependency library locations can be customized with BOOST_INCLUDE_PATH,
 #    BOOST_LIB_PATH, BDB_INCLUDE_PATH, BDB_LIB_PATH
 #    OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
 
@@ -108,6 +108,12 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
+    src/constants.h \
+    src/CheckClientSanity.h \
+    src/GetNextTargetRequired.h \
+    src/GetProofOfStakeReward.h \
+    src/GetProofOfWorkReward.h \
+    src/IsValidAmount.h \
     src/addrman.h \
     src/base58.h \
     src/bignum.h \
@@ -176,6 +182,11 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/aboutdialog.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
+    src/CheckClientSanity.cpp \
+    src/GetNextTargetRequired.cpp \
+    src/GetProofOfStakeReward.cpp \
+    src/GetProofOfWorkReward.cpp \
+    src/IsValidAmount.cpp \
     src/version.cpp \
     src/util.cpp \
     src/netbase.cpp \

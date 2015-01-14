@@ -8,36 +8,34 @@
 #include <string>
 
 //
-// client versioning
+// versioning
 //
 
-// These need to be macro's, as version.cpp's voodoo requires it
-#define CLIENT_VERSION_MAJOR       0
-#define CLIENT_VERSION_MINOR       6
-#define CLIENT_VERSION_REVISION    3
-#define CLIENT_VERSION_BUILD       0
+#define COIN_VERSION_MAJOR      0
+#define COIN_VERSION_MINOR      4
+#define COIN_VERSION_REVISION   0
+#define COIN_VERSION_BUILD      0
 
-static const int CLIENT_VERSION =
-                           1000000 * CLIENT_VERSION_MAJOR
-                         +   10000 * CLIENT_VERSION_MINOR 
-                         +     100 * CLIENT_VERSION_REVISION
-                         +       1 * CLIENT_VERSION_BUILD;
+#define CLIENT_VERSION_MAJOR    0
+#define CLIENT_VERSION_MINOR    6
+#define CLIENT_VERSION_REVISION 3
+#define CLIENT_VERSION_BUILD    0
 
 extern const std::string CLIENT_NAME;
 extern const std::string CLIENT_BUILD;
 extern const std::string CLIENT_DATE;
 
-// ppcoin version - intended for display purpose ONLY
-#define PPCOIN_VERSION_MAJOR       0
-#define PPCOIN_VERSION_MINOR       4
-#define PPCOIN_VERSION_REVISION    0
-#define PPCOIN_VERSION_BUILD       0
+static const int CLIENT_VERSION =
+                           1000000 * CLIENT_VERSION_MAJOR
+                         +   10000 * CLIENT_VERSION_MINOR
+                         +     100 * CLIENT_VERSION_REVISION
+                         +       1 * CLIENT_VERSION_BUILD;
 
-static const int PPCOIN_VERSION =
-                           1000000 * PPCOIN_VERSION_MAJOR
-                         +   10000 * PPCOIN_VERSION_MINOR
-                         +     100 * PPCOIN_VERSION_REVISION
-                         +       1 * PPCOIN_VERSION_BUILD;
+static const int COIN_VERSION =
+                           1000000 * COIN_VERSION_MAJOR
+                         +   10000 * COIN_VERSION_MINOR
+                         +     100 * COIN_VERSION_REVISION
+                         +       1 * COIN_VERSION_BUILD;
 
 //
 // network protocol versioning

@@ -59,11 +59,6 @@ void ClientModel::update()
     cachedStatusBar = newStatusBar;
 }
 
-bool ClientModel::isTestNet() const
-{
-    return fTestNet;
-}
-
 bool ClientModel::inInitialBlockDownload() const
 {
     return IsInitialBlockDownload();

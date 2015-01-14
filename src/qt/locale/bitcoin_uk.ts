@@ -4,24 +4,24 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="14"/>
-        <source>About PPCoin</source>
-        <translation>Про PPCoin</translation>
+        <source>About NeuCoin</source>
+        <translation>Про NeuCoin</translation>
     </message>
     <message>
         <location filename="../forms/aboutdialog.ui" line="53"/>
-        <source>&lt;b&gt;PPCoin&lt;/b&gt; version</source>
-        <translation>Версія &lt;b&gt;PPCoin&apos;a&lt;b&gt;</translation>
+        <source>&lt;b&gt;NeuCoin&lt;/b&gt; version</source>
+        <translation>Версія &lt;b&gt;NeuCoin&apos;a&lt;b&gt;</translation>
     </message>
     <message>
         <location filename="../forms/aboutdialog.ui" line="85"/>
-        <source>Copyright © 2011-2013 PPCoin Developers
+        <source>Copyright © 2011-2013 NeuCoin Developers
 
 This is experimental software.
 
 Distributed under the MIT/X11 software license, see the accompanying file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/) and cryptographic software written by Eric Young (eay@cryptsoft.com) and UPnP software written by Thomas Bernard.</source>
-        <translation>Авторське право © 2011-2013 Розробники PPCoin
+        <translation>Авторське право © 2011-2013 Розробники NeuCoin
 
 Це програмне забезпечення є експериментальним.
 
@@ -39,7 +39,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location filename="../forms/addressbookpage.ui" line="20"/>
-        <source>These are your PPCoin addresses for receiving payments.  You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <source>These are your NeuCoin addresses for receiving payments.  You may want to give a different one to each sender so you can keep track of who is paying you.</source>
         <translation>Це ваші адреси для отримання платежів. Ви можете давати різні адреси різним людям, таким чином маючи можливість відслідкувати хто конкретно і скільки вам заплатив. </translation>
     </message>
     <message>
@@ -226,7 +226,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="102"/>
-        <source>WARNING: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PPCoinS&lt;/b&gt;!
+        <source>WARNING: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR NeuCoinS&lt;/b&gt;!
 Are you sure you wish to encrypt your wallet?</source>
         <translation>УВАГА: Якщо ви зашифруєте гаманець і забудете пароль, ви &lt;b&gt;ВТРАТИТЕ ВСІ СВОЇ БІТКОІНИ&lt;/b&gt;!
 Ви дійсно хочете зашифрувати свій гаманець?</translation>
@@ -239,7 +239,7 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="112"/>
-        <source>PPCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your PPCoins from being stolen by malware infecting your computer.</source>
+        <source>NeuCoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your NeuCoins from being stolen by malware infecting your computer.</source>
         <translation>Біткоін-клієнт буде закрито для завершення процесу шифрування. Пам’ятайте, що шифрування гаманця не може повністю захистити ваші біткоіни від кражі, у випадку якщо ваш комп’ютер буде інфіковано шкідливими програмами.</translation>
     </message>
     <message>
@@ -291,10 +291,10 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
 </context>
 <context>
-    <name>PPCoinGUI</name>
+    <name>NeuCoinGUI</name>
     <message>
         <location filename="../bitcoingui.cpp" line="69"/>
-        <source>PPCoin Wallet</source>
+        <source>NeuCoin Wallet</source>
         <translation>Гаманець</translation>
     </message>
     <message>
@@ -355,7 +355,7 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="201"/>
-        <source>Send coins to a PPCoin address</source>
+        <source>Send coins to a NeuCoin address</source>
         <translation>Відправити монети на вказану адресу</translation>
     </message>
     <message>
@@ -385,8 +385,8 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="231"/>
-        <source>Show information about PPCoin</source>
-        <translation>Показати інформацію про PPCoin</translation>
+        <source>Show information about NeuCoin</source>
+        <translation>Показати інформацію про NeuCoin</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="233"/>
@@ -405,17 +405,17 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="237"/>
-        <source>Modify configuration options for PPCoin</source>
+        <source>Modify configuration options for NeuCoin</source>
         <translation>Редагувати параметри</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="239"/>
-        <source>Open &amp;PPCoin</source>
+        <source>Open &amp;NeuCoin</source>
         <translation>Показати &amp;гаманець</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="240"/>
-        <source>Show the PPCoin window</source>
+        <source>Show the NeuCoin window</source>
         <translation>Показати вікно гаманця</translation>
     </message>
     <message>
@@ -484,18 +484,13 @@ Are you sure you wish to encrypt your wallet?</source>
         <translation>Панель дій</translation>
     </message>
     <message>
-        <location filename="../bitcoingui.cpp" line="317"/>
-        <source>[testnet]</source>
-        <translation>[тестова мережа]</translation>
-    </message>
-    <message>
         <location filename="../bitcoingui.cpp" line="407"/>
-        <source>PPCoin-qt</source>
-        <translation>PPCoin-qt</translation>
+        <source>NeuCoin-qt</source>
+        <translation>NeuCoin-qt</translation>
     </message>
     <message numerus="yes">
         <location filename="../bitcoingui.cpp" line="449"/>
-        <source>%n active connection(s) to PPCoin network</source>
+        <source>%n active connection(s) to NeuCoin network</source>
         <translation><numerusform>%n активне з’єднання з мережею</numerusform><numerusform>%n активні з’єднання з мережею</numerusform><numerusform>%n активних з’єднань з мережею</numerusform></translation>
     </message>
     <message>
@@ -679,8 +674,8 @@ Address: %4
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="96"/>
-        <source>The entered address &quot;%1&quot; is not a valid PPCoin address.</source>
-        <translation>Введена адреса «%1» не є коректною адресою в мережі PPCoin.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid NeuCoin address.</source>
+        <translation>Введена адреса «%1» не є коректною адресою в мережі NeuCoin.</translation>
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="101"/>
@@ -697,12 +692,12 @@ Address: %4
     <name>MainOptionsPage</name>
     <message>
         <location filename="../optionsdialog.cpp" line="170"/>
-        <source>&amp;Start PPCoin on window system startup</source>
+        <source>&amp;Start NeuCoin on window system startup</source>
         <translation>&amp;Запускати гаманець при вході в систему</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="171"/>
-        <source>Automatically start PPCoin after the computer is turned on</source>
+        <source>Automatically start NeuCoin after the computer is turned on</source>
         <translation>Автоматично запускати гаманець при вмиканні комп’ютера</translation>
     </message>
     <message>
@@ -722,7 +717,7 @@ Address: %4
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="181"/>
-        <source>Automatically open the PPCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the NeuCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>Автоматично відкривати порт для клієнту біткоін на роутері. Працює лише якщо ваш роутер підтримує UPnP і ця функція увімкнена.</translation>
     </message>
     <message>
@@ -743,7 +738,7 @@ Address: %4
     <message>
         <location filename="../optionsdialog.cpp" line="191"/>
         <source>Connect to the Bitcon network through a SOCKS4 proxy (e.g. when connecting through Tor)</source>
-        <translation>Підключатись до мережі PPCoin через SOCKS4-проксі (наприклад при використанні Tor) </translation>
+        <translation>Підключатись до мережі NeuCoin через SOCKS4-проксі (наприклад при використанні Tor) </translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="196"/>
@@ -858,7 +853,7 @@ Address: %4
     <message>
         <location filename="../messagepage.cpp" line="74"/>
         <source>%1 is not a valid address.</source>
-        <translation>&quot;%1&quot; не є коректною адресою в мережі PPCoin.</translation>
+        <translation>&quot;%1&quot; не є коректною адресою в мережі NeuCoin.</translation>
     </message>
     <message>
         <location filename="../messagepage.cpp" line="89"/>
@@ -1183,8 +1178,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="25"/>
-        <source>Enter a PPCoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</source>
-        <translation>Введіть адресу PPCoin (наприклад 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</translation>
+        <source>Enter a NeuCoin address (e.g. 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</source>
+        <translation>Введіть адресу NeuCoin (наприклад 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L)</translation>
     </message>
 </context>
 <context>
@@ -1632,10 +1627,10 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>PPCoin-core</name>
+    <name>NeuCoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="3"/>
-        <source>PPCoin version</source>
+        <source>NeuCoin version</source>
         <translation>Версія</translation>
     </message>
     <message>
@@ -1645,7 +1640,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="5"/>
-        <source>Send command to -server or ppcoind</source>
+        <source>Send command to -server or neucoind</source>
         <translation>Відправити команду серверу -server чи демону
 </translation>
     </message>
@@ -1669,14 +1664,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="9"/>
-        <source>Specify configuration file (default: PPCoin.conf)</source>
-        <translation>Вкажіть файл конфігурації (за промовчуванням: PPCoin.conf)
+        <source>Specify configuration file (default: NeuCoin.conf)</source>
+        <translation>Вкажіть файл конфігурації (за промовчуванням: NeuCoin.conf)
 </translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="10"/>
-        <source>Specify pid file (default: ppcoind.pid)</source>
-        <translation>Вкажіть pid-файл (за промовчуванням: ppcoind.pid)
+        <source>Specify pid file (default: neucoind.pid)</source>
+        <translation>Вкажіть pid-файл (за промовчуванням: neucoind.pid)
 </translation>
     </message>
     <message>
@@ -1723,8 +1718,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="18"/>
-        <source>Listen for connections on &lt;port&gt; (default: 8333 or testnet: 18333)</source>
-        <translation>Чекати на з&apos;єднання на порту (по замовченню 8333 або тестова мережа 18333)</translation>
+        <source>Listen for connections on &lt;port&gt; (default: 8333)</source>
+        <translation>Чекати на з&apos;єднання на порту (по замовченню 8333)</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="19"/>
@@ -1874,9 +1869,9 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../bitcoinstrings.cpp" line="47"/>
         <source>
-SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
+SSL options: (see the NeuCoin Wiki for SSL setup instructions)</source>
         <translation>
-Параметри SSL: (див. PPCoin Wiki)
+Параметри SSL: (див. NeuCoin Wiki)
 </translation>
     </message>
     <message>
@@ -1911,7 +1906,7 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="57"/>
-        <source>Cannot obtain a lock on data directory %s.  PPCoin is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s.  NeuCoin is probably already running.</source>
         <translation>Неможливо встановити блокування на робочий каталог %s.  Можливо, гаманець вже запущено.</translation>
     </message>
     <message>
@@ -1936,12 +1931,12 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="66"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of PPCoin</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of NeuCoin</source>
         <translation>Помилка при завантаженні wallet.dat: Гаманець потребує новішої версії Біткоін-клієнта</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="67"/>
-        <source>Wallet needed to be rewritten: restart PPCoin to complete</source>
+        <source>Wallet needed to be rewritten: restart NeuCoin to complete</source>
         <translation>Потрібно перезаписати гаманець: перезапустіть Біткоін-клієнт для завершення</translation>
     </message>
     <message>
@@ -1996,13 +1991,13 @@ SSL options: (see the PPCoin Wiki for SSL setup instructions)</source>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="78"/>
-        <source>Unable to bind to port %d on this computer.  PPCoin is probably already running.</source>
+        <source>Unable to bind to port %d on this computer.  NeuCoin is probably already running.</source>
         <translation>Неможливо прив’язати до порту %d на цьому комп’ютері.  Молживо гаманець вже запущено.</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="81"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct.  If your clock is wrong PPCoin will not work properly.</source>
-        <translation>Увага: будь ласка, перевірте дату і час на свому комп’ютері.  Якщо ваш годинник йде неправильно, PPCoin може працювати некоректно.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct.  If your clock is wrong NeuCoin will not work properly.</source>
+        <translation>Увага: будь ласка, перевірте дату і час на свому комп’ютері.  Якщо ваш годинник йде неправильно, NeuCoin може працювати некоректно.</translation>
     </message>
     <message>
         <location filename="../bitcoinstrings.cpp" line="84"/>

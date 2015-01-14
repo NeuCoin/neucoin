@@ -269,7 +269,12 @@ bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout)
         char* pszSocks4 = pszSocks4IP;
         int nSize = sizeof(pszSocks4IP);
 
+#ifdef MSG_NOSIGNAL
         int ret = send(hSocket, pszSocks4, nSize, MSG_NOSIGNAL);
+#else
+        int ret = send(hSocket, pszSocks4, nSize, SO_NOSIGPIPE);
+#endif
+
         if (ret != nSize)
         {
             closesocket(hSocket);

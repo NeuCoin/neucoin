@@ -1,30 +1,11 @@
-src/*.exe
-src/ppcoin
-src/ppcoind
-src/test_ppcoin
-src/build.h
-.*.swp
-*.*~*
-*.bak
-*.rej
-*.orig
 *.o
-*.patch
-.ppcoin
-#compilation and Qt preprocessor part
-*.qm
-Makefile
-ppcoin-qt
-#resources cpp
-qrc_*.cpp
-#qt creator
-*.pro.user
-#mac specific
+*.d
+
+*~
 .DS_Store
-build
-*.plist
-*.xcodeproj
-PortIndex*
-dist
-*.app
-*.dmg
+
+/build/
+/src/qt/locale/*.qm
+/src/neucoind
+/qrc_bitcoin.cpp
+/neucoin-qt

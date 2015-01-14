@@ -1,21 +1,23 @@
-#include "guiutil.h"
-#include "bitcoinaddressvalidator.h"
-#include "walletmodel.h"
-#include "bitcoinunits.h"
-
-#include <QString>
-#include <QDateTime>
-#include <QDoubleValidator>
-#include <QFont>
-#include <QLineEdit>
-#include <QUrl>
-#include <QTextDocument> // For Qt::escape
 #include <QAbstractItemView>
 #include <QApplication>
 #include <QClipboard>
-#include <QFileDialog>
+#include <QDateTime>
 #include <QDesktopServices>
+#include <QDoubleValidator>
+#include <QFileDialog>
+#include <QFont>
+#include <QLineEdit>
+#include <QString>
+#include <QTextDocument>
 #include <QThread>
+#include <QUrl>
+
+#include "../constants.h"
+
+#include "bitcoinaddressvalidator.h"
+#include "bitcoinunits.h"
+#include "guiutil.h"
+#include "walletmodel.h"
 
 namespace GUIUtil {
 
@@ -54,7 +56,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    if(uri.scheme() != QString("ppcoin"))
+    if(uri.scheme() != QString(COIN_SCHEME))
         return false;
 
     SendCoinsRecipient rv;
@@ -103,9 +105,9 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lowercase it (and thus invalidate the address).
-    if(uri.startsWith("ppcoin://"))
+    if(uri.startsWith(COIN_SCHEME "://"))
     {
-        uri.replace(0, 9, "ppcoin:");
+        uri.replace(0, sizeof(COIN_SCHEME) + 3, COIN_SCHEME ":");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -215,4 +217,3 @@ bool isObscured(QWidget *w)
 }
 
 } // namespace GUIUtil
-

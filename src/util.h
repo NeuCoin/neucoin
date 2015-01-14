@@ -32,13 +32,11 @@ typedef int pid_t; /* define for windows compatiblity */
 #include <openssl/sha.h>
 #include <openssl/ripemd.h>
 
+#include "types.h"
 #include "netbase.h" // for AddTimeData
 
 typedef long long  int64;
 typedef unsigned long long  uint64;
-
-static const int64 COIN = 1000000;
-static const int64 CENT = 10000;
 
 #define loop                for (;;)
 #define BEGIN(a)            ((char*)&(a))
@@ -129,7 +127,6 @@ extern bool fDaemon;
 extern bool fServer;
 extern bool fCommandLine;
 extern std::string strMiscWarning;
-extern bool fTestNet;
 extern bool fNoListen;
 extern bool fLogTimestamps;
 
@@ -176,12 +173,12 @@ void ShrinkDebugFile();
 int GetRandInt(int nMax);
 uint64 GetRand(uint64 nMax);
 uint256 GetRandHash();
-int64 GetTime();
-void SetMockTime(int64 nMockTimeIn);
-int64 GetAdjustedTime();
+timestamp_t GetTime();
+void SetMockTime(timestamp_t nMockTimeIn);
+timestamp_t GetAdjustedTime();
 std::string FormatFullVersion();
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments);
-void AddTimeData(const CNetAddr& ip, int64 nTime);
+void AddTimeData(const CNetAddr& ip, timestamp_t nTime);
 void runCommand(std::string strCommand);
 
 
@@ -608,7 +605,7 @@ inline uint160 Hash160(const std::vector<unsigned char>& vch)
 }
 
 
-/** Median filter over a stream of values. 
+/** Median filter over a stream of values.
  * Returns the median of the last N numbers
  */
 template <typename T> class CMedianFilter
@@ -625,7 +622,7 @@ public:
         vValues.push_back(initial_value);
         vSorted = vValues;
     }
-    
+
     void input(T value)
     {
         if(vValues.size() == nSize)
@@ -757,4 +754,3 @@ inline uint32_t ByteReverse(uint32_t value)
 }
 
 #endif
-
