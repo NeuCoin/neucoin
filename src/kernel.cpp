@@ -9,19 +9,6 @@
 
 using namespace std;
 
-// Protocol switch time of v0.3 kernel protocol
-unsigned int nProtocolV03SwitchTime = 1363800000;
-
-// Protocol switch time of v0.4 kernel protocol
-unsigned int nProtocolV04SwitchTime = 1399300000;
-
-// TxDB upgrade time for v0.4 protocol
-// Note: v0.4 upgrade does not require block chain re-download. However,
-//       user must upgrade before the protocol switch deadline, otherwise
-//       re-download of blockchain is required. The timestamp of upgrade
-//       is recorded in transaction database to alert user of the requirement.
-unsigned int nProtocolV04UpgradeTime = 0;
-
 // Modifier interval: time to elapse before new modifier is computed
 // Set to 6-hour for production network and 20-minute for test network
 unsigned int nModifierInterval = MODIFIER_INTERVAL;
@@ -34,18 +21,6 @@ static std::map<int, unsigned int> mapStakeModifierCheckpoints =
     ( 30583, 0xdc7bf136u )
     ( 99999, 0xf555cfd2u )
     ;
-
-// Whether the given coinstake is subject to new v0.3 protocol
-bool IsProtocolV03(unsigned int nTimeCoinStake)
-{
-    return (nTimeCoinStake >= nProtocolV03SwitchTime);
-}
-
-// Whether the given block is subject to new v0.4 protocol
-bool IsProtocolV04(unsigned int nTimeBlock)
-{
-    return (nTimeBlock >= nProtocolV04SwitchTime);
-}
 
 // Get the last stake modifier and its generation time from a given block
 static bool GetLastStakeModifier(const CBlockIndex* pindex, uint64& nStakeModifier, int64& nModifierTime)
@@ -169,21 +144,11 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexCurrent, uint64& nStakeMo
     if (nModifierTime / nModifierInterval >= pindexCurrent->GetBlockTime() / nModifierInterval)
     {
         // v0.4+ requires current block timestamp also be in a different modifier interval
-        if (IsProtocolV04(pindexCurrent->nTime))
+        if (fDebug)
         {
-            if (fDebug)
-            {
-                printf("ComputeNextStakeModifier: (v0.4+) no new interval keep current modifier: pindexCurrent nHeight=%d nTime=%u\n", pindexCurrent->nHeight, (unsigned int)pindexCurrent->GetBlockTime());
-            }
-            return true;
+            printf("ComputeNextStakeModifier: (v0.4+) no new interval keep current modifier: pindexCurrent nHeight=%d nTime=%u\n", pindexCurrent->nHeight, (unsigned int)pindexCurrent->GetBlockTime());
         }
-        else
-        {
-            if (fDebug)
-            {
-                printf("ComputeNextStakeModifier: v0.3 modifier at block %s not meeting v0.4+ protocol: pindexCurrent nHeight=%d nTime=%u\n", pindexCurrent->GetBlockHash().ToString().c_str(), pindexCurrent->nHeight, (unsigned int)pindexCurrent->GetBlockTime());
-            }
-        }
+        return true;
     }
 
     // Sort candidate blocks by timestamp
@@ -312,17 +277,16 @@ bool CheckStakeKernelHash(const CBlockIndex * pindexPrev, unsigned int nBits, co
     hashProofOfStake = Hash(ss.begin(), ss.end());
     if (fPrintProofOfStake)
     {
-        if (IsProtocolV03(nTimeTx))
-            printf("CheckStakeKernelHash() : using modifier 0x%016"PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
-                nStakeModifier, nStakeModifierHeight,
-                DateTimeStrFormat(nStakeModifierTime).c_str(),
-                mapBlockIndex[blockFrom.GetHash()]->nHeight,
-                DateTimeStrFormat(blockFrom.GetBlockTime()).c_str());
+        printf("CheckStakeKernelHash() : using modifier 0x%016"PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
+               nStakeModifier, nStakeModifierHeight,
+               DateTimeStrFormat(nStakeModifierTime).c_str(),
+               mapBlockIndex[blockFrom.GetHash()]->nHeight,
+               DateTimeStrFormat(blockFrom.GetBlockTime()).c_str());
         printf("CheckStakeKernelHash() : check protocol=%s modifier=0x%016"PRI64x" nTimeBlockFrom=%u nTxPrevOffset=%u nTimeTxPrev=%u nPrevout=%u nTimeTx=%u hashProof=%s\n",
-            IsProtocolV03(nTimeTx)? "0.3" : "0.2",
-            IsProtocolV03(nTimeTx)? nStakeModifier : (uint64) nBits,
-            nTimeBlockFrom, nTxPrevOffset, txPrev.nTime, prevout.n, nTimeTx,
-            hashProofOfStake.ToString().c_str());
+               "0.3",
+               nStakeModifier,
+               nTimeBlockFrom, nTxPrevOffset, txPrev.nTime, prevout.n, nTimeTx,
+               hashProofOfStake.ToString().c_str());
     }
 
     // Now check if proof-of-stake hash meets target protocol
@@ -331,17 +295,16 @@ bool CheckStakeKernelHash(const CBlockIndex * pindexPrev, unsigned int nBits, co
 
     if (fDebug && !fPrintProofOfStake)
     {
-        if (IsProtocolV03(nTimeTx))
-            printf("CheckStakeKernelHash() : using modifier 0x%016"PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
-                nStakeModifier, nStakeModifierHeight,
-                DateTimeStrFormat(nStakeModifierTime).c_str(),
-                mapBlockIndex[blockFrom.GetHash()]->nHeight,
-                DateTimeStrFormat(blockFrom.GetBlockTime()).c_str());
+        printf("CheckStakeKernelHash() : using modifier 0x%016"PRI64x" at height=%d timestamp=%s for block from height=%d timestamp=%s\n",
+               nStakeModifier, nStakeModifierHeight,
+               DateTimeStrFormat(nStakeModifierTime).c_str(),
+               mapBlockIndex[blockFrom.GetHash()]->nHeight,
+               DateTimeStrFormat(blockFrom.GetBlockTime()).c_str());
         printf("CheckStakeKernelHash() : pass protocol=%s modifier=0x%016"PRI64x" nTimeBlockFrom=%u nTxPrevOffset=%u nTimeTxPrev=%u nPrevout=%u nTimeTx=%u hashProof=%s\n",
-            IsProtocolV03(nTimeTx)? "0.3" : "0.2",
-            IsProtocolV03(nTimeTx)? nStakeModifier : (uint64) nBits,
-            nTimeBlockFrom, nTxPrevOffset, txPrev.nTime, prevout.n, nTimeTx,
-            hashProofOfStake.ToString().c_str());
+               "0.3",
+               nStakeModifier,
+               nTimeBlockFrom, nTxPrevOffset, txPrev.nTime, prevout.n, nTimeTx,
+               hashProofOfStake.ToString().c_str());
     }
     return true;
 }
@@ -381,11 +344,7 @@ bool CheckProofOfStake(const CBlockIndex * pindexPrev, const CTransaction& tx, u
 // Check whether the coinstake timestamp meets protocol
 bool CheckCoinStakeTimestamp(int64 nTimeBlock, int64 nTimeTx)
 {
-    if (IsProtocolV03(nTimeTx)) { // v0.3 protocol
-        return (nTimeBlock == nTimeTx);
-    } else { // v0.2 protocol
-        return ((nTimeTx <= nTimeBlock) && (nTimeBlock <= nTimeTx + MAX_CLOCK_DRIFT));
-    }
+    return (nTimeBlock == nTimeTx);
 }
 
 // Get stake modifier checksum
