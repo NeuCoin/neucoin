@@ -1,3 +1,5 @@
+CONSTANTS ?= constants.cpp
+
 BOOST_SUFFIX ?= #NO SUFFIX
 SHELL = bash
 
@@ -14,6 +16,7 @@ LDFLAGS += \
   -lcrypto
 
 SOURCES= \
+  $(CONSTANTS) \
   CheckClientSanity.cpp \
   GetNextTargetRequired.cpp \
   GetProofOfStakeReward.cpp \
@@ -73,4 +76,5 @@ fclean: clean
 re: fclean
 	$(MAKE) -f $(MAKEFILE) all
 
-.PHONY: all clean fclean re
+# $(TARGET) is PHONY so that it is relinked even when using different source files (due to $(CONSTANTS))
+.PHONY: all clean fclean re $(TARGET)

@@ -10,6 +10,25 @@ var gClientId = 0;
 
 var spawn = require( 'child_process' ).spawn;
 
+function checkPort( port ) {
+
+    return new Promise( ( resolve, reject ) => {
+
+        let sock = connect( { port }, ( ) => {
+
+            resolve( true );
+            sock.end( );
+
+        } ).on( 'error', ( ) => {
+
+            resolve( false );
+
+        } );
+
+    } );
+
+}
+
 function resetPath( path ) {
 
     return new Promise( ( resolve, reject ) => {

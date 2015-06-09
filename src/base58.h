@@ -276,20 +276,13 @@ public:
 class CBitcoinAddress : public CBase58Data
 {
 public:
-    enum
-    {
-        PUBKEY_ADDRESS = PUBKEY_ADDRESS_PREFIX,
-        PRVKEY_ADDRESS = PRVKEY_ADDRESS_PREFIX,
-        SCRIPT_ADDRESS = SCRIPT_ADDRESS_PREFIX
-    };
-
     bool Set(const CKeyID &id) {
-        SetData(PUBKEY_ADDRESS, &id, 20);
+        SetData(PUBKEY_ADDRESS_PREFIX, &id, 20);
         return true;
     }
 
     bool Set(const CScriptID &id) {
-        SetData(SCRIPT_ADDRESS, &id, 20);
+        SetData(SCRIPT_ADDRESS_PREFIX, &id, 20);
         return true;
     }
 
@@ -300,21 +293,13 @@ public:
 
     bool IsValid() const
     {
-        unsigned int nExpectedSize = 20;
+        if (nVersion != PUBKEY_ADDRESS_PREFIX && nVersion != SCRIPT_ADDRESS_PREFIX)
+            return false;
 
-        switch(nVersion)
-        {
-            case PUBKEY_ADDRESS:
-                nExpectedSize = 20; // Hash of public key
-                break;
-            case SCRIPT_ADDRESS:
-                nExpectedSize = 20; // Hash of CScript
-                break;
-            default:
-                return false;
-        }
+        if (vchData.size() != 20)
+            return false;
 
-        return vchData.size() == nExpectedSize;
+        return true;
     }
 
     CBitcoinAddress()
@@ -336,47 +321,44 @@ public:
         SetString(pszAddress);
     }
 
-    CTxDestination Get() const {
+    CTxDestination Get() const
+    {
         if (!IsValid())
             return CNoDestination();
-        switch (nVersion) {
-        case PUBKEY_ADDRESS: {
-            uint160 id;
+
+        uint160 id;
+
+        if (nVersion == PUBKEY_ADDRESS_PREFIX) {
             memcpy(&id, &vchData[0], 20);
             return CKeyID(id);
         }
-        case SCRIPT_ADDRESS: {
-            uint160 id;
+
+        if (nVersion == SCRIPT_ADDRESS_PREFIX) {
             memcpy(&id, &vchData[0], 20);
             return CScriptID(id);
         }
-        }
+
         return CNoDestination();
     }
 
-    bool GetKeyID(CKeyID &keyID) const {
+    bool GetKeyID(CKeyID &keyID) const
+    {
         if (!IsValid())
             return false;
-        switch (nVersion) {
-        case PUBKEY_ADDRESS: {
-            uint160 id;
-            memcpy(&id, &vchData[0], 20);
-            keyID = CKeyID(id);
-            return true;
-        }
-        default: return false;
-        }
+
+        if (nVersion != PUBKEY_ADDRESS_PREFIX)
+            return false;
+
+        uint160 id;
+        memcpy(&id, &vchData[0], 20);
+        keyID = CKeyID(id);
+
+        return true;
     }
 
-    bool IsScript() const {
-        if (!IsValid())
-            return false;
-        switch (nVersion) {
-        case SCRIPT_ADDRESS: {
-            return true;
-        }
-        default: return false;
-        }
+    bool IsScript() const
+    {
+        return IsValid() && nVersion == SCRIPT_ADDRESS_PREFIX;
     }
 };
 
@@ -391,9 +373,10 @@ public:
     void SetSecret(const CSecret& vchSecret, bool fCompressed)
     {
         assert(vchSecret.size() == 32);
-        SetData(128 + CBitcoinAddress::PUBKEY_ADDRESS, &vchSecret[0], vchSecret.size());
-        if (fCompressed)
+        SetData(PRVKEY_ADDRESS_PREFIX, &vchSecret[0], vchSecret.size());
+        if (fCompressed) {
             vchData.push_back(1);
+        }
     }
 
     CSecret GetSecret(bool &fCompressedOut)
@@ -407,13 +390,8 @@ public:
 
     bool IsValid() const
     {
-        switch(nVersion)
-        {
-             case (128 + CBitcoinAddress::PUBKEY_ADDRESS):
-                break;
-            default:
-                return false;
-        }
+        if (nVersion != PRVKEY_ADDRESS_PREFIX)
+            return false;
 
         return vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1);
     }

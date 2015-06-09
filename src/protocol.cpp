@@ -12,15 +12,9 @@
 # include <arpa/inet.h>
 #endif
 
-// The message start string is designed to be unlikely to occur in normal data.
-// The characters are rarely used upper ascii, not valid as UTF-8, and produce
-// a large 4-byte int at any alignment.
-
-static unsigned char pchMessageStart[4] = PROTOCOL_MAGIC_BYTES;
-
 void GetMessageStart(unsigned char pchMessageStartStore[], bool fPersistent)
 {
-    memcpy(pchMessageStartStore, pchMessageStart, sizeof(pchMessageStart));
+    memcpy(pchMessageStartStore, PROTOCOL_MAGIC_BYTES, sizeof(PROTOCOL_MAGIC_BYTES));
 }
 
 static const char* ppszTypeName[] =

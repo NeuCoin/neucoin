@@ -19,10 +19,10 @@ function updateConstants( constants, parameters ) {
         var value = parameters[ name ];
 
         var macroRegexp = new RegExp( `(#define\\s+${nameMatch}\\s+).*`, 'g' );
-        var staticRegexp = new RegExp( `(static\\s+[a-zA-Z0-9:_]+(?:\\s+const)?\\s+${nameMatch}\\s+=\\s+).*`, 'g' );
+        var variableRegexp = new RegExp( `([a-zA-Z0-9:_]+(?:\\s+const)?\\s+${nameMatch}\\s+=\\s+).*`, 'g' );
 
         constants = constants.replace( macroRegexp, ( _, keep ) => `${keep}${value}` );
-        constants = constants.replace( staticRegexp, ( _, keep ) => `${keep}${value};` );
+        constants = constants.replace( variableRegexp, ( _, keep ) => `${keep}${value};` );
 
     }
 
@@ -30,14 +30,14 @@ function updateConstants( constants, parameters ) {
 
 }
 
-export function compile( ) {
+export function compile( options = '' ) {
 
     return new Promise( ( resolve, reject ) => {
 
         console.log( 'Starting client compilation' );
 
         var path = Path.dirname( CLIENT_PATH );
-        var builder = ChildProcess.exec( `cd ${JSON.stringify(path)} && make -f ${JSON.stringify(MAKEFILE_NAME)}`, ( error, stdout, stderr ) => {
+        var builder = ChildProcess.exec( `cd ${JSON.stringify(path)} && make -f ${JSON.stringify(MAKEFILE_NAME)} ${options}`, ( error, stdout, stderr ) => {
 
             if ( error ) {
                 console.log( `Compilation failed with status code #${error.code}` );
@@ -56,15 +56,14 @@ export function compile( ) {
 export async function compileWith( parameters ) {
 
     var path = Path.dirname( CLIENT_PATH );
-    var constantsPath = Path.join( path, 'constants.h' );
+    var constantsPath = Path.join( path, 'constants.cpp' );
+    var modifiedConstantsPath = Path.join( path, 'constants.test.cpp' );
 
     var constants = Fs.readFileSync( constantsPath ).toString( );
 
     var modifiedConstants = updateConstants( constants, parameters );
-    Fs.writeFileSync( constantsPath, modifiedConstants );
+    Fs.writeFileSync( modifiedConstantsPath, modifiedConstants );
 
-    await compile( );
-
-    Fs.writeFileSync( constantsPath, constants );
+    await compile( 'CONSTANTS=constants.test.cpp' );
 
 }

@@ -1002,12 +1002,6 @@ void MapPort(bool /* unused fMapPort */)
 
 
 
-// DNS seeds
-// Each pair gives a source name and a seed name.
-// The first name is used as information source for addrman.
-// The second name should resolve to a list of seed addresses.
-static const char *strDNSSeed[][2] = AUTO_DNS_SEEDS;
-
 void ThreadDNSAddressSeed(void* parg)
 {
     IMPLEMENT_RANDOMIZE_STACK(ThreadDNSAddressSeed(parg));
@@ -1034,12 +1028,12 @@ void ThreadDNSAddressSeed2(void* parg)
 
     printf("Loading addresses from DNS seeds (could take a while)\n");
 
-    for (unsigned int seed_idx = 0; seed_idx < ARRAYLEN(strDNSSeed); seed_idx++) {
-        if (strDNSSeed[seed_idx][1][0] == 't') continue;
+    for (unsigned int seed_idx = 0; AUTO_DNS_SEEDS[seed_idx][0]; seed_idx++) {
+        if (AUTO_DNS_SEEDS[seed_idx][1][0] == 't') continue;
 
         vector<CNetAddr> vaddr;
         vector<CAddress> vAdd;
-        if (LookupHost(strDNSSeed[seed_idx][1], vaddr))
+        if (LookupHost(AUTO_DNS_SEEDS[seed_idx][1], vaddr))
         {
             BOOST_FOREACH(CNetAddr& ip, vaddr)
             {
@@ -1050,7 +1044,7 @@ void ThreadDNSAddressSeed2(void* parg)
                 found++;
             }
         }
-        addrman.Add(vAdd, CNetAddr(strDNSSeed[seed_idx][0], true));
+        addrman.Add(vAdd, CNetAddr(AUTO_DNS_SEEDS[seed_idx][0], true));
     }
 
     printf("%d addresses found from DNS seeds\n", found);
@@ -1064,8 +1058,6 @@ void ThreadDNSAddressSeed2(void* parg)
 
 
 
-
-unsigned int pnSeed[] = AUTO_IP_SEEDS;
 
 void DumpAddresses()
 {
@@ -1164,7 +1156,7 @@ void ThreadOpenConnections2(void* parg)
         if (addrman.size()==0 && (GetTime() - nStart > 60 || fTOR))
         {
             std::vector<CAddress> vAdd;
-            for (unsigned int i = 0; i < ARRAYLEN(pnSeed); i++)
+            for (unsigned int i = 0; AUTO_IP_SEEDS[i]; i++)
             {
                 // It'll only connect to one or two seed nodes because once it connects,
                 // it'll get a pile of addresses with newer timestamps.
@@ -1172,7 +1164,7 @@ void ThreadOpenConnections2(void* parg)
                 // weeks ago.
                 const int64 nOneWeek = 7*24*60*60;
                 struct in_addr ip;
-                memcpy(&ip, &pnSeed[i], sizeof(ip));
+                memcpy(&ip, &AUTO_IP_SEEDS[i], sizeof(ip));
                 CAddress addr(CService(ip, GetDefaultPort()));
                 addr.nTime = GetTime()-GetRand(nOneWeek)-nOneWeek;
                 vAdd.push_back(addr);

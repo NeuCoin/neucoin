@@ -6,6 +6,7 @@
 
 /build/
 /src/qt/locale/*.qm
+/src/constants.test.cpp
 /src/neucoind
 /qrc_bitcoin.cpp
 /neucoin-qt
