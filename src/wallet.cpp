@@ -869,7 +869,6 @@ void CWallet::ResendWalletTransactions()
 
 int64 CWallet::GetBalance() const
 {
-    printf("getbalance\n");
     int64 nTotal = 0;
     {
         LOCK(cs_wallet);
