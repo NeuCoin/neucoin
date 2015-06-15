@@ -38,7 +38,8 @@ blockheight_t COINBASE_MATURITY       = 1;
 
 //            Some parameters about the coin amount itself
 //            If you use a non-zero COIN_PREMINE value, the first mined PoW block will have this reward. Otherwise, it will be POW_BLOCK_REWARD as usual
-money_t       MAX_MONEY               = 500000000000 * COIN;
+//            Note that MAX_TX_AMOUNT doesn't prevent the coin amount from exceeding its value - ie. that it isn't a hard limit for how much money will the blockchain handle
+money_t       MAX_TX_AMOUNT           = 500000000000 * COIN;
 money_t       COIN_PREMINE            =   2000000000 * COIN;
 
 //            If you submit a transaction to the network, you need to put at least MIN_TX_FEES coins for the client to accept it
