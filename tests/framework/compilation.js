@@ -1,6 +1,8 @@
 import { CLIENT_PATH }   from '../_config';
 import { MAKEFILE_NAME } from '../_config';
 
+import { merge }         from './lodash';
+
 var ChildProcess = require( 'child_process' );
 var Path = require( 'path' );
 var Fs = require( 'fs' );
@@ -53,7 +55,9 @@ export function compile( options = '' ) {
 
 }
 
-export async function compileWith( parameters ) {
+export async function compileWith( ... parameterList ) {
+
+    var parameters = merge( ... parameterList );
 
     var path = Path.dirname( CLIENT_PATH );
     var constantsPath = Path.join( path, 'constants.cpp' );

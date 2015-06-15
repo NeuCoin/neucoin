@@ -1,26 +1,14 @@
-import { compileWith }       from './framework/compilation';
-import { mineSomePowBlocks } from './framework/mining';
-import { sendRpcQuery }      from './framework/query';
-import { spawnClient }       from './framework/spawn';
-import { delayExecution }    from './framework/time';
+import { compileWith }           from './framework/compilation';
+import { mineSomePowBlocks }     from './framework/mining';
+import { sendRpcQuery }          from './framework/query';
+import { spawnClient }           from './framework/spawn';
+import { delayExecution }        from './framework/time';
+
+import { fastChain, smallChain } from './_environments';
 
 export async function test( ) {
 
-    await compileWith( {
-
-        COINBASE_MATURITY : `1`,
-
-        COIN_PREMINE : `0`,
-
-        POW_BLOCK_REWARD : `1 * COIN`,
-
-        MIN_TX_FEES       : `0`,
-        MIN_RELAY_TX_FEES : `0`,
-
-        POW_TARGET_SPACING : `1 * MINUTE`,
-        POS_TARGET_SPACING : `1 * MINUTE`
-
-    } );
+    await compileWith( fastChain, smallChain );
 
     var client1 = await spawnClient( { } );
     var client2 = await spawnClient( { addnode : `127.0.0.1:${client1.port}` } );
