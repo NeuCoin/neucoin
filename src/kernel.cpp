@@ -4,6 +4,7 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include "constants.h"
 #include "kernel.h"
 #include "db.h"
 
@@ -16,7 +17,7 @@ unsigned int nModifierInterval = MODIFIER_INTERVAL;
 // Hard checkpoints of stake modifiers to ensure they are deterministic
 static std::map<int, unsigned int> mapStakeModifierCheckpoints =
     boost::assign::map_list_of
-    ( 0, 0xfd11f4e7u )
+    ( 0, GENESIS_STAKE_MODIFIER_CHECKSUM )
     ;
 
 // Get the last stake modifier and its generation time from a given block
@@ -363,5 +364,6 @@ bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierCheck
 {
     if (mapStakeModifierCheckpoints.count(nHeight))
         return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
+
     return true;
 }

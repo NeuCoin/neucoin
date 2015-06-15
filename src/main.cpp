@@ -1784,8 +1784,9 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos)
         return error("AddToBlockIndex() : ComputeNextStakeModifier() failed");
     pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
     pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
+
     if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-        return error("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=0x%016"PRI64x, pindexNew->nHeight, nStakeModifier);
+        return error("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=0x%016"PRI64x", checksum=0x%08x", pindexNew->nHeight, nStakeModifier, pindexNew->nStakeModifierChecksum);
 
     // Add to mapBlockIndex
     map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.insert(make_pair(hash, pindexNew)).first;
@@ -2260,8 +2261,10 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nBits = POW_INITIAL_TARGET.GetCompact();
         block.nNonce = GENESIS_BLOCK_NONCE;
 
-        printf("target : %s\n", POW_INITIAL_TARGET.ToString(16).c_str());
-        printf("nBits  : %08X\n", block.nBits);
+        printf("target                : %s\n", POW_INITIAL_TARGET.getuint256().ToString().c_str());
+        printf("nBits                 : %08X\n", block.nBits);
+        printf("expected genesis hash : %s\n", GENESIS_HASH.ToString().c_str());
+        printf("true genesis hash     : %s\n", block.GetHash().ToString().c_str());
 
         // If genesis block hash does not match, then generate new genesis hash.
 
@@ -2274,8 +2277,6 @@ bool LoadBlockIndex(bool fAllowNew)
 
             // This will figure out a valid hash and Nonce if you're
             // creating a different genesis block:
-
-            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
 
             while (!CheckProofOfWork(block.GetHash(), block.nBits, false)) {
 
@@ -2290,28 +2291,28 @@ bool LoadBlockIndex(bool fAllowNew)
                 }
             }
 
-            printf("  - block.nTime = %u \n", block.nTime);
-            printf("  - block.nNonce = %u \n", block.nNonce);
-            printf("  - block.GetHash = %s\n", block.GetHash().ToString().c_str());
+            printf("A matching block has been found, with the following parameters:\n");
+            printf("  - GENESIS_MERKLE_HASH : %s\n", block.hashMerkleRoot.ToString().c_str());
+            printf("  - GENESIS_HASH        : %s\n", block.GetHash().ToString().c_str());
+            printf("  - GENESIS_TIME        : %u\n", block.nTime);
+            printf("  - GENESIS_NONCE       : %u\n", block.nNonce);
 
             std::exit( 1 );
 
         }
 
         //// debug print
-        printf("%s\n", block.GetHash().ToString().c_str());
-        printf("%s\n", GENESIS_HASH.ToString().c_str());
-        printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x3c2d8f85fab4d17aac558cc648a1a58acff0de6deb890c29985690052c5993c2"));
-        block.print();
+        assert(block.hashMerkleRoot == GENESIS_MERKLE_HASH);
         assert(block.GetHash() == GENESIS_HASH);
         assert(block.CheckBlock());
 
         // Start new block file
         unsigned int nFile;
         unsigned int nBlockPos;
+
         if (!block.WriteToDisk(nFile, nBlockPos))
             return error("LoadBlockIndex() : writing genesis block to disk failed");
+
         if (!block.AddToBlockIndex(nFile, nBlockPos))
             return error("LoadBlockIndex() : genesis block not accepted");
 

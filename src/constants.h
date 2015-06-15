@@ -35,12 +35,14 @@ extern uint8_t       PUBKEY_ADDRESS_PREFIX;
 extern uint8_t       PRVKEY_ADDRESS_PREFIX;
 extern uint8_t       SCRIPT_ADDRESS_PREFIX;
 
+extern hash_t        GENESIS_MERKLE_HASH;
 extern hash_t        GENESIS_HASH;
 extern char          GENESIS_IDENT[];
 extern timestamp_t   GENESIS_TX_TIME;
 extern timestamp_t   GENESIS_BLOCK_TIME;
 extern uint32_t      GENESIS_BLOCK_NONCE;
 extern uint32_t      GENESIS_BLOCK_VERSION;
+extern uint32_t      GENESIS_STAKE_MODIFIER_CHECKSUM;
 
 extern blockheight_t COINBASE_MATURITY;
 

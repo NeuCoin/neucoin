@@ -25,12 +25,14 @@ uint8_t       SCRIPT_ADDRESS_PREFIX   = 112; // "n"
 
 //            The following constants define the genesis block of the coin network
 //            If you change them, the hash will probably be wrong and the genesis invalid (because its hash would be higher than the initial target), and the client will try to generate a new valid genesis at startup
-hash_t        GENESIS_HASH            = hash_t("0x000009b4cc9d78dd3d3da01579414ddeb90ffe1d8fdf1fc232f16e174aef8724");
-char          GENESIS_IDENT[]         = "Matonis 07-AUG-2012 Parallel Currencies And The Roadmap To Monetary Freedom";
+hash_t        GENESIS_MERKLE_HASH     = hash_t("0xde076db12875d7472d677f11d8d3289c4ceae9bb3d0951a1fde6aed712e36311");
+hash_t        GENESIS_HASH            = hash_t("0x0000052bba6df3f7601a0cfdfdd4eab14072e66fbabd6870074f92a9a59079b5");
+char          GENESIS_IDENT[]         = "06-12-15 :: XKCD 1537 :: My new language is great, but it has a few quirks regarding type";
 timestamp_t   GENESIS_TX_TIME         = 1345083810;
 timestamp_t   GENESIS_BLOCK_TIME      = 1345084287;
-uint32_t      GENESIS_BLOCK_NONCE     = 2179786789;
+uint32_t      GENESIS_BLOCK_NONCE     = 1043276304;
 uint32_t      GENESIS_BLOCK_VERSION   = 1;
+uint32_t      GENESIS_STAKE_MODIFIER_CHECKSUM  = 0x0e00670b;
 
 //            The maturity is the number of block required for a transaction to be confirmed by the network (excluding the block which embeds the transaction)
 //            Since you need to include your transaction in a block, and the COINBASE_MATURITY cannot be lower than 1, you will always need at least two blocks before maturing

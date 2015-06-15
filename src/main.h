@@ -923,7 +923,14 @@ public:
 
     uint256 GetHash() const
     {
-        return scrypt_blockhash(reinterpret_cast<uint8_t const *>(this), sizeof(*this));
+        uint8_t const * from = reinterpret_cast<uint8_t const *>(&nVersion);
+        uint8_t const * to = reinterpret_cast<uint8_t const *>(&nNonce);
+
+        size_t size = (to - from) + sizeof(nNonce);
+
+        assert(size == 80);
+
+        return scrypt_blockhash(from, size);
     }
 
     timestamp_t GetBlockTime() const
