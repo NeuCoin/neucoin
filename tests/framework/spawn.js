@@ -110,7 +110,7 @@ export async function spawnClient( options = { } ) {
 
 export async function spawnMiner( client ) {
 
-    var miner = spawn( MINER_PATH, [ `-o`, `http://127.0.0.1:${client.rpcPort}`, `-u`, RPC_USER, `-p`, RPC_PASSWORD, `-t1`, `-a`, `sha256d` ] );
+    var miner = spawn( MINER_PATH, [ `-o`, `http://127.0.0.1:${client.rpcPort}`, `-u`, RPC_USER, `-p`, RPC_PASSWORD, `-t1` ] );
 
     console.log( 'Miner spawned' );
 
