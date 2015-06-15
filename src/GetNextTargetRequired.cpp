@@ -41,7 +41,7 @@ compact_target_t GetNextTargetRequired(CBlockIndex const * pindexTail0, bool fPr
     if (newTarget > maxTarget)
         newTarget = maxTarget;
 
-    printf("Expecting: %llis Actual: %llis Old Difficulty: %x New Difficulty: %x (%s)\n", targetSpacing, actualSpacing, currentTarget.GetCompact(), newTarget.GetCompact(), fProofOfStake ? "PoS" : "PoW");
+    //printf("Expecting: %llis Actual: %llis Old Difficulty: %x New Difficulty: %x (%s)\n", targetSpacing, actualSpacing, currentTarget.GetCompact(), newTarget.GetCompact(), fProofOfStake ? "PoS" : "PoW");
 
     return newTarget.GetCompact();
 }
