@@ -9,6 +9,7 @@
 #include "bignum.h"
 #include "net.h"
 #include "script.h"
+#include "scrypt.h"
 
 #include "types.h"
 #include "constants.h"
@@ -598,12 +599,12 @@ public:
         if (nBlockSize != 1 && nNewBlockSize >= MAX_BLOCK_SIZE_GEN/2)
         {
             if (nNewBlockSize >= MAX_BLOCK_SIZE_GEN)
-                return MAX_MONEY;
+                return MAX_MONEY_STACK;
             nMinFee *= MAX_BLOCK_SIZE_GEN / (MAX_BLOCK_SIZE_GEN - nNewBlockSize);
         }
 
         if (!IsValidAmount(nMinFee))
-            nMinFee = MAX_MONEY;
+            nMinFee = MAX_MONEY_STACK;
 
         return nMinFee;
     }
@@ -922,7 +923,7 @@ public:
 
     uint256 GetHash() const
     {
-        return Hash(BEGIN(nVersion), END(nNonce));
+        return scrypt_blockhash(reinterpret_cast<uint8_t const *>(this), sizeof(*this));
     }
 
     timestamp_t GetBlockTime() const

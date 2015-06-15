@@ -44,7 +44,7 @@ extern uint32_t      GENESIS_BLOCK_VERSION;
 
 extern blockheight_t COINBASE_MATURITY;
 
-extern money_t       MAX_MONEY;
+extern money_t       MAX_MONEY_STACK;
 extern money_t       COIN_PREMINE;
 
 extern money_t       MIN_TX_FEES;

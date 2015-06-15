@@ -23,6 +23,7 @@ SOURCES= \
   GetProofOfWorkReward.cpp \
   IsValidAmount.cpp \
   version.cpp \
+  scrypt-generic.cpp \
   checkpoints.cpp \
   netbase.cpp \
   addrman.cpp \

@@ -109,6 +109,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
     src/constants.h \
+    src/scrypt.h \
     src/CheckClientSanity.h \
     src/GetNextTargetRequired.h \
     src/GetProofOfStakeReward.h \
@@ -188,6 +189,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/GetProofOfWorkReward.cpp \
     src/IsValidAmount.cpp \
     src/constants.cpp \
+    src/scrypt-generic.cpp \
     src/version.cpp \
     src/util.cpp \
     src/netbase.cpp \

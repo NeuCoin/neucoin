@@ -485,7 +485,7 @@ bool CTransaction::CheckTransaction() const
         // ppcoin: enforce minimum output amount
         if ((!txout.IsEmpty()) && txout.nValue < MIN_TXOUT_AMOUNT)
             return DoS(100, error("CTransaction::CheckTransaction() : txout.nValue below minimum (%d)", txout.nValue));
-        if (txout.nValue > MAX_MONEY)
+        if (txout.nValue > MAX_MONEY_STACK)
             return DoS(100, error("CTransaction::CheckTransaction() : txout.nValue too high (%d)", txout.nValue));
         nValueOut += txout.nValue;
         if (!IsValidAmount(nValueOut))
@@ -2270,18 +2270,17 @@ bool LoadBlockIndex(bool fAllowNew)
             printf("\n");
             printf("FATAL ERROR: The genesis block is invalid.\n");
             printf("Please notify the coins maintainers at " COIN_BUGTRACKER ".\n");
-            printf("If you're working on an Altcoin, we suggest you to use the following parameters as new genesis:\n");
+            printf("If you're working on an Altcoin, we suggest you to use the following parameters as new genesis (wait a bit):\n");
 
             // This will figure out a valid hash and Nonce if you're
             // creating a different genesis block:
 
             uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-            uint256 thash;
 
             while (!CheckProofOfWork(block.GetHash(), block.nBits, false)) {
 
                 if ((block.nNonce & 0xFFF) == 0)
-                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                    printf("Trying nonce %08X and above...\n", block.nNonce);
 
                 ++block.nNonce;
 
