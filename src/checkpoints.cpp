@@ -364,8 +364,6 @@ namespace Checkpoints
         for (int error; error = ERR_get_error(); )
             printf("%s\n", ERR_error_string(error, NULL));
 
-        printf( "HELLOWORLD[%s]\n", strPrivKey.c_str());
-
         if (!key.Sign(Hash(checkpoint.vchMsg.begin(), checkpoint.vchMsg.end()), checkpoint.vchSig))
             return false;
 
