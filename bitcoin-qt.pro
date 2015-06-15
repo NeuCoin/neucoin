@@ -187,6 +187,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/GetProofOfStakeReward.cpp \
     src/GetProofOfWorkReward.cpp \
     src/IsValidAmount.cpp \
+    src/constants.cpp \
     src/version.cpp \
     src/util.cpp \
     src/netbase.cpp \
