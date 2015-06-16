@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <map>
 #include <stdint.h>
 
 #include "bignum.h"
@@ -87,8 +88,3 @@ extern money_t                           MIN_TXOUT_AMOUNT;
 extern uint32_t                          MAX_BLOCK_SIZE_GEN;
 extern uint32_t                          MAX_BLOCK_SIGOPS;
 extern uint32_t                          MAX_BLOCK_ORPHAN_TX;
-
-// -- And the following is just miscellaneous macro tools - please don't add any more except if it's for a really good reason
-
-#define CONSTANT_TO_STRING(SYMBOL) TO_STRING(SYMBOL)
-#define TO_STRING(WHAT) #WHAT

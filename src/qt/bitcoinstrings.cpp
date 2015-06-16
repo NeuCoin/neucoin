@@ -28,7 +28,7 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Set database disk log size in megabytes (defa
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify connection timeout (in milliseconds)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Connect through socks4 proxy"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Allow DNS lookups for addnode and connect"),
-QT_TRANSLATE_NOOP("bitcoin-core", "Listen for connections on <port> (default: " CONSTANT_TO_STRING(COIN_PORT) ")"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Listen for connections on <port> (default: 7742)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Maintain at most <n> connections to peers (default: 125)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Add a node to connect to and attempt to keep the connection open"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Connect only to the specified node"),
@@ -54,7 +54,7 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Send trace/debug info to console instead of d
 QT_TRANSLATE_NOOP("bitcoin-core", "Send trace/debug info to debugger"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Username for JSON-RPC connections"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Password for JSON-RPC connections"),
-QT_TRANSLATE_NOOP("bitcoin-core", "Listen for JSON-RPC connections on <port> (default: " CONSTANT_TO_STRING(RPC_PORT) ")"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Listen for JSON-RPC connections on <port> (default: 7743)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Allow JSON-RPC connections from specified IP address"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Send commands to node running on <ip> (default: 127.0.0.1)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
