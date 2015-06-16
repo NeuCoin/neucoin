@@ -3,7 +3,9 @@
 // Copyright (c) 2011-2013 The PPCoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "db.h"
+#include "testnet.h"
 #include "walletdb.h"
 #include "bitcoinrpc.h"
 #include "net.h"
@@ -177,6 +179,12 @@ bool AppInit2(int argc, char* argv[])
     }
     ReadConfigFile(mapArgs, mapMultiArgs);
 #endif
+
+    if (mapArgs.count("-testnet"))
+    {
+        fprintf(stderr, "Warning: Currently running using testnet parameters\n");
+        ApplyTestnetParameters();
+    }
 
     if (mapArgs.count("-?") || mapArgs.count("--help"))
     {

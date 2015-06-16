@@ -15,25 +15,11 @@
 
 namespace Checkpoints
 {
-    typedef std::map<int, hash_t> MapCheckpoints;   // hardened checkpoints
-
-    //
-    // What makes a good checkpoint block?
-    // + Is surrounded by blocks with reasonable timestamps
-    //   (no blocks before with a timestamp after, none after with
-    //    timestamp before)
-    // + Contains no strange transactions
-    //
-    static MapCheckpoints mapCheckpoints =
-        boost::assign::map_list_of
-        ( 0,     GENESIS_HASH )
-        ;
-
     bool CheckHardened( blockheight_t nHeight, hash_t hash) {
 
-        MapCheckpoints::const_iterator i = mapCheckpoints.find(nHeight);
+        std::map<blockheight_t, hash_t>::const_iterator i = BLOCK_CHECKPOINTS.find(nHeight);
 
-        if (i == mapCheckpoints.end())
+        if (i == BLOCK_CHECKPOINTS.end())
             return true;
 
         return hash == i->second;
@@ -42,13 +28,15 @@ namespace Checkpoints
 
     int GetTotalBlocksEstimate() {
 
-        return mapCheckpoints.rbegin()->first;
+        return BLOCK_CHECKPOINTS.rbegin()->first;
 
     }
 
     CBlockIndex * GetLastCheckpoint(std::map<hash_t, CBlockIndex *> const & mapBlockIndex) {
 
-        BOOST_REVERSE_FOREACH(MapCheckpoints::value_type const & i, mapCheckpoints) {
+        typedef std::map<blockheight_t, hash_t> checkpoints_t;
+
+        BOOST_REVERSE_FOREACH(checkpoints_t::value_type const & i, BLOCK_CHECKPOINTS) {
 
             hash_t hash = i.second;
             std::map<hash_t, CBlockIndex *>::const_iterator t = mapBlockIndex.find(hash);
@@ -285,7 +273,7 @@ namespace Checkpoints
 
         LOCK(cs_hashSyncCheckpoint);
 
-        hash_t hash = mapCheckpoints.rbegin()->second;
+        hash_t hash = BLOCK_CHECKPOINTS.rbegin()->second;
 
         if (mapBlockIndex.count(hash) && !mapBlockIndex[hash]->IsInMainChain()) {
 
@@ -313,7 +301,9 @@ namespace Checkpoints
 
         }
 
-        BOOST_REVERSE_FOREACH(const MapCheckpoints::value_type& i, mapCheckpoints) {
+        typedef std::map<blockheight_t, hash_t> checkpoints_t;
+
+        BOOST_REVERSE_FOREACH(const checkpoints_t::value_type& i, BLOCK_CHECKPOINTS) {
 
             hash_t hash = i.second;
 

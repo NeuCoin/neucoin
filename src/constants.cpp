@@ -1,6 +1,8 @@
 #include <limits>
 #include <stdint.h>
 
+#include <boost/assign/list_of.hpp>
+
 #include "bignum.h"
 #include "macros.h"
 #include "types.h"
@@ -13,10 +15,14 @@ uint16_t      RPC_PORT                        = 7743;
 uint8_t       PROTOCOL_MAGIC_BYTES[4]         = { 0xe5, 0xcf, 0x81, 0xde };
 
 //            These parameters are used as initial nodes to connect to, from which we will get the other ones
-//            Each DNS pair gives a source name and a seed name. The first name is used as information source for addrman, and the second name should resolve to a list of seed addresses
-//            The last element of each array has to be null (respectively { 0, 0 } and 0)
-char const *  AUTO_DNS_SEEDS[][2]             = { { 0, 0 } };
-uint32_t      AUTO_IP_SEEDS[]                 = { 0 };
+//            Each DNS pair gives a source name and a seed name. The first name is used as information source for addrman, and the second name should resolve to a list of seed addresses. The last element of each array has to be null (respectively { 0, 0 } and 0)
+//            A short note about the syntax : we have to use a pointer-to-array (rather than array-of-array-of-pointers) because we need to be able to reassign it later (testnet). I'd like to improve that latter
+
+static char const * MAINNET_AUTO_DNS_SEEDS[][2] = { { 0, 0 } };
+static uint32_t     MAINNET_AUTO_IP_SEEDS[]     = { 0 };
+
+char const *      (*AUTO_DNS_SEEDS)[2]          = MAINNET_AUTO_DNS_SEEDS;
+uint32_t          (*AUTO_IP_SEEDS)              = MAINNET_AUTO_IP_SEEDS;
 
 //            These numbers each map to a base58 character which is put in front of the addresses to easily deduce an address type
 uint8_t       PUBKEY_ADDRESS_PREFIX           =  53; // "N"
@@ -27,12 +33,14 @@ uint8_t       SCRIPT_ADDRESS_PREFIX           = 112; // "n"
 //            If you change them, the hash will probably be wrong and the genesis invalid (because its hash would be higher than the initial target), and the client will try to generate a new valid genesis at startup
 hash_t        GENESIS_MERKLE_HASH             = hash_t("0xde076db12875d7472d677f11d8d3289c4ceae9bb3d0951a1fde6aed712e36311");
 hash_t        GENESIS_HASH                    = hash_t("0x0000052bba6df3f7601a0cfdfdd4eab14072e66fbabd6870074f92a9a59079b5");
-char          GENESIS_IDENT[]                 = "06-12-15 :: XKCD 1537 :: My new language is great, but it has a few quirks regarding type";
+char const *  GENESIS_IDENT                   = "06-12-15 :: XKCD 1537 :: My new language is great, but it has a few quirks regarding type";
 timestamp_t   GENESIS_TX_TIME                 = 1345083810;
 timestamp_t   GENESIS_BLOCK_TIME              = 1345084287;
 uint32_t      GENESIS_BLOCK_NONCE             = 1043276304;
 uint32_t      GENESIS_BLOCK_VERSION           = 1;
-uint32_t      GENESIS_STAKE_MODIFIER_CHECKSUM = 0x0e00670b;
+
+std::map<blockheight_t, hash_t>   BLOCK_CHECKPOINTS          = boost::assign::map_list_of(0, GENESIS_HASH);
+std::map<blockheight_t, uint32_t> STAKE_MODIFIER_CHECKPOINTS = boost::assign::map_list_of(0, 0x0e00670b);
 
 //            The maturity is the number of block required for a transaction to be confirmed by the network (excluding the block which embeds the transaction)
 //            Since you need to include your transaction in a block, and the COINBASE_MATURITY cannot be lower than 1, you will always need at least two blocks before maturing

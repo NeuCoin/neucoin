@@ -127,6 +127,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/main.h \
     src/net.h \
     src/key.h \
+    src/testnet.h \
     src/db.h \
     src/walletdb.h \
     src/script.h \
@@ -193,6 +194,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/version.cpp \
     src/util.cpp \
     src/netbase.cpp \
+    src/testnet.cpp \
     src/key.cpp \
     src/script.cpp \
     src/main.cpp \

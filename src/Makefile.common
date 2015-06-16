@@ -28,6 +28,7 @@ SOURCES= \
   netbase.cpp \
   addrman.cpp \
   crypter.cpp \
+  testnet.cpp \
   key.cpp \
   db.cpp \
   init.cpp \

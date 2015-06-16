@@ -28,8 +28,8 @@ extern uint16_t      RPC_PORT;
 
 extern uint8_t       PROTOCOL_MAGIC_BYTES[4];
 
-extern char const *  AUTO_DNS_SEEDS[][2];
-extern uint32_t      AUTO_IP_SEEDS[];
+extern char const * (*AUTO_DNS_SEEDS)[2];
+extern uint32_t     (*AUTO_IP_SEEDS);
 
 extern uint8_t       PUBKEY_ADDRESS_PREFIX;
 extern uint8_t       PRVKEY_ADDRESS_PREFIX;
@@ -37,12 +37,14 @@ extern uint8_t       SCRIPT_ADDRESS_PREFIX;
 
 extern hash_t        GENESIS_MERKLE_HASH;
 extern hash_t        GENESIS_HASH;
-extern char          GENESIS_IDENT[];
+extern char const *  GENESIS_IDENT;
 extern timestamp_t   GENESIS_TX_TIME;
 extern timestamp_t   GENESIS_BLOCK_TIME;
 extern uint32_t      GENESIS_BLOCK_NONCE;
 extern uint32_t      GENESIS_BLOCK_VERSION;
-extern uint32_t      GENESIS_STAKE_MODIFIER_CHECKSUM;
+
+extern std::map<blockheight_t, hash_t>   BLOCK_CHECKPOINTS;
+extern std::map<blockheight_t, uint32_t> STAKE_MODIFIER_CHECKPOINTS;
 
 extern blockheight_t COINBASE_MATURITY;
 
