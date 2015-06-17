@@ -462,7 +462,69 @@ int CMerkleTx::SetMerkleBranch(const CBlock* pblock)
 
 
 
+bool CTransaction::IsRestrictedCoinStake() const
+{
+    if (!IsCoinStake())
+        return false;
 
+    CCoinsViewCache inputs(*pcoinsTip, true);
+
+    int64 nValueIn = 0;
+    CScript onlyAllowedScript;
+
+    for (unsigned int i = 0; i < vin.size(); ++i)
+    {
+        const COutPoint& previout = vin[i].prevout;
+
+        CCoins coins;
+        if (!inputs.GetCoins(prevout.hash, coins))
+            return false;
+        if (!coins.IsAvailable(prevout.n))
+            return false;
+
+        const CTxOut& prevtxo = coins.vout[prevout.n];
+        const CScript& prevScript = prevtxo.scriptPubKey;
+
+        if (i == 0)
+        {
+            onlyAllowedcript = prevScript;
+
+            if (onlyAllowedScript.empty())
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (prevScript != onlyAllowedScript)
+            {
+                return false;
+            }
+        }
+
+        nValueIn += prevtxo.nValue;
+    }
+
+    int64 nValueOut = 0;
+
+    for (unsigned int i = 1; i < vout.size(); ++i)
+    {
+        const CTxOut& txo = vout[i];
+
+        if (txo.nValue == 0)
+            continue ;
+
+        if (txo.scriptPubKey != onlyAllowedScript)
+            return false;
+
+        nValueOut += txo.nValue;
+    }
+
+    if (nValueOut < nValueIn)
+        return false;
+
+    return true;
+}
 
 bool CTransaction::CheckTransaction() const
 {

@@ -3078,6 +3078,57 @@ Value getrawmempool(const Array& params, bool fHelp)
     return a;
 }
 
+Value addcoldmintingaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 2 || params.size() > 3)
+        throw runtime_error(
+            "addcoldmintingaddress <minting address> <spending address> [account]\n"
+            "Add a cold minting address to the wallet.\n"
+            "The coins sent to this address will be mintable only with the minting private key.\n"
+            "And they will be spandable only with the spending private key.\n"
+            "If [account] is specified, assign address to [account].");
+
+    std::string strAccount;
+    if (params.size() > 2)
+        strAccount = AccountFromValue(params[2]);
+
+    CBitcoinAddress mintingAddress(params[0].get_str());
+    CBitcoinAddress spendingAddress(params[1].get_str());
+
+    if (!mintingAddress.IsValid() && !spendingAddress.IsValid())
+        throw JSONRPCError(-5, "Both keys are invalid");
+    if (!mintingAddress.IsValid())
+        throw JSONRPCError(-5, "Invalid minting address");
+    if (!spendingAddress.IsValid())
+        throw JSONRPCError(-5, "Invalid spending address");
+
+    CKeyID mintingKeyID;
+    CKeyID spendingKeyID;
+
+    bool mintingKeyIDOk = mintingAddress.GetKeyID(mintingKeyID);
+    bool spendingKeyIDOk = spendingAddress.GetKeyID(spendingKeyID);
+
+    if (!mintingKeyIDOk && !spendingKeyIDOk)
+        throw JSONRPCError(-5, "None of your addresses refer to a key");
+    if (!mintingKeyIDOk)
+        throw JSONRPCError(-5, "The minting address doesn't refer to a key");
+    if (!spendingKeyIDOk)
+        throw JSONRPCError(-5, "The spending address doesn't refer to a key");
+
+    CScript script;
+    script.SetColdMinting(mintingKeyID, spendingKeyID);
+
+    CScriptID scriptID = script.GetID();
+
+    if (!pwalletMain->AddCScript(script))
+        throw JSONRPCError(-4, "Failed to add script to wallet");
+
+    if (!pwalletMain->SetAddressBookName(scriptID, strAccount))
+        throw JSONRPCError(-4, "Failed to set the account");
+
+    return CBitcoinAddress(scriptID).ToString();
+}
+
 //
 // Call Table
 //
@@ -3148,6 +3199,7 @@ static const CRPCCommand vRPCCommands[] =
     { "signrawtransaction",     &signrawtransaction,     false},
     { "sendrawtransaction",     &sendrawtransaction,     false},
     { "getrawmempool",          &getrawmempool,          true },
+    { "addcoldmintingaddress",  &addcoldmintingaddress,  false}
 };
 
 CRPCTable::CRPCTable()

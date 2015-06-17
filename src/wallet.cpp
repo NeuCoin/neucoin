@@ -6,6 +6,7 @@
 
 #include <boost/algorithm/string/replace.hpp>
 
+#include "main.h"
 #include "wallet.h"
 #include "walletdb.h"
 #include "crypter.h"
@@ -304,7 +305,7 @@ void CWallet::WalletUpdateSpent(const CTransaction &tx)
             if (mi != mapWallet.end())
             {
                 CWalletTx& wtx = (*mi).second;
-                if (!wtx.IsSpent(txin.prevout.n) && IsMine(wtx.vout[txin.prevout.n]))
+                if (!wtx.IsSpent(txin.prevout.n) && (IsMine(wtx.vout[txin.prevout.n]) || IsMineForMintingOnly(wtx.vout[txin.prevout.n])))
                 {
                     printf("WalletUpdateSpent found spent coin %sppc %s\n", FormatMoney(wtx.GetCredit()).c_str(), wtx.GetHash().ToString().c_str());
                     wtx.MarkSpent(txin.prevout.n);
@@ -416,7 +417,7 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
         LOCK(cs_wallet);
         bool fExisted = mapWallet.count(hash);
         if (fExisted && !fUpdate) return false;
-        if (fExisted || IsMine(tx) || IsFromMe(tx))
+        if (fExisted || IsMine(tx) || IsFromMe(tx) || IsMineForMintingOnly(tx))
         {
             CWalletTx wtx(this,tx);
             // Get merkle branch if transaction was found in a block
@@ -884,6 +885,25 @@ int64 CWallet::GetBalance() const
     return nTotal;
 }
 
+int64 CWallet::GetMintingOnlyBalance() const
+{
+    int64 nTotal = 0;
+    {
+        LOCK(cs_wallet);
+        for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
+        {
+            const CWalletTx* pcoin = &(*it).second;
+
+            if (pcoin->IsConfirmed())
+            {
+                nTotal += pcoin->GetAvailableCreditForMintingOnly();
+            }
+        }
+    }
+
+    return nTotal;
+}
+
 int64 CWallet::GetUnconfirmedBalance() const
 {
     int64 nTotal = 0;
@@ -922,13 +942,16 @@ int64 CWallet::GetNewMint() const
     {
         const CWalletTx* pcoin = &(*it).second;
         if (pcoin->IsCoinBase() && pcoin->GetBlocksToMaturity() > 0 && pcoin->GetDepthInMainChain() > 0)
+        {
             nTotal += CWallet::GetCredit(*pcoin);
+            nTotal += CWallet::GetMintingOnlyCredit(*pcoin);
+        }
     }
     return nTotal;
 }
 
 // populate vCoins with vector of spendable (age, (value, (transaction, output_number))) outputs
-void CWallet::AvailableCoins(unsigned int nSpendTime, vector<COutput>& vCoins, bool fOnlyConfirmed) const
+void CWallet::AvailableCoins(unsigned int nSpendTime, vector<COutput>& vCoins, bool fOnlyConfirmed, bool fMintingOnly) const
 {
     vCoins.clear();
 
@@ -952,11 +975,39 @@ void CWallet::AvailableCoins(unsigned int nSpendTime, vector<COutput>& vCoins, b
                 if (pcoin->nTime > nSpendTime)
                     continue;  // ppcoin: timestamp must not exceed spend time
 
-                if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) && pcoin->vout[i].nValue > 0)
+                if (!(pcoin->IsSpent(i)) &&
+                    (fMintingOnly ? IsMineForMintingOnly(pcoin->vout[i]) : IsMine(pcoin->vout[i])) &&
+                    pcoin->vout[i].nValue > 0)
+                {
                     vCoins.push_back(COutput(pcoin, i, pcoin->GetDepthInMainChain()));
+                }
             }
         }
     }
+}
+
+bool CWallet::SelectMintingOnlyCoins(unsigned int nSpendTime, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, int64& nValueRet) const
+{
+    std::vector<Coutput> vCoins;
+    AvailableCoins(vCoins, nSpendTime, true, true);
+
+    setCoinsRet.clear();
+    nValueRet = 0;
+
+    BOOSET_FOREACH(Coutput output, vCoins)
+    {
+        const CWalletTx * pcoin = output.tx;
+
+        int i = output.i;
+        int64 n = pcoin->vout[i].nValue;
+
+        std::pair<int64, std::pair<const CWalletTx*, unsigned int> > coin = std::make_pair(n, std::make_pair(pcoin, i));
+
+        setCoinsRet.insert(coin.second);
+        nValueRet += coin.first;
+    }
+
+    return true;
 }
 
 bool CWallet::SelectCoinsMinConf(int64 nTargetValue, int nConfMine, int nConfTheirs, vector<COutput> vCoins,
@@ -1256,20 +1307,37 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     txNew.vout.push_back(CTxOut(0, scriptEmpty));
     // Choose coins to use
     int64 nBalance = GetBalance();
+    int64 nMintingOnlyBalance = GetMintingOnlyBalance();
     int64 nReserveBalance = 0;
     if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
         return error("CreateCoinStake : invalid reserve balance amount");
-    if (nBalance <= nReserveBalance)
+    if (nBalance <= nReserveBalance && nMintingOnlyBalance == 0)
         return false;
     set<pair<const CWalletTx*,unsigned int> > setCoins;
     vector<const CWalletTx*> vwtxPrev;
     int64 nValueIn = 0;
-    if (!SelectCoins(nBalance - nReserveBalance, txNew.nTime, setCoins, nValueIn))
-        return false;
+
+    if (nBalance > nReserveBalance)
+    {
+        if (!SelectCoins(nBalance - nReserveBalance, txNew.nTime, setCoins, nValueIn))
+        {
+            return false;
+        }
+    }
+
+    if (nMintingOnlyBalance > 0)
+    {
+        int64 nMintingOnlyValueIn = 0;
+        if (!SelectMintingOnlyCoins(txNew.nTime, setCoins, nMintingOnlyValueIn))
+            return false;
+        nValueIn += nMintingOnlyValueIn;
+    }
+
     if (setCoins.empty())
         return false;
     int64 nCredit = 0;
     CScript scriptPubKeyKernel;
+    bool fMintingOnly = false;
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {
         CTxDB txdb("r");
@@ -1310,12 +1378,37 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 }
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinStake : parsed kernel type=%d\n", whichType);
-                if (whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH)
+                txnouttype subType = TX_NONSTANDARD;
+                if (whichType == TX_SCRIPTHASH)
+                {
+                    CScript subScript;
+
+                    if (!keystore.GetCScript(CScriptID(uint160(vSolutions[0])), subScript))
+                    {
+                        if (fDebug && GetBoolArg("-printcoinstake"))
+                            printf("CreateCoinStake: failed get script\n");
+                        break ;
+                    }
+
+                    if (!Solver(subScript, subType, vSolutions))
+                    {
+                        if (fDebug && GetBoolArg("-printcoinstake"))
+                            printf("CreateCoinStake: failed parse script\n");
+                        break ;
+                    }
+
+                    if (fDebug && GetBoolArg("-printcoinstake"))
+                    {
+                        printf("CreateCoinStake: parsed sub script kernel type=%d\n", whichType);
+                    }
+                }
+                if (whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH && subType != TX_COLDMINTING)
                 {
                     if (fDebug && GetBoolArg("-printcoinstake"))
-                        printf("CreateCoinStake : no support for kernel type=%d\n", whichType);
-                    break;  // only support pay to public key and pay to address
+                        printf("CreateCoinStake : no support for kernel type=%d (subtype=%d)\n", whichType, subType);
+                    break;  // only support pay to public key, pay to address, and cold minting
                 }
+                fMintingOnly = (subType == TX_COLDMINTING);
                 if (whichType == TX_PUBKEYHASH) // pay to address type
                 {
                     // convert to pay to public key type
@@ -1347,7 +1440,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         if (fKernelFound || fShutdown)
             break; // if kernel is found stop searching
     }
-    if (nCredit == 0 || nCredit > nBalance - nReserveBalance)
+    if (nCredit == 0 || (nCredit > nBalance - nReserveBalance && !fMintingOnly))
         return false;
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {

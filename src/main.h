@@ -503,6 +503,11 @@ public:
         return (vin.size() > 0 && (!vin[0].prevout.IsNull()) && vout.size() >= 2 && vout[0].IsEmpty());
     }
 
+    /**
+        @return True if the transaction is a coinstake and the coins aren't moved nor destroyed
+     */
+    bool IsRestrictedCoinStake() const;
+
     /** Check for standard transaction types
         @return True if all outputs (scriptPubKeys) use only standard transaction forms
     */

@@ -37,7 +37,9 @@ enum txnouttype
     TX_PUBKEYHASH,
     TX_SCRIPTHASH,
     TX_MULTISIG,
+    TX_COINSTAKE,
     TX_NULL_DATA,
+    TX_COLDMINTING
 };
 
 class CNoDestination {
@@ -191,7 +193,8 @@ enum opcodetype
     OP_NOP9 = 0xb8,
     OP_NOP10 = 0xb9,
 
-
+    // proof-of-stake
+    OP_MINT = 0xc0,
 
     // template matching params
     OP_SMALLDATA = 0xf9,
@@ -543,7 +546,7 @@ public:
 
     void SetDestination(const CTxDestination& address);
     void SetMultisig(int nRequired, const std::vector<CKey>& keys);
-
+    void SetColdMinting(const CKeyID& mintingKey, const CKeyID& spendingKey);
 
     void PrintHex() const
     {
@@ -594,6 +597,7 @@ int ScriptSigArgsExpected(txnouttype t, const std::vector<std::vector<unsigned c
 bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType);
 bool IsMine(const CKeyStore& keystore, const CScript& scriptPubKey);
 bool IsMine(const CKeyStore& keystore, const CTxDestination &dest);
+bool IsMineForMintingOnly(const CKeyStore& keystore, const CScript& scriptPubKey);
 bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet);
 bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<CTxDestination>& addressRet, int& nRequiredRet);
 bool SignSignature(const CKeyStore& keystore, const CScript& fromPubKey, CTransaction& txTo, unsigned int nIn, int nHashType=SIGHASH_ALL);

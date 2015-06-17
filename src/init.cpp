@@ -8,6 +8,7 @@
 #include "testnet.h"
 #include "walletdb.h"
 #include "bitcoinrpc.h"
+#include "main.h"
 #include "net.h"
 #include "init.h"
 #include "util.h"
