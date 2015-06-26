@@ -311,6 +311,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fTxI
     result.push_back(Pair("bits", HexBits(block.nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
     result.push_back(Pair("mint", ValueFromAmount(blockindex->nMint)));
+    result.push_back(Pair("moneysupply", ValueFromAmount(blockindex->nMoneySupply)));
     if (blockindex->pprev)
         result.push_back(Pair("previousblockhash", blockindex->pprev->GetBlockHash().GetHex()));
     if (blockindex->pnext)
