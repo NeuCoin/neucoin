@@ -174,6 +174,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
     entry.push_back(Pair("version", tx.nVersion));
     entry.push_back(Pair("time", (boost::int64_t)tx.nTime));
     entry.push_back(Pair("locktime", (boost::int64_t)tx.nLockTime));
+    entry.push_back(Pair("size", (int)::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION)));
     Array vin;
     BOOST_FOREACH(const CTxIn& txin, tx.vin)
     {
@@ -233,6 +234,7 @@ void TxToJSON(const CTransaction& tx, Object& txdata)
     txdata.push_back(Pair("locktime", (int)tx.nLockTime));
     txdata.push_back(Pair("is_coinbase", tx.IsCoinBase()));
     txdata.push_back(Pair("is_coinstake", tx.IsCoinStake()));
+    txdata.push_back(Pair("size", (int)::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION)));
 
     // add inputs
     Array vins;
