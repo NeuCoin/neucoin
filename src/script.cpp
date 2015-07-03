@@ -1219,7 +1219,7 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsi
         mTemplates.insert(make_pair(TX_PUBKEY, CScript() << OP_PUBKEY << OP_CHECKSIG));
 
         // Cold minting script
-        mTemplates.insert(make_pair(TX_COLDMINTING, CScript() << OP_DUP << OP_HASH160 << OP_COINSTAKE << OP_IF << OP_PUBKEYHASH << OP_ELSE << OP_PUBKEYHASH << OP_ENDIF << OP_EQUALVERIFY << OP_CHECKSIG));
+        mTemplates.insert(make_pair(TX_COLDMINTING, CScript() << OP_DUP << OP_HASH160 << OP_MINT << OP_IF << OP_PUBKEYHASH << OP_ELSE << OP_PUBKEYHASH << OP_ENDIF << OP_EQUALVERIFY << OP_CHECKSIG));
 
         // Bitcoin address tx, sender provides hash of pubkey, receiver provides signature and pubkey
         mTemplates.insert(make_pair(TX_PUBKEYHASH, CScript() << OP_DUP << OP_HASH160 << OP_PUBKEYHASH << OP_EQUALVERIFY << OP_CHECKSIG));
@@ -1409,7 +1409,7 @@ bool Solver(const CKeyStore& keystore, const CScript& scriptPubKey, uint256 hash
         return (SignN(vSolutions, keystore, hash, nHashType, scriptSigRet));
     case TX_COLDMINTING:
         keyID = CKeyID(uint160(vSolutions[fCoinStake ? 0 : 1]));
-        if (Sign1(keyID(keyID, keystore, hash, nHashType, scriptSigRet)))
+        if (Sign1(keyID, keystore, hash, nHashType, scriptSigRet))
         {
             CPubKey vch;
             keystore.GetPubKey(keyID, vch);
@@ -1851,7 +1851,7 @@ CScript CombineSignatures(CScript scriptPubKey, const CTransaction& txTo, unsign
     return CombineSignatures(scriptPubKey, txTo, nIn, txType, vSolutions, stack1, stack2);
 }
 
-void CSCript::SetColdMinting(const CKeyID& mintingKey, const CKeyID& spendingKey)
+void CScript::SetColdMinting(const CKeyID& mintingKey, const CKeyID& spendingKey)
 {
     clear();
 

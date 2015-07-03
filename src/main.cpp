@@ -467,27 +467,26 @@ bool CTransaction::IsRestrictedCoinStake() const
     if (!IsCoinStake())
         return false;
 
-    CCoinsViewCache inputs(*pcoinsTip, true);
-
     int64 nValueIn = 0;
     CScript onlyAllowedScript;
 
     for (unsigned int i = 0; i < vin.size(); ++i)
     {
-        const COutPoint& previout = vin[i].prevout;
+        const COutPoint& prevout = vin[i].prevout;
 
-        CCoins coins;
-        if (!inputs.GetCoins(prevout.hash, coins))
+        CTxDB txdb("r");
+        CTransaction txPrev;
+        CTxIndex txindex;
+        if (!txPrev.ReadFromDisk(txdb, prevout, txindex))
             return false;
-        if (!coins.IsAvailable(prevout.n))
-            return false;
+        txdb.Close();
 
-        const CTxOut& prevtxo = coins.vout[prevout.n];
+        const CTxOut& prevtxo = txPrev.vout[prevout.n];
         const CScript& prevScript = prevtxo.scriptPubKey;
 
         if (i == 0)
         {
-            onlyAllowedcript = prevScript;
+            onlyAllowedScript = prevScript;
 
             if (onlyAllowedScript.empty())
             {

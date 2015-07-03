@@ -988,13 +988,13 @@ void CWallet::AvailableCoins(unsigned int nSpendTime, vector<COutput>& vCoins, b
 
 bool CWallet::SelectMintingOnlyCoins(unsigned int nSpendTime, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, int64& nValueRet) const
 {
-    std::vector<Coutput> vCoins;
-    AvailableCoins(vCoins, nSpendTime, true, true);
+    std::vector<COutput> vCoins;
+    AvailableCoins(nSpendTime, vCoins, true, true);
 
     setCoinsRet.clear();
     nValueRet = 0;
 
-    BOOSET_FOREACH(Coutput output, vCoins)
+    BOOST_FOREACH(COutput output, vCoins)
     {
         const CWalletTx * pcoin = output.tx;
 
