@@ -21,7 +21,7 @@ function updateConstants( constants, parameters ) {
         var value = parameters[ name ];
 
         var macroRegexp = new RegExp( `(#define\\s+${nameMatch}\\s+).*`, 'g' );
-        var variableRegexp = new RegExp( `([a-zA-Z0-9:_]+(?:\\s+const)?\\s+${nameMatch}\\s+=\\s+).*`, 'g' );
+        var variableRegexp = new RegExp( `([a-zA-Z0-9:_<>]+(?:\\s+const)?\\s+${nameMatch}\\s+=\\s+).*`, 'g' );
 
         constants = constants.replace( macroRegexp, ( _, keep ) => `${keep}${value}` );
         constants = constants.replace( variableRegexp, ( _, keep ) => `${keep}${value};` );
