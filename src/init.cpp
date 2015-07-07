@@ -199,8 +199,10 @@ bool AppInit2(int argc, char* argv[])
           _("Options:") + "\n" +
             "  -conf=<file>     \t\t  " + _("Specify configuration file (default: " COIN_SLUG ".conf)") + "\n" +
             "  -pid=<file>      \t\t  " + _("Specify pid file (default: " COIN_CLIENT ".pid)") + "\n" +
-            "  -gen             \t\t  " + _("Generate coins") + "\n" +
+            "  -gen             \t\t  " + _("Generate coins (POW)") + "\n" +
             "  -gen=0           \t\t  " + _("Don't generate coins") + "\n" +
+            "  -mint            \t\t  " + _("Mint coins (POS)") + "\n" +
+            "  -mint=0          \t\t  " + _("Don't mint coins") + "\n" +
             "  -min             \t\t  " + _("Start minimized") + "\n" +
             "  -splash          \t\t  " + _("Show splash screen on startup (default: 1)") + "\n" +
             "  -datadir=<dir>   \t\t  " + _("Specify data directory") + "\n" +
