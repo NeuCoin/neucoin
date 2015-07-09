@@ -2165,6 +2165,7 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
 
     if (!Solver(txout.scriptPubKey, whichType, vSolutions))
         return false;
+
     if (whichType == TX_PUBKEY)
     {
         // Sign
@@ -2176,6 +2177,21 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
             return false;
         return key.Sign(GetHash(), vchBlockSig);
     }
+    else if (whichType == TX_SCRIPTHASH)
+    {
+        CScript subscript;
+        if (!keystore.GetCScript(CScriptID(uint160(vSolutions[0])), subscript))
+            return false;
+        if (!Solver(subscript, whichType, vSolutions))
+            return false;
+        if (whichType != TX_COLDMINTING)
+            return false;
+        CKey key;
+        if (!keystore.GetKey(uint160(vSolutions[0]), key))
+            return false;
+        return key.Sign(GetHash(), vchBlockSig);
+    }
+
     return false;
 }
 
@@ -2191,6 +2207,7 @@ bool CBlock::CheckBlockSignature() const
 
     if (!Solver(txout.scriptPubKey, whichType, vSolutions))
         return false;
+
     if (whichType == TX_PUBKEY)
     {
         const valtype& vchPubKey = vSolutions[0];
@@ -2201,6 +2218,47 @@ bool CBlock::CheckBlockSignature() const
             return false;
         return key.Verify(GetHash(), vchBlockSig);
     }
+    else if (whichType == TX_SCRIPTHASH)
+    {
+        // Output is a pay-to-script-hash
+        // Only allowed with cold minting
+
+        if (!IsProofOfStake())
+            return false;
+
+        // CoinStake scriptSig should contain 3 pushes: the signature, the pubkey and the cold minting script
+        CScript scriptSig = vtx[1].vin[0].scriptSig;
+        if (!scriptSig.IsPushOnly())
+            return false;
+
+        vector<vector<unsigned char> > stack;
+        if (!EvalScript(stack, scriptSig, CTransaction(), 0, 0))
+            return false;
+        if (stack.size() != 3)
+            return false;
+
+        // Verify the script is a cold minting script
+        const valtype& scriptSerialized = stack.back();
+        CScript script(scriptSerialized.begin(), scriptSerialized.end());
+        if (!Solver(script, whichType, vSolutions))
+            return false;
+        if (whichType != TX_COLDMINTING)
+            return false;
+
+        // Verify the scriptSig pubkey matches the minting key
+        valtype& vchPubKey = stack[1];
+        if (Hash160(vchPubKey) != uint160(vSolutions[0]))
+            return false;
+
+        // Verify the block signature with the minting key
+        CKey key;
+        if (!key.SetPubKey(vchPubKey))
+            return false;
+        if (vchBlockSig.empty())
+            return false;
+        return key.Verify(GetHash(), vchBlockSig);
+    }
+
     return false;
 }
 
@@ -4019,7 +4077,6 @@ void BitcoinMiner(CWallet *pwallet, bool fProofOfStake)
         auto_ptr<CBlock> pblock(CreateNewBlock(reservekey, pwallet, fProofOfStake));
         if (!pblock.get())
             return;
-
         IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
 
         if (fProofOfStake)

@@ -1654,7 +1654,9 @@ void StartNode(void* parg)
     GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain);
 
     // ppcoin: mint proof-of-stake blocks in the background
-    if (GetBoolArg("-mint", true) && !CreateThread(ThreadStakeMinter, pwalletMain)) {
+    if (!GetBoolArg("-mint", true)) {
+        printf("Minting disabled\n");
+    } else if (!CreateThread(ThreadStakeMinter, pwalletMain)) {
         printf("Error: CreateThread(ThreadStakeMinter) failed\n");
     }
 }

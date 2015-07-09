@@ -1440,8 +1440,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         if (fKernelFound || fShutdown)
             break; // if kernel is found stop searching
     }
+
     if (nCredit == 0 || (nCredit > nBalance - nReserveBalance && !fMintingOnly))
         return false;
+
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {
         // Attempt to add more inputs
