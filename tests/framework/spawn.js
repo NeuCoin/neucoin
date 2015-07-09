@@ -77,15 +77,17 @@ export async function spawnClient( options = { } ) {
 
     for ( var option of Object.keys( options ) ) {
 
-        var values = compact( flatten( [ options[ option ] ] ) );
+        var values = flatten( [ options[ option ] ] );
 
         for ( var value of values ) {
 
-            if ( ! value )
+            if ( value == null )
                 continue ;
 
-            if ( typeof value === 'boolean' ) {
+            if ( value === true ) {
                 commandLine.push( `-${option}` );
+            } else if ( value === false ) {
+                commandLine.push( `-${option}=0` );
             } else {
                 commandLine.push( `-${option}=${value}` );
             }

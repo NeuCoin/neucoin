@@ -68,6 +68,6 @@ export async function compileWith( ... parameterList ) {
     var modifiedConstants = updateConstants( constants, parameters );
     Fs.writeFileSync( modifiedConstantsPath, modifiedConstants );
 
-    await compile( 'CONSTANTS=constants.test.cpp' );
+    await compile( 'CONSTANTS=constants.test.cpp TESTING=1' );
 
 }

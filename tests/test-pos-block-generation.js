@@ -38,7 +38,7 @@ export async function test( ) {
 
     await mineSomePowBlocks( client1, 63 );
 
-    // Let's wait some time to var the PoS target stabilize around 10 seconds
+    // Let's wait some time to let the PoS target stabilize around 10 seconds
 
     await delayExecution( 60 );
 
@@ -47,7 +47,7 @@ export async function test( ) {
 
     var { result : blockCount } = await sendRpcQuery( client1, { method : 'getblockcount' } );
 
-    // We wait a long time, and expect to get about 80% of the expected block count
+    // We wait a long time, and expect to get about 100%(~20%) of the expected block count
 
     await delayExecution( 10 * BLOCKS_TO_WAIT );
 

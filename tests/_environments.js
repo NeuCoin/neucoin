@@ -8,10 +8,16 @@ export var fastChain = {
     STAKE_MODIFIER_CHECKPOINTS : `boost::assign::map_list_of(0, 0xfd11f4e7)`,
 
     POW_INITIAL_TARGET         : `target_t(~uint256(0))`,
-    POW_MAX_TARGET             : `target_t(~uint256(0))`,
+    POS_INITIAL_TARGET         : `target_t(~uint256(0))`,
 
-    POW_TARGET_SPACING         : `1 * MINUTE`,
-    POS_TARGET_SPACING         : `1 * MINUTE`,
+    POW_MAX_TARGET             : `target_t(~uint256(0))`,
+    POS_MAX_TARGET             : `target_t(~uint256(0))`,
+
+    POW_TARGET_SPACING         : `1 * SECOND`,
+    POS_TARGET_SPACING         : `1 * SECOND`,
+
+    STAKE_MIN_AGE              : `0 * SECOND`,
+    STAKE_MAX_AGE              : `0 * SECOND`,
 
     COINBASE_MATURITY          : `1`
 
