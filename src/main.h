@@ -97,7 +97,7 @@ bool IsInitialBlockDownload();
 std::string GetWarnings(std::string strFor);
 uint256 WantedByOrphan(const CBlock* pblockOrphan);
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
-void BitcoinMiner(CWallet *pwallet, bool fProofOfStake);
+bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock = 0, uint64 nTimeout = 0);
 bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock);
 
 

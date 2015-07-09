@@ -46,8 +46,9 @@ uint32_t                          GENESIS_BLOCK_VERSION       = 1;
 std::map<blockheight_t, hash_t>   BLOCK_CHECKPOINTS           = boost::assign::map_list_of(0, GENESIS_HASH);
 std::map<blockheight_t, uint32_t> STAKE_MODIFIER_CHECKPOINTS  = boost::assign::map_list_of(0, 0x0e00670b);
 
-//                                The maturity is the number of block required for a transaction to be confirmed by the network (excluding the block which embeds the transaction)
+//                                The maturity is the number of block required for a coinbase/coinstake transaction to be confirmed by the network (excluding the block which embeds the transaction)
 //                                Since you need to include your transaction in a block, and the COINBASE_MATURITY cannot be lower than 1, you will always need at least two blocks before maturing
+//                                Note that the coinbase maturity is actually also applied to coinstakes. This constant should probably be renamed to reflect this fact
 
 blockheight_t                     COINBASE_MATURITY           = 500;
 

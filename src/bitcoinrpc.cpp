@@ -3129,6 +3129,42 @@ Value addcoldmintingaddress(const Array& params, bool fHelp)
     return CBitcoinAddress(scriptID).ToString();
 }
 
+#ifdef TESTING
+Value generatestake(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "generatestake [amount] [timeout]\n"
+            "generate proof of stake blocks"
+        );
+
+    if (GetBoolArg("-stakegen", true))
+        throw JSONRPCError(-3, "Stake generation enabled. Won't start another generation.");
+
+    int nCount = 1;
+    int nTimeout = 0;
+
+    if (params.size() >= 1)
+        nCount = params[0].get_int();
+    if (params.size() >= 2)
+        nTimeout = params[1].get_int();
+
+    Array hashes;
+
+    while (hashes.size() < nCount)
+    {
+        uint256 hash;
+
+        if ( ! BitcoinMiner(pwalletMain, true, &hash, nTimeout) )
+            break ;
+
+        hashes.push_back(hash.ToString());
+    }
+
+    return hashes;
+}
+#endif
+
 //
 // Call Table
 //
@@ -3199,7 +3235,10 @@ static const CRPCCommand vRPCCommands[] =
     { "signrawtransaction",     &signrawtransaction,     false},
     { "sendrawtransaction",     &sendrawtransaction,     false},
     { "getrawmempool",          &getrawmempool,          true },
-    { "addcoldmintingaddress",  &addcoldmintingaddress,  false}
+    { "addcoldmintingaddress",  &addcoldmintingaddress,  false},
+#ifdef TESTING
+    { "generatestake",          &generatestake,          false },
+#endif
 };
 
 CRPCTable::CRPCTable()
@@ -3847,6 +3886,7 @@ Array RPCConvertValues(const std::string &strMethod, const std::vector<std::stri
     if (strMethod == "signrawtransaction"     && n > 1) ConvertTo<Array>(params[1]);
     if (strMethod == "signrawtransaction"     && n > 2) ConvertTo<Array>(params[2]);
     if (strMethod == "sendrawtransaction"     && n > 1) ConvertTo<boost::int64_t>(params[1]);
+    if (strMethod == "generatestake"          && n > 1) ConvertTo<boost::int64_t>(params[1]);
 
     return params;
 }

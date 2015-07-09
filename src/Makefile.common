@@ -49,9 +49,17 @@ SOURCES= \
 OBJECTS=$(addsuffix .o, $(SOURCES))
 DEPENDENCIES=$(addsuffix .d, $(SOURCES))
 
+MAKEDEPS=Makefile.common .make.opt
+
 ifeq ($(DEBUG),1)
 
   CPPFLAGS += -g -O0
+
+endif
+
+ifeq ($(TESTING),1)
+
+  CPPFLAGS += -DTESTING
 
 endif
 
@@ -59,16 +67,19 @@ all: $(TARGET)
 
 -include $(DEPENDENCIES)
 
-$(TARGET): $(OBJECTS)
-	$(CXX) -o $@ $^ $(LDFLAGS)
+.make.opt: force
+	@HASH=`md5sum <<< '$(CPPFLAGS) :: $(CXXFLAGS) :: $(LDFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
-%.cpp.d: %.cpp Makefile.common $(MAKEFILE)
+$(TARGET): $(OBJECTS) $(MAKEDEPS)
+	$(CXX) -o $@ $(OBJECTS) $(LDFLAGS)
+
+%.cpp.d: %.cpp $(MAKEDEPS)
 	$(CXX) -M -MT "${@:.cpp.d=.cpp.o}" -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
 
-%.cpp.o: %.cpp Makefile.common $(MAKEFILE)
+%.cpp.o: %.cpp $(MAKEDEPS)
 	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
 
-clean:
+clean: force
 	$(RM) -f **/*.o
 	$(RM) -f **/*.d
 
@@ -78,5 +89,4 @@ fclean: clean
 re: fclean
 	$(MAKE) -f $(MAKEFILE) all
 
-# $(TARGET) is PHONY so that it is relinked even when using different source files (due to $(CONSTANTS))
-.PHONY: all clean fclean re $(TARGET)
+.PHONY: force
