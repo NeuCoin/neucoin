@@ -338,7 +338,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fTxI
         else if (fTxDetails)
         {
             Object txdata;
-            TxToJSON(tx, txdata);
+            TxToJSON(tx, block.GetHash(), txdata);
             txinfo.push_back(txdata);
         }
         else
