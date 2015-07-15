@@ -10,8 +10,8 @@ export async function test( ) {
 
     await compileWith( fastChain, smallChain );
 
-    var client1 = await spawnClient( { mint : false } );
-    var client2 = await spawnClient( { mint : false, addnode : `127.0.0.1:${client1.port}` } );
+    var client1 = await spawnClient( { } );
+    var client2 = await spawnClient( { addnode : `127.0.0.1:${client1.port}` } );
 
     await mineSomePowBlocks( client1, 63 );
     await mineSomePowBlocks( client1, 1 );

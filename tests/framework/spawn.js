@@ -67,7 +67,10 @@ export async function spawnClient( options = { } ) {
 
         rpcuser : RPC_USER,
         rpcpassword : RPC_PASSWORD,
-        rpcallowip : '*'
+        rpcallowip : '*',
+
+        gen : false,
+        stakegen : false
 
     }, options );
 

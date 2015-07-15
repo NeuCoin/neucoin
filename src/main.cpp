@@ -4050,7 +4050,7 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
 
-    while (fGenerateBitcoins || fProofOfStake)
+    while (minedBlock || fGenerateBitcoins || fProofOfStake)
     {
         if (fShutdown)
             return false;
@@ -4064,7 +4064,8 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
 
             if (fShutdown)
                 return false;
-            if ((!fGenerateBitcoins) && !fProofOfStake)
+
+            if (!minedBlock && (!fGenerateBitcoins && !fProofOfStake))
                 return false;
         }
 
@@ -4118,55 +4119,53 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
         printf("Running BitcoinMiner with %d transactions in block\n", pblock->vtx.size());
 
         //
-        // Prebuild hash buffers
-        //
-        char pmidstatebuf[32+16]; char* pmidstate = alignup<16>(pmidstatebuf);
-        char pdatabuf[128+16];    char* pdata     = alignup<16>(pdatabuf);
-        char phash1buf[64+16];    char* phash1    = alignup<16>(phash1buf);
-
-        FormatHashBuffers(pblock.get(), pmidstate, pdata, phash1);
-
-        unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
-        unsigned int& nBlockNonce = *(unsigned int*)(pdata + 64 + 12);
-
-        //
         // Search
         //
         int64 nStart = GetTime();
         uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
-        uint256 hashbuf[2];
-        uint256& hash = *alignup<16>(hashbuf);
 
         loop
         {
             unsigned int nHashesDone = 0;
-            unsigned int nNonceFound;
 
-            // Crypto++ SHA-256
-            nNonceFound = ScanHash_CryptoPP(pmidstate, pdata + 64, phash1, (char*)&hash, nHashesDone);
+            pblock->nNonce = 0;
+
+            loop
+            {
+                if (pblock->GetHash() <= hashTarget)
+                    break;
+
+                pblock->nNonce += 1;
+                nHashesDone += 1;
+
+                if ((pblock->nNonce & 0xFFFF) == 0)
+                    break;
+            }
 
             // Check if something found
-            if (nNonceFound != (unsigned int) -1)
+            if (pblock->GetHash() <= hashTarget)
             {
-                for (unsigned int i = 0; i < sizeof(hash)/4; i++)
-                    ((unsigned int*)&hash)[i] = ByteReverse(((unsigned int*)&hash)[i]);
-
-                if (hash <= hashTarget)
+                if (!pblock->SignBlock(*pwalletMain))
                 {
-                    // Found a solution
-                    pblock->nNonce = ByteReverse(nNonceFound);
-                    assert(hash == pblock->GetHash());
-                    if (!pblock->SignBlock(*pwalletMain))
-                    {
-                        strMintWarning = strMintMessage;
-                        break;
-                    }
-                    strMintWarning = "";
-                    SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                    CheckWork(pblock.get(), *pwalletMain, reservekey);
-                    SetThreadPriority(THREAD_PRIORITY_LOWEST);
+                    strMintWarning = strMintMessage;
                     break;
                 }
+                else
+                {
+                    strMintWarning = "";
+                }
+
+                SetThreadPriority(THREAD_PRIORITY_NORMAL);
+                bool fSucceeded = CheckWork(pblock.get(), *pwalletMain, reservekey);
+                SetThreadPriority(THREAD_PRIORITY_LOWEST);
+
+                if (fSucceeded && minedBlock)
+                {
+                    *minedBlock = pblock->GetHash();
+                    return true;
+                }
+
+                break;
             }
 
             // Meter hashes/sec
@@ -4205,13 +4204,11 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
             // Check for stop or if block needs to be rebuilt
             if (fShutdown)
                 return false;
-            if (!fGenerateBitcoins)
+            if (!minedBlock && !fGenerateBitcoins)
                 return false;
             if (fLimitProcessors && vnThreadsRunning[THREAD_MINER] > nLimitProcessors)
                 return false;
             if (vNodes.empty())
-                break;
-            if (nBlockNonce >= 0xffff0000)
                 break;
             if (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60)
                 break;
@@ -4222,7 +4219,6 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
             pblock->nTime = max(pindexPrev->GetMedianTimePast()+1, pblock->GetMaxTransactionTime());
             pblock->nTime = max(pblock->GetBlockTime(), pindexPrev->GetBlockTime() - MAX_CLOCK_DRIFT);
             pblock->UpdateTime(pindexPrev);
-            nBlockTime = ByteReverse(pblock->nTime);
 
             if (pblock->GetBlockTime() >= (int64)pblock->vtx[0].nTime + MAX_CLOCK_DRIFT)
             {

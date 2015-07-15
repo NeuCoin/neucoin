@@ -3130,17 +3130,8 @@ Value addcoldmintingaddress(const Array& params, bool fHelp)
 }
 
 #ifdef TESTING
-Value generatestake(const Array& params, bool fHelp)
+static Value generateblock(const Array& params, bool fHelp, bool fProofOfStake)
 {
-    if (fHelp || params.size() > 1)
-        throw runtime_error(
-            "generatestake [amount] [timeout]\n"
-            "generate proof of stake blocks"
-        );
-
-    if (GetBoolArg("-stakegen", true))
-        throw JSONRPCError(-3, "Stake generation enabled. Won't start another generation.");
-
     int nCount = 1;
     int nTimeout = 0;
 
@@ -3155,13 +3146,41 @@ Value generatestake(const Array& params, bool fHelp)
     {
         uint256 hash;
 
-        if ( ! BitcoinMiner(pwalletMain, true, &hash, nTimeout) )
+        if ( ! BitcoinMiner(pwalletMain, fProofOfStake, &hash, nTimeout) )
             break ;
 
         hashes.push_back(hash.ToString());
     }
 
     return hashes;
+}
+
+Value generatework(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "generatework [amount] [timeout]\n"
+            "generate proof of work blocks"
+        );
+
+    if (GetBoolArg("-gen", false))
+        throw JSONRPCError(-3, "Cannot manually generate a proof-of-Work block if the client run with -gen=1");
+
+    return generateblock(params, fHelp, false);
+}
+
+Value generatestake(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "generatestake [amount] [timeout]\n"
+            "generate proof of stake blocks"
+        );
+
+    if (GetBoolArg("-stakegen", true))
+        throw JSONRPCError(-3, "Cannot manually generate a proof-of-Work block if the client run with -stakegen=1");
+
+    return generateblock(params, fHelp, true);
 }
 #endif
 
@@ -3237,6 +3256,7 @@ static const CRPCCommand vRPCCommands[] =
     { "getrawmempool",          &getrawmempool,          true },
     { "addcoldmintingaddress",  &addcoldmintingaddress,  false},
 #ifdef TESTING
+    { "generatework",           &generatework,           false },
     { "generatestake",          &generatestake,          false },
 #endif
 };
@@ -3886,7 +3906,10 @@ Array RPCConvertValues(const std::string &strMethod, const std::vector<std::stri
     if (strMethod == "signrawtransaction"     && n > 1) ConvertTo<Array>(params[1]);
     if (strMethod == "signrawtransaction"     && n > 2) ConvertTo<Array>(params[2]);
     if (strMethod == "sendrawtransaction"     && n > 1) ConvertTo<boost::int64_t>(params[1]);
+    if (strMethod == "generatework"           && n > 1) ConvertTo<boost::int64_t>(params[1]);
+    if (strMethod == "generatework"           && n > 2) ConvertTo<boost::int64_t>(params[2]);
     if (strMethod == "generatestake"          && n > 1) ConvertTo<boost::int64_t>(params[1]);
+    if (strMethod == "generatestake"          && n > 2) ConvertTo<boost::int64_t>(params[2]);
 
     return params;
 }
