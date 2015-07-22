@@ -1,3 +1,3 @@
 #pragma once
 
-bool CheckClientSanity(void);
+bool CheckClientSanity(bool fAllowVulnerabilities = false);

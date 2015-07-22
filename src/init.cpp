@@ -341,8 +341,13 @@ bool AppInit2(int argc, char* argv[])
     printf(COIN_NAME " version %s (%s)\n", FormatFullVersion().c_str(), CLIENT_DATE.c_str());
     printf("Default data directory %s\n", GetDefaultDataDir().string().c_str());
 
-    if (!CheckClientSanity())
+#ifdef TESTING
+    if (!CheckClientSanity(true))
         return false;
+#else
+    if (!CheckClientSanity(false))
+        return false;
+#endif
 
     if (GetBoolArg("-loadblockindextest"))
     {

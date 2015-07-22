@@ -80,13 +80,13 @@ blockheight_t                     POW_MAX_BLOCK               = 52596;
 
 //                                Initial network targets
 
-target_t                          POW_INITIAL_TARGET          = target_t(~uint256(0) >> 40);
-target_t                          POS_INITIAL_TARGET          = target_t(~uint256(0) >> 40);
+target_t                          POW_INITIAL_TARGET          = target_t(~uint256(0) >> 20);
+target_t                          POS_INITIAL_TARGET          = target_t(~uint256(0) >> 20);
 
 //                                Maximal network targets (after which mining/minting a block won't be easier)
 
-target_t                          POW_MAX_TARGET              = target_t(~uint256(0) >> 32);
-target_t                          POS_MAX_TARGET              = target_t(~uint256(0) >> 32);
+target_t                          POW_MAX_TARGET              = target_t(~uint256(0) >> 20);
+target_t                          POS_MAX_TARGET              = target_t(~uint256(0) >> 20);
 
 //                                The average delay between two blocks
 
