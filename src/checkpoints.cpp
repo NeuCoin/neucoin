@@ -358,7 +358,7 @@ namespace Checkpoints
             return false;
 
         // Test signing successful, proceed
-        CSyncCheckpoint::strMasterPrivKey = strPrivKey;
+        CHECKPOINT_PRIVATE_KEY = strPrivKey;
 
         return true;
 
@@ -366,9 +366,7 @@ namespace Checkpoints
 
     bool SendSyncCheckpoint(hash_t hashCheckpoint) {
 
-        printf("yup\n");
-
-        if (CSyncCheckpoint::strMasterPrivKey.empty())
+        if (CHECKPOINT_PRIVATE_KEY.empty())
             return error("SendSyncCheckpoint: Checkpoint master key unavailable.");
 
         CSyncCheckpoint checkpoint;
@@ -378,9 +376,7 @@ namespace Checkpoints
         sMsg << (CUnsignedSyncCheckpoint)checkpoint;
         checkpoint.vchMsg = std::vector<unsigned char>(sMsg.begin(), sMsg.end());
 
-        std::vector<unsigned char> vchPrivKey = ParseHex(CSyncCheckpoint::strMasterPrivKey);
-
-        printf("yop\n");
+        std::vector<unsigned char> vchPrivKey = ParseHex(CHECKPOINT_PRIVATE_KEY);
 
         CKey key;
         key.SetPrivKey(CPrivKey(vchPrivKey.begin(), vchPrivKey.end())); // if key is not correct openssl may crash
@@ -392,8 +388,6 @@ namespace Checkpoints
             printf("WARNING: SendSyncCheckpoint: Failed to process checkpoint.\n");
             return false;
         }
-
-        printf( "Switched checkpoint o/\n" );
 
         // Relay checkpoint
         {
@@ -436,16 +430,12 @@ namespace Checkpoints
     }
 }
 
-// ppcoin: sync-checkpoint master key
-const std::string CSyncCheckpoint::strMasterPubKey = CHECKPOINT_PUBLIC_KEY;
-std::string CSyncCheckpoint::strMasterPrivKey = CHECKPOINT_PRIVATE_KEY;
-
 // ppcoin: verify signature of sync-checkpoint message
 bool CSyncCheckpoint::CheckSignature() {
 
     CKey key;
 
-    if (!key.SetPubKey(ParseHex(CSyncCheckpoint::strMasterPubKey)))
+    if (!key.SetPubKey(ParseHex(CHECKPOINT_PUBLIC_KEY)))
         return error("CSyncCheckpoint::CheckSignature() : SetPubKey failed");
 
     if (!key.Verify(Hash(vchMsg.begin(), vchMsg.end()), vchSig))

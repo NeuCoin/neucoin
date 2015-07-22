@@ -2089,7 +2089,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     printf("ProcessBlock: ACCEPTED\n");
 
     // ppcoin: if responsible for sync-checkpoint send it
-    if (pfrom && !CSyncCheckpoint::strMasterPrivKey.empty())
+    if (pfrom && !CHECKPOINT_PRIVATE_KEY.empty())
         Checkpoints::SendSyncCheckpoint(Checkpoints::AutoSelectSyncCheckpoint());
 
     return true;
@@ -2326,11 +2326,11 @@ bool LoadBlockIndex(bool fAllowNew)
     {
         CTxDB txdb;
         string strPubKey = "";
-        if (!txdb.ReadCheckpointPubKey(strPubKey) || strPubKey != CSyncCheckpoint::strMasterPubKey)
+        if (!txdb.ReadCheckpointPubKey(strPubKey) || strPubKey != CHECKPOINT_PUBLIC_KEY)
         {
             // write checkpoint master key to db
             txdb.TxnBegin();
-            if (!txdb.WriteCheckpointPubKey(CSyncCheckpoint::strMasterPubKey))
+            if (!txdb.WriteCheckpointPubKey(CHECKPOINT_PUBLIC_KEY))
                 return error("LoadBlockIndex() : failed to write new checkpoint master key to db");
             if (!txdb.TxnCommit())
                 return error("LoadBlockIndex() : failed to commit new checkpoint master key to db");

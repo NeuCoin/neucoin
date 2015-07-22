@@ -49,14 +49,14 @@ std::map<blockheight_t, uint32_t> STAKE_MODIFIER_CHECKPOINTS  = boost::assign::m
 //                                The maturity is the number of block required for a transaction to be confirmed by the network (excluding the block which embeds the transaction)
 //                                Since you need to include your transaction in a block, and the COINBASE_MATURITY cannot be lower than 1, you will always need at least two blocks before maturing
 
-blockheight_t                     COINBASE_MATURITY           = 1;
+blockheight_t                     COINBASE_MATURITY           = 500;
 
 //                                Some parameters about the coin amount itself
 //                                If you use a non-zero COIN_PREMINE value, the first mined PoW block will have this reward. Otherwise, it will be POW_BLOCK_REWARD as usual
 //                                Note that MAX_MONEY_STACK doesn't prevent the coin amount from exceeding its value - ie. that it isn't a hard limit for how much money will the blockchain handle
 
 money_t                           MAX_MONEY_STACK             = 500000000000 * COIN;
-money_t                           COIN_PREMINE                =   2000000000 * COIN;
+money_t                           COIN_PREMINE                =   3000000000 * COIN;
 
 //                                If you submit a transaction to the network, you need to put at least MIN_TX_FEES coins for the client to accept it
 //                                You also need to put at least MIN_RELAY_TX_FEES, otherwise the other nodes will not relay it -
@@ -75,47 +75,52 @@ uint32_t                          MAX_BLOCK_SIZE              = 1000000;
 //                                Maximal number of PoW blocks, after which their reward become null
 //                                You can use std::numeric_limits< blockheight_t >::max( ) to disable this parameter
 
-blockheight_t                     POW_MAX_BLOCK               = std::numeric_limits< blockheight_t >::max( );
+blockheight_t                     POW_MAX_BLOCK               = 52596;
 
 //                                Initial network targets
 
-target_t                          POW_INITIAL_TARGET          = target_t(~uint256(0) >> 20);
-target_t                          POS_INITIAL_TARGET          = target_t(~uint256(0) >> 20);
+target_t                          POW_INITIAL_TARGET          = target_t(~uint256(0) >> 40);
+target_t                          POS_INITIAL_TARGET          = target_t(~uint256(0) >> 40);
 
 //                                Maximal network targets (after which mining/minting a block won't be easier)
 
-target_t                          POW_MAX_TARGET              = target_t(~uint256(0) >> 20);
-target_t                          POS_MAX_TARGET              = target_t(~uint256(0) >> 20);
+target_t                          POW_MAX_TARGET              = target_t(~uint256(0) >> 32);
+target_t                          POS_MAX_TARGET              = target_t(~uint256(0) >> 32);
 
 //                                The average delay between two blocks
 
-timestamp_t                       POW_TARGET_SPACING          = 1 * MINUTE;
+timestamp_t                       POW_TARGET_SPACING          = 10 * MINUTE;
 timestamp_t                       POS_TARGET_SPACING          = 1 * MINUTE;
 
 //                                Reward for each PoW block mined, until POW_MAX_BLOCK (from which it will become null)
 
-money_t                           POW_BLOCK_REWARD            = 1000 * COIN;
+money_t                           POW_BLOCK_REWARD            = 1141 * COIN;
 
 //                                The delay required for a coin to stake, and the delay after which a coin won't get any more bonuses
 
-timestamp_t                       STAKE_MIN_AGE               = 3 * MINUTE;
-timestamp_t                       STAKE_MAX_AGE               = 3 * MINUTE;
+timestamp_t                       STAKE_MIN_AGE               = 138240 * SECOND; // = 1.6 days, which is a bit higher than the stake modifier selection interval (1.56 days)
+timestamp_t                       STAKE_MAX_AGE               = 138240 * SECOND;
+
+//                                These variable define the amount of time a stake modifier spreads over. The BASE is the delay to compute the first bit of a modifier, and the RATIO is the multiplicator for the last bit.
+//                                As many other things, these variables were very scarcely documented, so they might be inaccurate. Please open a PR to fix this comment if you understand them better than I.
+
+timestamp_t                       MODIFIER_INTERVAL_BASE      = 200 * MINUTE;
+uint32_t                          MODIFIER_INTERVAL_RATIO     = 18;
 
 //                                When calculating the coinage, we use STAKE_COIN_STEP and STAKE_AGE_STEP to respectively divide the coin number and coin age
 
 money_t                           STAKE_COIN_STEP             = 1 * COIN;
 timestamp_t                       STAKE_AGE_STEP              = 1 * DAY;
 
-//                                The target doesn't change immediately to take the new work difficulty in account - it is actually spread over an amount of time
+//                                The target doesn't change immediately to take the new work difficulty in account - it is actually spread over an amount of time, the TARGET_TIMESPAN
 
-timestamp_t                       TARGET_TIMESPAN             = 10 * MINUTE;
+timestamp_t                       TARGET_TIMESPAN             = 2 * HOUR;
 
-// -- Be careful not to commit the checkpoint master key if you happen to use it
-// -- Note that you should probably use the -checkpointkey command line parameter instead of using a modified client
+// -- You can use the -checkpointkey command line parameter to specify the private key. If you do this, and if the private key is correct, your client will start sending checkpoints regularly
 // -- In order to generate a new valid checkpoint key, you have to use the `makekeypair` rpc command - don't try to generate it yourself
 
 std::string                       CHECKPOINT_PUBLIC_KEY       = "042f43a2e1e8185eb0f25380f4caa6de24d6a638ceb01374450207c9d25bfa586a20cc1295c686d20e090b324054aa4b93b405c9fea50df8bca0b70cca6b6758fc";
-std::string                       CHECKPOINT_PRIVATE_KEY      = ""; // don't put the private key here, use -checkpointkey instead
+std::string                       CHECKPOINT_PRIVATE_KEY      = ""; // Do NOT set it here; use -checkpointkey instead
 
 // -- These variables should probably not be modified, since they rely on the previous ones
 

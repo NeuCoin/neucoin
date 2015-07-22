@@ -12,7 +12,6 @@ static uint32_t     TESTNET_AUTO_IP_SEEDS[]                                    =
 
 void ApplyTestnetParameters(void)
 {
-
     COIN_PORT                  = 8742;
     RPC_PORT                   = 8743;
 

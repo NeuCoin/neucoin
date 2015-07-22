@@ -75,6 +75,9 @@ extern money_t                           POW_BLOCK_REWARD;
 extern timestamp_t                       STAKE_MIN_AGE;
 extern timestamp_t                       STAKE_MAX_AGE;
 
+extern timestamp_t                       MODIFIER_INTERVAL_BASE;
+extern uint32_t                          MODIFIER_INTERVAL_RATIO;
+
 extern money_t                           STAKE_COIN_STEP;
 extern timestamp_t                       STAKE_AGE_STEP;
 
