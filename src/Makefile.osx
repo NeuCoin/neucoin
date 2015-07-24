@@ -7,22 +7,12 @@ BREW_PATH = /usr/local/opt
 
 BOOST_SUFFIX = -mt
 
-LDFLAGS += \
-  -L $(BREW_PATH)/boost/lib \
-  -L $(BREW_PATH)/berkeley-db/lib \
-  -L $(BREW_PATH)/openssl/lib \
-  -L $(BREW_PATH)/qt5/lib
+include Makefile.default
 
-CPPFLAGS += \
-  -DMAC_OSX
+CXXFLAGS += -I $(BREW_PATH)/boost/include -I $(BREW_PATH)/berkeley-db/include -I $(BREW_PATH)/openssl/include -I $(BREW_PATH)/qt5/include/QtCore -I $(BREW_PATH)/qt5/include/QtGui -I $(BREW_PATH)/qt5/include/QtWidgets -I $(BREW_PATH)/qt5/include
+CXXFLAGS += -DMAC_OSX
 
-CPPFLAGS_POSTFIX += \
-  -I $(BREW_PATH)/boost/include \
-  -I $(BREW_PATH)/berkeley-db/include \
-  -I $(BREW_PATH)/openssl/include \
-  -I $(BREW_PATH)/qt5/include/QtCore \
-  -I $(BREW_PATH)/qt5/include/QtGui \
-  -I $(BREW_PATH)/qt5/include/QtWidgets \
-  -I $(BREW_PATH)/qt5/include
+LDFLAGS_HEADLESS += -L $(BREW_PATH)/boost/lib -L $(BREW_PATH)/berkeley-db/lib -L $(BREW_PATH)/openssl/lib
+LDFLAGS_QT += -L $(BREW_PATH)/boost/lib -L $(BREW_PATH)/berkeley-db/lib -L $(BREW_PATH)/openssl/lib -L $(BREW_PATH)/qt5/lib
 
 include Makefile.common

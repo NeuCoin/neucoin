@@ -1,0 +1,141 @@
+CONSTANTS ?= constants.cpp
+BOOST_SUFFIX ?= #NO SUFFIX
+
+# We unfortunately can't specialize CXXFLAGS for each target, since they both share the same object files
+CXXFLAGS = -I $(shell pwd)/qt/forms -I $(shell pwd)/qt -I $(shell pwd) $(CPPFLAGS_HEADLESS)
+
+LDFLAGS_HEADLESS =
+LDFLAGS_QT =
+
+LIBRARIES_HEADLESS = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl
+LIBRARIES_QT = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl png qrencode z Qt5Core Qt5Gui Qt5Widgets
+
+SOURCES_COMMON = \
+  $(CONSTANTS) \
+  CheckClientSanity.cpp \
+  GetNextTargetRequired.cpp \
+  GetProofOfStakeReward.cpp \
+  GetProofOfWorkReward.cpp \
+  IsValidAmount.cpp \
+  addrman.cpp \
+  bitcoinrpc.cpp \
+  checkpoints.cpp \
+  crypter.cpp \
+  db.cpp \
+  irc.cpp \
+  kernel.cpp \
+  key.cpp \
+  keystore.cpp \
+  main.cpp \
+  net.cpp \
+  netbase.cpp \
+  protocol.cpp \
+  rpcdump.cpp \
+  script.cpp \
+  scrypt-generic.cpp \
+  testnet.cpp \
+  util.cpp \
+  version.cpp \
+  walletdb.cpp
+
+SOURCES_HEADLESS = \
+  $(SOURCES_COMMON) \
+  init.cpp \
+  wallet.cpp \
+  noui.cpp
+
+SOURCES_QT = \
+  $(SOURCES_COMMON) \
+  init.qt.cpp \
+  wallet.qt.cpp \
+  qt/aboutdialog.cpp \
+  qt/aboutdialog.h \
+  qt/addressbookpage.cpp \
+  qt/addressbookpage.h \
+  qt/addresstablemodel.cpp \
+  qt/addresstablemodel.h \
+  qt/askpassphrasedialog.cpp \
+  qt/askpassphrasedialog.h \
+  qt/bitcoin.cpp \
+  qt/bitcoin.qrc.cpp \
+  qt/bitcoinaddressvalidator.cpp \
+  qt/bitcoinaddressvalidator.h \
+  qt/bitcoinamountfield.cpp \
+  qt/bitcoinamountfield.h \
+  qt/bitcoingui.cpp \
+  qt/bitcoingui.h \
+  qt/bitcoinstrings.cpp \
+  qt/bitcoinunits.cpp \
+  qt/bitcoinunits.h \
+  qt/clientmodel.cpp \
+  qt/clientmodel.h \
+  qt/csvmodelwriter.cpp \
+  qt/csvmodelwriter.h \
+  qt/editaddressdialog.cpp \
+  qt/editaddressdialog.h \
+  qt/forms/aboutdialog.ui \
+  qt/forms/addressbookpage.ui \
+  qt/forms/askpassphrasedialog.ui \
+  qt/forms/editaddressdialog.ui \
+  qt/forms/messagepage.ui \
+  qt/forms/overviewpage.ui \
+  qt/forms/qrcodedialog.ui \
+  qt/forms/rpcconsole.ui \
+  qt/forms/sendcoinsdialog.ui \
+  qt/forms/sendcoinsentry.ui \
+  qt/forms/transactiondescdialog.ui \
+  qt/guiconstants.h \
+  qt/guiutil.cpp \
+  qt/guiutil.h \
+  qt/macdockiconhandler.h \
+  qt/messagepage.cpp \
+  qt/messagepage.h \
+  qt/monitoreddatamapper.cpp \
+  qt/monitoreddatamapper.h \
+  qt/notificator.cpp \
+  qt/notificator.h \
+  qt/optionsdialog.cpp \
+  qt/optionsdialog.h \
+  qt/optionsmodel.cpp \
+  qt/optionsmodel.h \
+  qt/overviewpage.cpp \
+  qt/overviewpage.h \
+  qt/qrcodedialog.cpp \
+  qt/qrcodedialog.h \
+  qt/qtipcserver.cpp \
+  qt/qtipcserver.h \
+  qt/qvalidatedlineedit.cpp \
+  qt/qvalidatedlineedit.h \
+  qt/qvaluecombobox.cpp \
+  qt/qvaluecombobox.h \
+  qt/rpcconsole.cpp \
+  qt/rpcconsole.h \
+  qt/sendcoinsdialog.cpp \
+  qt/sendcoinsdialog.h \
+  qt/sendcoinsentry.cpp \
+  qt/sendcoinsentry.h \
+  qt/transactiondesc.cpp \
+  qt/transactiondesc.h \
+  qt/transactiondescdialog.cpp \
+  qt/transactiondescdialog.h \
+  qt/transactionfilterproxy.cpp \
+  qt/transactionfilterproxy.h \
+  qt/transactionrecord.cpp \
+  qt/transactionrecord.h \
+  qt/transactiontablemodel.cpp \
+  qt/transactiontablemodel.h \
+  qt/transactionview.cpp \
+  qt/transactionview.h \
+  qt/walletmodel.cpp \
+  qt/walletmodel.h \
+  $(patsubst %.ts, %.qm, $(shell find qt/locale -name '*.ts'))
+
+OBJECTS_HEADLESS = \
+  $(addsuffix .o, $(filter %.cpp, $(SOURCES_HEADLESS)))
+DEPENDENCIES_HEADLESS = \
+  $(addsuffix .d, $(filter %.cpp, $(SOURCES_HEADLESS)))
+
+OBJECTS_QT = \
+  $(addsuffix .o, $(filter %.cpp, $(SOURCES_QT)))
+DEPENDENCIES_QT = \
+  $(addsuffix .d, $(filter %.cpp, $(SOURCES_QT)))

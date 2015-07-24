@@ -3,7 +3,12 @@ TARGET_QT = neucoin-qt
 
 MAKEFILE = Makefile.unix
 
-LDFLAGS_POSTFIX += \
-  -lpthread
+include Makefile.default
+
+CXXFLAGS += $(shell pkg-config Qt5Core Qt5Gui Qt5Widgets --cflags)
+CXXFLAGS += -fPIE
+
+LIBRARIES_HEADLESS := rt pthread $(LIBRARIES_HEADLESS)
+LIBRARIES_QT := rt pthread $(LIBRARIES_QT)
 
 include Makefile.common

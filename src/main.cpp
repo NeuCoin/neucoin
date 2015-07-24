@@ -4131,7 +4131,7 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
 
             pblock->nNonce = 0;
 
-            loop
+            INFINITE_LOOP
             {
                 if (pblock->GetHash() <= hashTarget)
                     break;

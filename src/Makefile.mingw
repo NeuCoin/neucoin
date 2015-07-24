@@ -3,46 +3,19 @@ TARGET_QT = neucoin-qt.exe
 
 MAKEFILE = Makefile.mingw
 
-LDFLAGS += \
-  -L $(BOOST_PATH)/stage/lib \
-  -L $(DB_PATH)/build_unix \
-  -L $(OPENSSL_PATH) \
-  -L $(LIBPNG_PATH)/.libs \
-  -L $(QRENCODE_PATH)/.libs \
-  -L $(QTBASE_PATH)/lib \
-  -L $(QTBASE_PATH)/plugins/platforms
+include Makefile.default
 
-LDFLAGS += \
-  -static-libgcc \
-  -static-libstdc++ \
-  -static
+CXXFLAGS += -I $(BOOST_PATH) -I $(DB_PATH)/build_unix -I $(OPENSSL_PATH)/include -I $(QRENCODE_PATH) -I $(QTBASE_PATH)/include/QtCore -I $(QTBASE_PATH)/include/QtGui -I $(QTBASE_PATH)/include/QtWidgets -I $(QTBASE_PATH)/include
 
-LDFLAGS_POSTFIX += \
-  -l kernel32 \
-  -l user32 \
-  -l gdi32 \
-  -l comdlg32 \
-  -l winspool \
-  -l winmm \
-  -l shell32 \
-  -l imm32 \
-  -l comctl32 \
-  -l ole32 \
-  -l oleaut32 \
-  -l uuid \
-  -l rpcrt4 \
-  -l advapi32 \
-  -l ws2_32 \
-  -l shlwapi
+LDFLAGS_HEADLESS += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH)
+LDFLAGS_QT += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH) -L $(LIBPNG_PATH)/.libs -L $(QRENCODE_PATH)/.libs -L $(QTBASE_PATH)/lib -L $(QTBASE_PATH)/plugins/platforms
 
-CPPFLAGS_POSTFIX += \
-  -I $(BOOST_PATH) \
-  -I $(DB_PATH)/build_unix \
-  -I $(OPENSSL_PATH)/include \
-  -I $(QRENCODE_PATH) \
-  -I $(QTBASE_PATH)/include/QtCore \
-  -I $(QTBASE_PATH)/include/QtGui \
-  -I $(QTBASE_PATH)/include/QtWidgets \
-  -I $(QTBASE_PATH)/include
+LDFLAGS_HEADLESS += -static-libgcc -static-libstdc++ -static
+LDFLAGS_QT += -static-libgcc -static-libstdc++ -static
+
+LDFLAGS_QT += -Wl,-subsystem,windows
+
+LIBRARIES_HEADLESS := kernel32 user32 gdi32 comdlg32 winspool winmm shell32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 ws2_32 shlwapi $(LIBRARIES_HEADLESS)
+LIBRARIES_QT := kernel32 user32 gdi32 comdlg32 winspool winmm shell32 imm32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 ws2_32 shlwapi qtharfbuzzng $(LIBRARIES_QT) Qt5PlatformSupport qtmain qwindows
 
 include Makefile.common
