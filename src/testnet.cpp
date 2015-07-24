@@ -32,10 +32,16 @@ void ApplyTestnetParameters(void)
     GENESIS_BLOCK_NONCE        = 2179980296;
     GENESIS_BLOCK_VERSION      = 1;
 
-    BLOCK_CHECKPOINTS          = boost::assign::map_list_of( 0, GENESIS_HASH );
-    STAKE_MODIFIER_CHECKPOINTS = boost::assign::map_list_of( 0, 0xfd11f4e7 );
+    BLOCK_CHECKPOINTS          = boost::assign::map_list_of(0, GENESIS_HASH);
+    STAKE_MODIFIER_CHECKPOINTS = boost::assign::map_list_of(0, 0xfd11f4e7);
 
-    POW_MAX_BLOCK              = std::numeric_limits< blockheight_t >::max( );
+    POW_MAX_BLOCK              = std::numeric_limits< blockheight_t >::max();
 
     COIN_PREMINE               = 0 * COIN;
+
+    POW_INITIAL_TARGET         = target_t(~uint256(0) >> 20);
+    POS_INITIAL_TARGET         = target_t(~uint256(0) >> 20);
+
+    POW_MAX_TARGET             = target_t(~uint256(0) >> 20);
+    POS_MAX_TARGET             = target_t(~uint256(0) >> 20);
 }
