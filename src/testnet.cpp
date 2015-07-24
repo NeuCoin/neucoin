@@ -44,4 +44,17 @@ void ApplyTestnetParameters(void)
 
     POW_MAX_TARGET             = target_t(~uint256(0) >> 20);
     POS_MAX_TARGET             = target_t(~uint256(0) >> 20);
+
+    POW_TARGET_SPACING         = 10 * MINUTE / 10;
+    POS_TARGET_SPACING         = 1 * MINUTE / 2;
+
+    POW_BLOCK_REWARD           = 1141 * COIN;
+
+    STAKE_MIN_AGE              = 138240 * SECOND / 2;
+    STAKE_MAX_AGE              = 138240 * SECOND / 2;
+    MODIFIER_INTERVAL_BASE     = 200 * MINUTE / 2;
+    MODIFIER_INTERVAL_RATIO    = 18;
+    STAKE_COIN_STEP            = 1 * COIN;
+    STAKE_AGE_STEP             = 1 * DAY / 2;
+    TARGET_TIMESPAN            = 2 * HOUR / 2;
 }
