@@ -19,6 +19,8 @@
 #include "guiutil.h"
 #include "walletmodel.h"
 
+#include "./messagepage.moc"
+
 MessagePage::MessagePage(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MessagePage)

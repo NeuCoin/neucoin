@@ -1,8 +1,9 @@
-TARGET = neucoind
+TARGET_HEADLESS = neucoind
+TARGET_QT = neucoin-qt
 
 MAKEFILE = Makefile.unix
 
-LDFLAGS += \
+LDFLAGS_POSTFIX += \
   -lpthread
 
 include Makefile.common

@@ -14,6 +14,8 @@
 #include <QApplication>
 #include <qmath.h>
 
+#include "./bitcoinamountfield.moc"
+
 BitcoinAmountField::BitcoinAmountField(QWidget *parent):
         QWidget(parent), amount(0), currentUnit(-1)
 {

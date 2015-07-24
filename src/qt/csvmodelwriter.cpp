@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QTextStream>
 
+#include "./csvmodelwriter.moc"
+
 CSVModelWriter::CSVModelWriter(const QString &filename, QObject *parent) :
     QObject(parent),
     filename(filename), model(0)

@@ -2,6 +2,8 @@
 
 #include "guiconstants.h"
 
+#include "./qvalidatedlineedit.moc"
+
 QValidatedLineEdit::QValidatedLineEdit(QWidget *parent) :
     QLineEdit(parent), valid(true)
 {

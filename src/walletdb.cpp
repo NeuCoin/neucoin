@@ -71,8 +71,10 @@ void CWalletDB::ListAccountCreditDebit(const string& strAccount, list<CAccountin
     Dbc* pcursor = GetCursor();
     if (!pcursor)
         throw runtime_error("CWalletDB::ListAccountCreditDebit() : cannot create DB cursor");
+
     unsigned int fFlags = DB_SET_RANGE;
-    loop
+
+    INFINITE_LOOP
     {
         // Read next record
         CDataStream ssKey(SER_DISK, CLIENT_VERSION);
@@ -133,7 +135,7 @@ int CWalletDB::LoadWallet(CWallet* pwallet)
             return DB_CORRUPT;
         }
 
-        loop
+        INFINITE_LOOP
         {
             // Read next record
             CDataStream ssKey(SER_DISK, CLIENT_VERSION);

@@ -2,11 +2,27 @@
 #define RPCCONSOLE_H
 
 #include <QDialog>
+#include <QString>
 
 namespace Ui {
     class RPCConsole;
 }
+
 class ClientModel;
+
+/* Object for executing console RPC commands in a separate thread.
+*/
+class RPCExecutor: public QObject
+{
+    Q_OBJECT
+
+public slots:
+    void start();
+    void request(const QString &command);
+
+signals:
+    void reply(int category, const QString &command);
+};
 
 /** Local bitcoin RPC console. */
 class RPCConsole: public QDialog

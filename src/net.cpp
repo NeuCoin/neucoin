@@ -91,7 +91,8 @@ void CNode::PushGetBlocks(CBlockIndex* pindexBegin, uint256 hashEnd)
 bool RecvLine(SOCKET hSocket, string& strLine)
 {
     strLine = "";
-    loop
+
+    INFINITE_LOOP
     {
         char c;
         int nBytes = recv(hSocket, &c, 1, 0);
@@ -158,7 +159,7 @@ bool GetMyExternalIP2(const CService& addrConnect, const char* pszGet, const cha
     {
         if (strLine.empty()) // HTTP response is separated from headers by blank line
         {
-            loop
+            INFINITE_LOOP
             {
                 if (!RecvLine(hSocket, strLine))
                 {
@@ -517,7 +518,7 @@ void ThreadSocketHandler2(void* parg)
     list<CNode*> vNodesDisconnected;
     unsigned int nPrevNodeCount = 0;
 
-    loop
+    INFINITE_LOOP
     {
         //
         // Disconnect nodes
@@ -926,13 +927,19 @@ void ThreadMapPort2(void* parg)
                             port, port, lanaddr, strDesc.c_str(), "TCP", 0, "0");
 #endif
 
-        if(r!=UPNPCOMMAND_SUCCESS)
-            printf("AddPortMapping(%s, %s, %s) failed with code %d (%s)\n",
-                port, port, lanaddr, r, strupnperror(r));
+        if (r!=UPNPCOMMAND_SUCCESS)
+        {
+            printf("AddPortMapping(%s, %s, %s) failed with code %d (%s)\n", port, port, lanaddr, r, strupnperror(r));
+        }
         else
+        {
             printf("UPnP Port Mapping successful.\n");
+        }
+
         int i = 1;
-        loop {
+
+        INFINITE_LOOP
+        {
             if (fShutdown || !fUseUPnP)
             {
                 r = UPNP_DeletePortMapping(urls.controlURL, data.first.servicetype, port, "TCP", 0);
@@ -941,6 +948,7 @@ void ThreadMapPort2(void* parg)
                 FreeUPNPUrls(&urls);
                 return;
             }
+
             if (i % 600 == 0) // Refresh every 20 minutes
             {
 #ifndef UPNPDISCOVER_SUCCESS
@@ -954,20 +962,28 @@ void ThreadMapPort2(void* parg)
 #endif
 
                 if(r!=UPNPCOMMAND_SUCCESS)
-                    printf("AddPortMapping(%s, %s, %s) failed with code %d (%s)\n",
-                        port, port, lanaddr, r, strupnperror(r));
+                {
+                    printf("AddPortMapping(%s, %s, %s) failed with code %d (%s)\n", port, port, lanaddr, r, strupnperror(r));
+                }
                 else
-                    printf("UPnP Port Mapping successful.\n");;
+                {
+                    printf("UPnP Port Mapping successful.\n");
+                }
             }
             Sleep(2000);
             i++;
         }
-    } else {
+    }
+    else
+    {
         printf("No valid UPnP IGDs found\n");
         freeUPNPDevlist(devlist); devlist = 0;
+
         if (r != 0)
             FreeUPNPUrls(&urls);
-        loop {
+
+        INFINITE_LOOP
+        {
             if (fShutdown || !fUseUPnP)
                 return;
             Sleep(2000);
@@ -1136,18 +1152,20 @@ void ThreadOpenConnections2(void* parg)
 
     // Initiate network connections
     int64 nStart = GetTime();
-    loop
+
+    INFINITE_LOOP
     {
         vnThreadsRunning[THREAD_OPENCONNECTIONS]--;
         Sleep(500);
         vnThreadsRunning[THREAD_OPENCONNECTIONS]++;
+
         if (fShutdown)
             return;
-
 
         vnThreadsRunning[THREAD_OPENCONNECTIONS]--;
         semOutbound->wait();
         vnThreadsRunning[THREAD_OPENCONNECTIONS]++;
+
         if (fShutdown)
             return;
 
@@ -1193,7 +1211,8 @@ void ThreadOpenConnections2(void* parg)
         int64 nANow = GetAdjustedTime();
 
         int nTries = 0;
-        loop
+
+        INFINITE_LOOP
         {
             // use an nUnkBias between 10 (no outgoing connections) and 90 (8 outgoing connections)
             CAddress addr = addrman.Select(10 + min(nOutbound,8)*10);
@@ -1263,7 +1282,8 @@ void ThreadOpenAddedConnections2(void* parg)
             }
         }
     }
-    loop
+
+    INFINITE_LOOP
     {
         vector<vector<CService> > vservConnectAddresses = vservAddressesToAdd;
         // Attempt to connect to each IP for each addnode entry until at least one is successful per addnode entry

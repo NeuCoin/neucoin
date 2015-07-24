@@ -11,6 +11,8 @@
 
 #include <QString>
 
+#include "./transactiondesc.moc"
+
 using namespace std;
 
 QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)

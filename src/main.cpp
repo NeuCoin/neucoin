@@ -2319,7 +2319,8 @@ static unsigned int nCurrentBlockFile = 1;
 FILE* AppendBlockFile(unsigned int& nFileRet)
 {
     nFileRet = 0;
-    loop
+
+    INFINITE_LOOP
     {
         FILE* file = OpenBlockFile(nCurrentBlockFile, 0, "ab");
         if (!file)
@@ -3347,7 +3348,7 @@ bool ProcessMessages(CNode* pfrom)
         nTimeLastPrintMessageStart = GetAdjustedTime();
     }
 
-    loop
+    INFINITE_LOOP
     {
         // Scan for message start
         CDataStream::iterator pstart = search(vRecv.begin(), vRecv.end(), BEGIN(pchMessageStart), END(pchMessageStart));
@@ -4124,7 +4125,7 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
         int64 nStart = GetTime();
         uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
 
-        loop
+        INFINITE_LOOP
         {
             unsigned int nHashesDone = 0;
 

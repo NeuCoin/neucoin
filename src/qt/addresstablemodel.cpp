@@ -8,6 +8,8 @@
 #include <QFont>
 #include <QColor>
 
+#include "./addresstablemodel.moc"
+
 const QString AddressTableModel::Send = "S";
 const QString AddressTableModel::Receive = "R";
 

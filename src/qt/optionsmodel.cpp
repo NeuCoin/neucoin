@@ -5,6 +5,8 @@
 #include "init.h"
 #include "walletdb.h"
 
+#include "./optionsmodel.moc"
+
 OptionsModel::OptionsModel(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -179,7 +181,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             break;
         case ProxyPort:
             {
-                int nPort = atoi(value.toString().toAscii().data());
+                int nPort = atoi(value.toString().toLatin1().data());
                 if (nPort > 0 && nPort < std::numeric_limits<unsigned short>::max())
                 {
                     addrProxy.SetPort(nPort);

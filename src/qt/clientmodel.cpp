@@ -8,6 +8,8 @@
 
 #include <QDateTime>
 
+#include "./clientmodel.moc"
+
 ClientModel::ClientModel(OptionsModel *optionsModel, QObject *parent) :
     QObject(parent), optionsModel(optionsModel),
     cachedNumConnections(0), cachedNumBlocks(0)

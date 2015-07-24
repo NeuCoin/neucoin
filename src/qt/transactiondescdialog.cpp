@@ -5,6 +5,8 @@
 
 #include <QModelIndex>
 
+#include "./transactiondescdialog.moc"
+
 TransactionDescDialog::TransactionDescDialog(const QModelIndex &idx, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::TransactionDescDialog)

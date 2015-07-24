@@ -310,20 +310,27 @@ string real_strprintf(const std::string &format, int dummy, ...)
     char* p = buffer;
     int limit = sizeof(buffer);
     int ret;
-    loop
+
+    INFINITE_LOOP
     {
         va_list arg_ptr;
         va_start(arg_ptr, dummy);
         ret = _vsnprintf(p, limit, format.c_str(), arg_ptr);
         va_end(arg_ptr);
+
         if (ret >= 0 && ret < limit)
             break;
+
         if (p != buffer)
             delete[] p;
+
         limit *= 2;
         p = new char[limit];
+
         if (p == NULL)
+		{
             throw std::bad_alloc();
+		}
     }
     string str(p, p+ret);
     if (p != buffer)
@@ -352,9 +359,11 @@ void ParseString(const string& str, char c, vector<string>& v)
 {
     if (str.empty())
         return;
+
     string::size_type i1 = 0;
     string::size_type i2;
-    loop
+
+    INFINITE_LOOP
     {
         i2 = str.find(c, i1);
         if (i2 == str.npos)
@@ -470,7 +479,8 @@ vector<unsigned char> ParseHex(const char* psz)
 {
     // convert hex dump to vector
     vector<unsigned char> vch;
-    loop
+
+    INFINITE_LOOP
     {
         while (isspace(*psz))
             psz++;
@@ -484,6 +494,7 @@ vector<unsigned char> ParseHex(const char* psz)
         n |= c;
         vch.push_back(n);
     }
+
     return vch;
 }
 
@@ -737,7 +748,7 @@ string DecodeBase64(const string& str)
 
 bool WildcardMatch(const char* psz, const char* mask)
 {
-    loop
+    INFINITE_LOOP
     {
         switch (*mask)
         {

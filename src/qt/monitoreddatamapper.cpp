@@ -4,6 +4,8 @@
 #include <QMetaObject>
 #include <QMetaProperty>
 
+#include "./monitoreddatamapper.moc"
+
 MonitoredDataMapper::MonitoredDataMapper(QObject *parent) :
     QDataWidgetMapper(parent)
 {

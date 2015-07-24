@@ -38,7 +38,7 @@ typedef int pid_t; /* define for windows compatiblity */
 typedef long long  int64;
 typedef unsigned long long  uint64;
 
-#define loop                for (;;)
+#define INFINITE_LOOP       for (;;)
 #define BEGIN(a)            ((char*)&(a))
 #define END(a)              ((char*)&((&(a))[1]))
 #define UBEGIN(a)           ((unsigned char*)&(a))

@@ -3375,8 +3375,9 @@ int ReadHTTPStatus(std::basic_istream<char>& stream)
 int ReadHTTPHeader(std::basic_istream<char>& stream, map<string, string>& mapHeadersRet)
 {
     int nLen = 0;
-    loop
-    {
+
+	INFINITE_LOOP
+	{
         string str;
         std::getline(stream, str);
         if (str.empty() || str == "\r")
@@ -3394,6 +3395,7 @@ int ReadHTTPHeader(std::basic_istream<char>& stream, map<string, string>& mapHea
                 nLen = atoi(strValue.c_str());
         }
     }
+
     return nLen;
 }
 
@@ -3631,7 +3633,7 @@ void ThreadRPCServer2(void* parg)
         SSL_CTX_set_cipher_list(context.impl(), strCiphers.c_str());
     }
 
-    loop
+    INFINITE_LOOP
     {
         // Accept connection
         SSLStream sslStream(io_service, context);

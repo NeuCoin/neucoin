@@ -1,5 +1,7 @@
 #include "bitcoinaddressvalidator.h"
 
+#include "./bitcoinaddressvalidator.moc"
+
 /* Base58 characters are:
      "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 

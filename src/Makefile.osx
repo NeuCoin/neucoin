@@ -1,4 +1,5 @@
-TARGET = neucoind
+TARGET_HEADLESS = neucoind
+TARGET_QT = neucoin-qt
 
 MAKEFILE = Makefile.osx
 
@@ -13,6 +14,9 @@ LDFLAGS += \
   -L $(BREW_PATH)/qt5/lib
 
 CPPFLAGS += \
+  -DMAC_OSX
+
+CPPFLAGS_POSTFIX += \
   -I $(BREW_PATH)/boost/include \
   -I $(BREW_PATH)/berkeley-db/include \
   -I $(BREW_PATH)/openssl/include \
@@ -20,8 +24,5 @@ CPPFLAGS += \
   -I $(BREW_PATH)/qt5/include/QtGui \
   -I $(BREW_PATH)/qt5/include/QtWidgets \
   -I $(BREW_PATH)/qt5/include
-
-CPPFLAGS += \
-  -DMAC_OSX
 
 include Makefile.common

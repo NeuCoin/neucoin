@@ -11,6 +11,8 @@
 #include "guiutil.h"
 #include "qrcodedialog.h"
 
+#include "./qrcodedialog.moc"
+
 #define EXPORT_IMAGE_SIZE 256
 
 QRCodeDialog::QRCodeDialog(const QString &addr, const QString &label, bool enableReq, QWidget *parent) :

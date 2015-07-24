@@ -5,6 +5,8 @@
 
 #include <cstdlib>
 
+#include "./transactionfilterproxy.moc"
+
 // Earliest date that can be represented (far in the past)
 const QDateTime TransactionFilterProxy::MIN_DATE = QDateTime::fromTime_t(0);
 // Last date that can be represented (far in the future)

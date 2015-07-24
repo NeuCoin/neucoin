@@ -15,6 +15,8 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 
+#include "./rpcconsole.moc"
+
 // TODO: add a scrollback limit, as there is currently none
 // TODO: make it possible to filter out categories (esp debug messages when implemented)
 // TODO: receive errors and debug messages through ClientModel
@@ -32,20 +34,6 @@ const struct {
     {"misc", ":/icons/tx_inout"},
     {NULL, NULL}
 };
-
-/* Object for executing console RPC commands in a separate thread.
-*/
-class RPCExecutor: public QObject
-{
-    Q_OBJECT
-public slots:
-    void start();
-    void request(const QString &command);
-signals:
-    void reply(int category, const QString &command);
-};
-
-#include "rpcconsole.moc"
 
 void RPCExecutor::start()
 {

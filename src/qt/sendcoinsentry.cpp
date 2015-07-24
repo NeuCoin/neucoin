@@ -13,6 +13,8 @@
 #include "optionsmodel.h"
 #include "walletmodel.h"
 
+#include "./sendcoinsentry.moc"
+
 SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::SendCoinsEntry),

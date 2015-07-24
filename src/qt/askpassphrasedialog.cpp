@@ -9,6 +9,8 @@
 #include <QPushButton>
 #include <QKeyEvent>
 
+#include "./askpassphrasedialog.moc"
+
 AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AskPassphraseDialog),

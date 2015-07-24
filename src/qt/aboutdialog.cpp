@@ -4,6 +4,8 @@
 
 #include "version.h"
 
+#include "./aboutdialog.moc"
+
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AboutDialog)

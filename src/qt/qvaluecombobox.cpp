@@ -1,5 +1,7 @@
 #include "qvaluecombobox.h"
 
+#include "./qvaluecombobox.moc"
+
 QValueComboBox::QValueComboBox(QWidget *parent) :
         QComboBox(parent), role(Qt::UserRole)
 {

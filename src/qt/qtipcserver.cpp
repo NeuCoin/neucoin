@@ -27,7 +27,8 @@ void ipcThread(void* parg)
     char strBuf[257];
     size_t nSize;
     unsigned int nPriority;
-    loop
+
+    INFINITE_LOOP
     {
         ptime d = boost::posix_time::microsec_clock::universal_time() + millisec(100);
         if(mq->timed_receive(&strBuf, sizeof(strBuf), nSize, nPriority, d))
@@ -41,6 +42,7 @@ void ipcThread(void* parg)
             break;
         }
     }
+
     ipcShutdown();
 }
 
