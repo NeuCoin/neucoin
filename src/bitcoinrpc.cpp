@@ -2369,13 +2369,15 @@ Value getblockhash(const Array& params, bool fHelp)
             "Returns hash of block in best-block-chain at <index>.");
 
     int nHeight = params[0].get_int();
+
     if (nHeight < 0 || nHeight > nBestHeight)
         throw runtime_error("Block number out of range.");
 
-    CBlock block;
-    CBlockIndex* pblockindex = mapBlockIndex[hashBestChain];
+    CBlockIndex* pblockindex = mapBlockIndex.at(hashBestChain);
+
     while (pblockindex->nHeight > nHeight)
         pblockindex = pblockindex->pprev;
+
     return pblockindex->phashBlock->GetHex();
 }
 
@@ -2395,7 +2397,7 @@ Value getblock(const Array& params, bool fHelp)
         throw JSONRPCError(-5, "Block not found");
 
     CBlock block;
-    CBlockIndex* pblockindex = mapBlockIndex[hash];
+    CBlockIndex* pblockindex = mapBlockIndex.at(hash);
     block.ReadFromDisk(pblockindex, true);
 
     bool fTxInfo = params.size() > 1 ? params[1].get_bool() : false;
@@ -2417,7 +2419,7 @@ Value getcheckpoint(const Array& params, bool fHelp)
     CBlockIndex* pindexCheckpoint;
 
     result.push_back(Pair("synccheckpoint", Checkpoints::hashSyncCheckpoint.ToString().c_str()));
-    pindexCheckpoint = mapBlockIndex[Checkpoints::hashSyncCheckpoint];
+    pindexCheckpoint = mapBlockIndex.at(Checkpoints::hashSyncCheckpoint);
     result.push_back(Pair("height", pindexCheckpoint->nHeight));
     result.push_back(Pair("timestamp", DateTimeStrFormat(pindexCheckpoint->GetBlockTime()).c_str()));
 

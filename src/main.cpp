@@ -2038,7 +2038,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // Check for duplicate
     uint256 hash = pblock->GetHash();
     if (mapBlockIndex.count(hash))
-        return error("ProcessBlock() : already have block %d %s", mapBlockIndex[hash]->nHeight, hash.ToString().substr(0,20).c_str());
+        return error("ProcessBlock() : already have block %d %s", mapBlockIndex.at(hash)->nHeight, hash.ToString().substr(0,20).c_str());
     if (mapOrphanBlocks.count(hash))
         return error("ProcessBlock() : already have block (orphan) %s", hash.ToString().substr(0,20).c_str());
 
@@ -2056,19 +2056,27 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     if (pblock->IsProofOfStake())
     {
         uint256 hashProofOfStake = 0;
-        const CBlockIndex * pindexPrev = mapBlockIndex[pblock->hashPrevBlock];
-        if (!pindexPrev)
+
+        std::map<uint256, CBlockIndex*>::iterator it = mapBlockIndex.find(pblock->hashPrevBlock);
+
+        if (it == mapBlockIndex.end())
         {
-            printf("WARNING: ProcessBlock(): parent block, required for proof-of-stake check, is missing");
+            printf("WARNING: ProcessBlock(): parent block, requiredq for proof-of-stake check, is missing");
             return false;
         }
+
+        const CBlockIndex * pindexPrev = it->second;
+
         if (!CheckProofOfStake(pindexPrev, pblock->vtx[1], pblock->nBits, hashProofOfStake))
         {
             printf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
             return false; // do not error here as we expect this during initial block download
         }
+
         if (!mapProofOfStake.count(hash)) // add to mapProofOfStake
+        {
             mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
+        }
     }
 
     CBlockIndex* pcheckpoint = Checkpoints::GetLastSyncCheckpoint();
@@ -2953,17 +2961,25 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                 printf("  got inventory: %s  %s\n", inv.ToString().c_str(), fAlreadyHave ? "have" : "new");
 
             if (!fAlreadyHave)
+            {
                 pfrom->AskFor(inv);
-            else if (inv.type == MSG_BLOCK && mapOrphanBlocks.count(inv.hash)) {
+            }
+            else if (inv.type == MSG_BLOCK && mapOrphanBlocks.count(inv.hash))
+            {
                 pfrom->PushGetBlocks(pindexBest, GetOrphanRoot(mapOrphanBlocks[inv.hash]));
-            } else if (nInv == nLastBlock) {
+            }
+            else if (nInv == nLastBlock)
+            {
                 // In case we are on a very long side-chain, it is possible that we already have
                 // the last block in an inv bundle sent in response to getblocks. Try to detect
                 // this situation and push another getblocks to continue.
                 std::vector<CInv> vGetData(1,inv);
-                pfrom->PushGetBlocks(mapBlockIndex[inv.hash], uint256(0));
+                pfrom->PushGetBlocks(mapBlockIndex.at(inv.hash), uint256(0));
+
                 if (fDebug)
+                {
                     printf("force request: %s\n", inv.ToString().c_str());
+                }
             }
 
             // Track requests for our stuff

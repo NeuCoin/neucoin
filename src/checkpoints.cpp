@@ -69,7 +69,7 @@ namespace Checkpoints
         if (!mapBlockIndex.count(hashSyncCheckpoint)) {
             error("GetSyncCheckpoint: block index missing for current sync-checkpoint %s", hashSyncCheckpoint.ToString().c_str());
         } else {
-            return mapBlockIndex[hashSyncCheckpoint];
+            return mapBlockIndex.at(hashSyncCheckpoint);
         }
 
         return NULL;
@@ -85,8 +85,8 @@ namespace Checkpoints
         if (!mapBlockIndex.count(hashCheckpoint))
             return error("ValidateSyncCheckpoint: block index missing for received sync-checkpoint %s", hashCheckpoint.ToString().c_str());
 
-        CBlockIndex * pindexSyncCheckpoint = mapBlockIndex[hashSyncCheckpoint];
-        CBlockIndex * pindexCheckpointRecv = mapBlockIndex[hashCheckpoint];
+        CBlockIndex * pindexSyncCheckpoint = mapBlockIndex.at(hashSyncCheckpoint);
+        CBlockIndex * pindexCheckpointRecv = mapBlockIndex.at(hashCheckpoint);
 
         if (pindexCheckpointRecv->nHeight <= pindexSyncCheckpoint->nHeight) {
 
@@ -160,7 +160,7 @@ namespace Checkpoints
         }
 
         CTxDB txdb;
-        CBlockIndex* pindexCheckpoint = mapBlockIndex[hashPendingCheckpoint];
+        CBlockIndex* pindexCheckpoint = mapBlockIndex.at(hashPendingCheckpoint);
 
         if (!pindexCheckpoint->IsInMainChain()) {
 
@@ -224,7 +224,7 @@ namespace Checkpoints
 
         // sync-checkpoint should always be accepted block
         assert(mapBlockIndex.count(hashSyncCheckpoint));
-        CBlockIndex const * pindexSync = mapBlockIndex[hashSyncCheckpoint];
+        CBlockIndex const * pindexSync = mapBlockIndex.at(hashSyncCheckpoint);
 
         if (nHeight > pindexSync->nHeight) {
 
@@ -275,7 +275,7 @@ namespace Checkpoints
 
         hash_t hash = BLOCK_CHECKPOINTS.rbegin()->second;
 
-        if (mapBlockIndex.count(hash) && !mapBlockIndex[hash]->IsInMainChain()) {
+        if (mapBlockIndex.count(hash) && !mapBlockIndex.at(hash)->IsInMainChain()) {
 
             // checkpoint block accepted but not yet in main chain
             printf("ResetSyncCheckpoint: SetBestChain to hardened checkpoint %s\n", hash.ToString().c_str());
@@ -283,10 +283,10 @@ namespace Checkpoints
             CTxDB txdb;
             CBlock block;
 
-            if (!block.ReadFromDisk(mapBlockIndex[hash]))
+            if (!block.ReadFromDisk(mapBlockIndex.at(hash)))
                 return error("ResetSyncCheckpoint: ReadFromDisk failed for hardened checkpoint %s", hash.ToString().c_str());
 
-            if (!block.SetBestChain(txdb, mapBlockIndex[hash]))
+            if (!block.SetBestChain(txdb, mapBlockIndex.at(hash)))
                 return error("ResetSyncCheckpoint: SetBestChain failed for hardened checkpoint %s", hash.ToString().c_str());
 
             txdb.Close();
@@ -307,7 +307,7 @@ namespace Checkpoints
 
             hash_t hash = i.second;
 
-            if (mapBlockIndex.count(hash) && mapBlockIndex[hash]->IsInMainChain()) {
+            if (mapBlockIndex.count(hash) && mapBlockIndex.at(hash)->IsInMainChain()) {
 
                 if (!WriteSyncCheckpoint(hash))
                     return error("ResetSyncCheckpoint: failed to write sync checkpoint %s", hash.ToString().c_str());
@@ -409,7 +409,7 @@ namespace Checkpoints
         // sync-checkpoint should always be accepted block
         assert(mapBlockIndex.count(hashSyncCheckpoint));
 
-        CBlockIndex const * pindexSync = mapBlockIndex[hashSyncCheckpoint];
+        CBlockIndex const * pindexSync = mapBlockIndex.at(hashSyncCheckpoint);
 
         return (nBestHeight >= pindexSync->nHeight + COINBASE_MATURITY || pindexSync->GetBlockTime() + STAKE_MIN_AGE < GetAdjustedTime());
 
@@ -423,7 +423,7 @@ namespace Checkpoints
         // sync-checkpoint should always be accepted block
         assert(mapBlockIndex.count(hashSyncCheckpoint));
 
-        const CBlockIndex* pindexSync = mapBlockIndex[hashSyncCheckpoint];
+        const CBlockIndex* pindexSync = mapBlockIndex.at(hashSyncCheckpoint);
 
         return (pindexSync->GetBlockTime() + nSeconds < GetAdjustedTime());
 
@@ -481,7 +481,7 @@ bool CSyncCheckpoint::ProcessSyncCheckpoint(CNode* pfrom) {
         return false;
 
     CTxDB txdb;
-    CBlockIndex* pindexCheckpoint = mapBlockIndex[hashCheckpoint];
+    CBlockIndex* pindexCheckpoint = mapBlockIndex.at(hashCheckpoint);
 
     if (!pindexCheckpoint->IsInMainChain()) {
 
