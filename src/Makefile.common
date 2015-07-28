@@ -13,11 +13,11 @@ reverse = $(if $(1),$(call reverse,$(wordlist 2,$(words $(1)),$(1)))) $(firstwor
 librarify = $(addprefix -l, $(call reverse,$(1)))
 
 ifeq ($(DEBUG),1)
-  CPPFLAGS += -g -O0
+  CXXFLAGS += -g -O0
 endif
 
 ifeq ($(TESTING),1)
-  CPPFLAGS += -DTESTING
+  CXXFLAGS += -DTESTING
 endif
 
 all: $(TARGET_HEADLESS)
@@ -25,9 +25,6 @@ all: $(TARGET_HEADLESS)
 -include $(DEPENDENCIES_HEADLESS) $(DEPENDENCIES_QT)
 
 .make.flags: force
-	@HASH=`md5sum <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
-
-.qt.cxxflags: force
 	@HASH=`md5sum <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
 $(TARGET_HEADLESS): $(OBJECTS_HEADLESS)
@@ -52,10 +49,10 @@ ui_%.h: %.ui
 	$(UIC) -o $@ $<
 
 %.cpp.d: %.cpp | generated_files
-	$(CXX) -MM -MT "${@:.cpp.d=.cpp.o}" -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
+	$(CXX) -MM -MT "${@:.cpp.d=.cpp.o}" -o $@ $< $(CXXFLAGS)
 
-%.cpp.o: %.cpp .make.opt
-	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
+%.cpp.o: %.cpp .make.flags
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 generated_files: force \
 	$(join $(dir $(filter %.ui, $(SOURCES_QT))), $(patsubst %.ui, ui_%.h, $(notdir $(filter %.ui, $(SOURCES_QT))))) \

@@ -9,9 +9,11 @@ ui_*.h
 *~
 .DS_Store
 
+/src/core
+
 /src/constants.test.cpp
 
-/src/.make.opt
+/src/.make.flags
 
 /src/neucoind
 /src/neucoin-qt
