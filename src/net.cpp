@@ -331,6 +331,7 @@ CNode* ConnectNode(CAddress addrConnect, timestamp_t nTimeout)
 
     // Look for an existing connection
     CNode* pnode = FindNode((CService)addrConnect);
+
     if (pnode)
     {
         if (nTimeout != 0)
@@ -1332,8 +1333,9 @@ bool OpenNetworkConnection(const CAddress& addrConnect, bool fUseGrant)
     //
     if (fShutdown)
         return false;
+
     if ((CNetAddr)addrConnect == (CNetAddr)addrLocalHost || !addrConnect.IsIPv4() ||
-        FindNode((CNetAddr)addrConnect) || CNode::IsBanned(addrConnect))
+        FindNode((CService)addrConnect) || CNode::IsBanned(addrConnect))
         return ReleaseGrant(fUseGrant);
 
     vnThreadsRunning[THREAD_OPENCONNECTIONS]--;
