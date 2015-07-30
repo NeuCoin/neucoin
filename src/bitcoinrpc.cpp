@@ -1145,6 +1145,33 @@ Value movecmd(const Array& params, bool fHelp)
     return true;
 }
 
+Value addnode(const Array& params, bool fHelp)
+{
+    string strCommand;
+
+    if (params.size() == 2)
+        strCommand = params[1].get_str();
+
+    if (fHelp || params.size() != 2 || (strCommand != "onetry" && strCommand != "add"))
+        throw runtime_error(
+            "addnode <node> <add|remove|onetry>\n"
+            "Attempts add or remove <node> from the addnode list or try a connection to <node> once.");
+
+    string target = params[0].get_str();
+    CAddress addr(CService(target, GetDefaultPort(), fAllowDNS));
+
+    if (strCommand == "add")
+    {
+        addrman.Add(addr, CNetAddr("127.0.0.1"));
+    }
+
+    if (strCommand == "add" || strCommand == "onetry")
+    {
+        ConnectNode(addr);
+    }
+
+    return Value::null;
+}
 
 Value sendfrom(const Array& params, bool fHelp)
 {
@@ -2381,6 +2408,18 @@ Value getblockhash(const Array& params, bool fHelp)
     return pblockindex->phashBlock->GetHex();
 }
 
+Value getbestblockhash(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getbestblockhash\n"
+            "Returns the hash of the best block in the longest block chain");
+
+    CBlockIndex* pblockindex = mapBlockIndex.at(hashBestChain);
+
+    return pblockindex->phashBlock->GetHex();
+}
+
 Value getblock(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 3)
@@ -3195,6 +3234,7 @@ static const CRPCCommand vRPCCommands[] =
 { //  name                      function                 safe mode?
   //  ------------------------  -----------------------  ----------
     { "help",                   &help,                   true },
+    { "addnode",                &addnode,                true },
     { "stop",                   &stop,                   true },
     { "getblockcount",          &getblockcount,          true },
     { "getblocknumber",         &getblocknumber,         true },
@@ -3231,6 +3271,7 @@ static const CRPCCommand vRPCCommands[] =
     { "addmultisigaddress",     &addmultisigaddress,     false },
     { "getblock",               &getblock,               false },
     { "getblockhash",           &getblockhash,           false },
+    { "getbestblockhash",       &getbestblockhash,       false },
     { "gettransaction",         &gettransaction,         false },
     { "listtransactions",       &listtransactions,       false },
     { "signmessage",            &signmessage,            false },
