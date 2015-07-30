@@ -2819,8 +2819,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         static int nAskedForBlocks = 0;
         if (!pfrom->fClient &&
             (pfrom->nVersion < NOBLKS_VERSION_START ||
-             pfrom->nVersion >= NOBLKS_VERSION_END) &&
-             (nAskedForBlocks < 1 || vNodes.size() <= 1))
+             pfrom->nVersion >= NOBLKS_VERSION_END))
         {
             nAskedForBlocks++;
             pfrom->PushGetBlocks(pindexBest, uint256(0));
