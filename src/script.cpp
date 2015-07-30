@@ -249,7 +249,7 @@ const char* GetOpName(opcodetype opcode)
  *
  * This function is consensus-critical since BIP66.
  */
-bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig)
+static bool IsValidSignatureEncoding(const std::vector<unsigned char> &sig)
 {
     // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S] [sighash]
     // * total-length: 1-byte length descriptor of everything that follows,
@@ -315,6 +315,25 @@ bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig)
     return true;
 }
 
+static bool IsValidLowDERSignature(valtype const & vchSig)
+{
+    if (!IsValidSignatureEncoding(vchSig))
+        return false;
+
+    unsigned int nLenR = vchSig[3];
+    unsigned int nLenS = vchSig[5+nLenR];
+
+    unsigned char const *S = &vchSig[6+nLenR];
+
+    // If the S value is above the order of the curve divided by two, its
+    // complement modulo the order could have been used instead, which is
+    // one byte shorter when encoded correctly.
+    if (!CheckSignatureElement(S, nLenS, true))
+        return false;
+
+    return true;
+}
+
 static bool IsValidSignature(valtype const & vchSig)
 {
     if (vchSig.size() == 0) {
@@ -323,7 +342,7 @@ static bool IsValidSignature(valtype const & vchSig)
         return true;
     }
 
-    return IsValidSignatureEncoding(vchSig);
+    return IsValidLowDERSignature(vchSig);
 }
 
 static bool IsValidPubKey(valtype const & vchPubKey)
