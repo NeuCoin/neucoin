@@ -21,7 +21,7 @@ export async function test( ) {
     } );
 
     var client1 = await spawnClient( { checkpointkey : PRIVATE_KEY } );
-    var client2 = await spawnClient( { addnode : `127.0.0.1:${client1.port}` } );
+    var client2 = await spawnClient( { addnode : client1.target } );
 
     var rpc1 = await sendRpcQuery( client1, { method : 'getcheckpoint' } );
     var rpc2 = await sendRpcQuery( client2, { method : 'getcheckpoint' } );

@@ -1,20 +1,20 @@
-import { compileWith }                          from './framework/compilation';
-import { mineSomePowBlocks, mintSomePosBlocks } from './framework/mining';
-import { sendRpcQuery }                         from './framework/query';
-import { spawnClient }                          from './framework/spawn';
-import { delayExecution }                       from './framework/time';
+import { compileWith }                                             from './framework/compilation';
+import { mineSomePowBlocks, mintSomePosBlocks, mineForMaturation } from './framework/mining';
+import { sendRpcQuery }                                            from './framework/query';
+import { spawnClient }                                             from './framework/spawn';
+import { delayExecution }                                          from './framework/time';
 
-import { fastChain, smallChain }                from './_environments';
+import { fastChain, smallChain }                                   from './_environments';
 
 export async function test( ) {
 
     await compileWith( fastChain, smallChain );
 
     var client1 = await spawnClient( { } );
-    var client2 = await spawnClient( { addnode : `127.0.0.1:${client1.port}` } );
+    var client2 = await spawnClient( { addnode : client1.target } );
 
     await mineSomePowBlocks( client1, 63 );
-    await mineSomePowBlocks( client1, 1 );
+    await mineForMaturation( client1, 1 );
 
     var rpc = await sendRpcQuery( client1, { method : 'getbalance' } );
 
@@ -34,9 +34,9 @@ export async function test( ) {
 
     var rpc = await sendRpcQuery( client1, { method : 'getbalance' } );
 
-    expect( rpc.result ).to.equal( 63 );
+    expect( rpc.result ).to.equal( 64 );
 
-    await mintSomePosBlocks( client2, 1 );
+    await mintSomePosBlocks( client1, 1 );
     await mineSomePowBlocks( client1, 1 );
     await mineSomePowBlocks( client1, 1 );
 

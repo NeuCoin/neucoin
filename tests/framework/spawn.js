@@ -105,6 +105,8 @@ export async function spawnClient( options = { } ) {
     client.port = last( compact( flatten( [ options.port ] ) ) );
     client.rpcPort = last( compact( flatten( [ options.rpcport ] ) ) );
 
+    client.target = `127.0.0.1:${client.port}`;
+
     console.log( 'Client spawned. Delaying execution to leave it some time to boot' );
     await delayExecution( 40 );
     console.log( 'Done, thanks for waiting! Resuming test execution' );

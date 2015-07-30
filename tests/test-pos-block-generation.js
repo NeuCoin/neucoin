@@ -26,7 +26,7 @@ export async function test( ) {
     } );
 
     var client1 = await spawnClient( { } );
-    var client2 = await spawnClient( { addnode : `127.0.0.1:${client1.port}` } );
+    var client2 = await spawnClient( { addnode : client1.target } );
 
     // We mine some blocks that will give us multiple unspent output that we will expect
     // to mint in a close future
