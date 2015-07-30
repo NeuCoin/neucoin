@@ -12,8 +12,10 @@ ui_*.h
 /src/core
 
 /src/constants.test.cpp
+/src/*.qt.cpp
 
-/src/.make.flags
+/src/.make.cxxflags
+/src/.make.ldflags
 
 /src/neucoind
 /src/neucoin-qt

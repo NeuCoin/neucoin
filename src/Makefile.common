@@ -17,20 +17,23 @@ ifeq ($(DEBUG),1)
 endif
 
 ifeq ($(TESTING),1)
-  CXXFLAGS += -DTESTING
+  CXXFLAGS += -g -O0 -DTESTING
 endif
 
 all: $(TARGET_HEADLESS)
 
 -include $(DEPENDENCIES_HEADLESS) $(DEPENDENCIES_QT)
 
-.make.flags: force
+.make.cxxflags: force
 	@HASH=`md5sum <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
-$(TARGET_HEADLESS): $(OBJECTS_HEADLESS)
+.make.ldflags: force
+	@HASH=`md5sum <<< '$(CONSTANTS) :: $(LDFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
+
+$(TARGET_HEADLESS): $(OBJECTS_HEADLESS) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_HEADLESS) $(LDFLAGS_HEADLESS) $(call librarify, $(LIBRARIES_HEADLESS))
 
-$(TARGET_QT): $(OBJECTS_QT)
+$(TARGET_QT): $(OBJECTS_QT) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_QT) $(LDFLAGS_QT) $(call librarify, $(LIBRARIES_QT))
 
 %.qm: %.ts
@@ -51,7 +54,7 @@ ui_%.h: %.ui
 %.cpp.d: %.cpp | generated_files
 	$(CXX) -MM -MT "${@:.cpp.d=.cpp.o}" -o $@ $< $(CXXFLAGS)
 
-%.cpp.o: %.cpp .make.flags
+%.cpp.o: %.cpp .make.cxxflags
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 generated_files: force \
