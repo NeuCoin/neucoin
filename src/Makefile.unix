@@ -3,6 +3,8 @@ TARGET_QT = neucoin-qt
 
 MAKEFILE = Makefile.unix
 
+QT_MID_SUFFIX = 5
+
 include Makefile.default
 
 CXXFLAGS += $(shell pkg-config Qt5Core Qt5Gui Qt5Widgets --cflags)

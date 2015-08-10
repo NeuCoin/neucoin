@@ -1,5 +1,6 @@
 SHELL     = bash
 
+MD5SUM   ?= md5sum
 CAT      ?= cat
 LRELEASE ?= lrelease
 MOC      ?= moc
@@ -25,10 +26,10 @@ all: $(TARGET_HEADLESS)
 -include $(DEPENDENCIES_HEADLESS) $(DEPENDENCIES_QT)
 
 .make.cxxflags: force
-	@HASH=`md5sum <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
+	@HASH=`$(MD5SUM) <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
 .make.ldflags: force
-	@HASH=`md5sum <<< '$(CONSTANTS) :: $(LDFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
+	@HASH=`$(MD5SUM) <<< '$(CONSTANTS) :: $(LDFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
 $(TARGET_HEADLESS): $(OBJECTS_HEADLESS) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_HEADLESS) $(LDFLAGS_HEADLESS) $(call librarify, $(LIBRARIES_HEADLESS))

@@ -1,4 +1,5 @@
 #include <cstring>
+#include <string>
 
 #include <boost/assign/list_of.hpp>
 

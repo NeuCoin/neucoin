@@ -1,5 +1,7 @@
 CONSTANTS ?= constants.cpp
+
 BOOST_SUFFIX ?= #NO SUFFIX
+QT_MID_SUFFIX ?= 5
 
 # We unfortunately can't specialize CXXFLAGS for each target, since they both share the same object files
 CXXFLAGS = -I $(shell pwd)/qt/forms -I $(shell pwd)/qt -I $(shell pwd) $(CPPFLAGS_HEADLESS)
@@ -8,7 +10,7 @@ LDFLAGS_HEADLESS =
 LDFLAGS_QT =
 
 LIBRARIES_HEADLESS = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl
-LIBRARIES_QT = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl png qrencode z Qt5Core Qt5Gui Qt5Widgets
+LIBRARIES_QT = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl png qrencode z Qt$(QT_MID_SUFFIX)Core Qt$(QT_MID_SUFFIX)Gui Qt$(QT_MID_SUFFIX)Widgets
 
 SOURCES_COMMON = \
   $(CONSTANTS) \

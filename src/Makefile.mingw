@@ -3,6 +3,8 @@ TARGET_QT = neucoin-qt.exe
 
 MAKEFILE = Makefile.mingw
 
+QT_MID_SUFFIX = 5
+
 include Makefile.default
 
 CXXFLAGS += -I $(BOOST_PATH) -I $(DB_PATH)/build_unix -I $(OPENSSL_PATH)/include -I $(QRENCODE_PATH) -I $(QTBASE_PATH)/include/QtCore -I $(QTBASE_PATH)/include/QtGui -I $(QTBASE_PATH)/include/QtWidgets -I $(QTBASE_PATH)/include
