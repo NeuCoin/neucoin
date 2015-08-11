@@ -7,7 +7,7 @@
 
 static uint8_t      TESTNET_PROTOCOL_MAGIC_BYTES[sizeof(PROTOCOL_MAGIC_BYTES)] = { 0xe5, 0xcf, 0x81, 0xdf };
 
-static char const * TESTNET_AUTO_DNS_SEEDS[][2]                                = { { 0, 0 } };
+static char const * TESTNET_AUTO_DNS_SEEDS[][2]                                = { { "t-seed-a", "t-seed-a.neucoin.org" }, { 0, 0 } };
 static uint32_t     TESTNET_AUTO_IP_SEEDS[]                                    = { 0 };
 
 void ApplyTestnetParameters(void)

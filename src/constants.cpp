@@ -20,7 +20,7 @@ uint8_t                           PROTOCOL_MAGIC_BYTES[4]     = { 0xe5, 0xcf, 0x
 //                                Each DNS pair gives a source name and a seed name. The first name is used as information source for addrman, and the second name should resolve to a list of seed addresses. The last element of each array has to be null (respectively { 0, 0 } and 0)
 //                                A short note about the syntax : we have to use a pointer-to-array (rather than array-of-array-of-pointers) because we need to be able to reassign it later and change the array size (testnet). I'd like to improve that latter (and probably use a std::list instead)
 
-static char const *               MAINNET_AUTO_DNS_SEEDS[][2] = { { 0, 0 } };
+static char const *               MAINNET_AUTO_DNS_SEEDS[][2] = { { "seed-a", "seed-a.neucoin.org" }, { "seed-b", "seed-b.neucoin.org" }, { 0, 0 } };
 static uint32_t                   MAINNET_AUTO_IP_SEEDS[]     = { 0 };
 
 char const *                    (*AUTO_DNS_SEEDS)[2]          = MAINNET_AUTO_DNS_SEEDS;
