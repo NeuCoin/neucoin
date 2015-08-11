@@ -57,6 +57,9 @@ export function compile( options = '' ) {
 
 export async function compileWith( ... parameterList ) {
 
+    if ( parameterList.some( set => ! set ) )
+        throw new Error( 'Some of your compilation parameters are empty - it\'s probably an error' );
+
     var parameters = merge( ... parameterList );
 
     var path = Path.dirname( CLIENT_PATH );

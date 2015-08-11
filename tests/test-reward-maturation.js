@@ -1,26 +1,14 @@
-import { compileWith }       from './framework/compilation';
-import { mineSomePowBlocks } from './framework/mining';
-import { sendRpcQuery }      from './framework/query';
-import { spawnClient }       from './framework/spawn';
-import { delayExecution }    from './framework/time';
+import { compileWith }           from './framework/compilation';
+import { mineSomePowBlocks }     from './framework/mining';
+import { sendRpcQuery }          from './framework/query';
+import { spawnClient }           from './framework/spawn';
+import { delayExecution }        from './framework/time';
+
+import { fastChain, smallChain } from './_environments';
 
 export async function test( ) {
 
-    await compileWith( {
-
-        COINBASE_MATURITY : 5,
-
-        COIN_PREMINE      : `10 * COIN`,
-        POW_BLOCK_REWARD  : ` 0 * COIN`,
-
-        MIN_TX_FEES       : ` 0 * COIN`,
-        MIN_RELAY_TX_FEES : ` 0 * COIN`,
-
-        POW_TARGET_SPACING : ` 1 * MINUTE`,
-        POS_TARGET_SPACING : ` 1 * MINUTE`,
-        TARGET_TIMESPAN    : `10 * MINUTE`
-
-    } );
+    await compileWith( fastChain, smallChain, { COINBASE_MATURITY : 5, COIN_PREMINE : `10 * COIN` } );
 
     var client1 = await spawnClient( { } );
     var client2 = await spawnClient( { addnode : client1.target } );

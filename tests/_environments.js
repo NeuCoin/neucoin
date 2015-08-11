@@ -44,6 +44,8 @@ export var mediumFastChain = {
     STAKE_MIN_AGE              : `0 * SECOND`,
     STAKE_MAX_AGE              : `0 * SECOND`,
 
+    TARGET_TIMESPAN            : `1 * MINUTE`,
+
     COINBASE_MATURITY          : `1`
 
 };
