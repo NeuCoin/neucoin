@@ -4,6 +4,7 @@
         "chai" : "*",
         "lodash" : "*",
         "mkdirp" : "*",
-        "rimraf" : "*"
+        "rimraf" : "*",
+        "bitcore" : "althousedev/bitcore"
     }
 }

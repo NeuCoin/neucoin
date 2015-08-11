@@ -4,6 +4,7 @@ if ( ! require( 'fs' ).existsSync( __dirname + '/_config.js' ) )
 require( 'babel/register' )( { stage : 1 } );
 
 GLOBAL.expect = require( 'chai' ).expect;
+GLOBAL.bitcore = require( 'bitcore' );
 
 var name = process.argv[ 2 ];
 
@@ -14,6 +15,38 @@ var m = require( name );
 
 if ( ! m || ! m.test || typeof m.test !== 'function' )
     throw new Error( 'Invalid test module' );
+
+var killList = [ ];
+
+GLOBAL.addToKillList = function ( pid ) {
+
+    if ( killList.indexOf( pid ) === -1 )
+        killList.push( pid );
+
+    return function ( ) {
+        killList.splice( killList.indexOf( pid ), 1 );
+    };
+
+};
+
+function killChildren( ) {
+
+    var currentKillList = killList;
+    killList = [ ];
+
+    currentKillList.forEach( function ( pid ) {
+        process.kill( pid, 'SIGTERM' );
+    } );
+
+}
+
+process.on( 'SIGINT', function ( ) {
+
+    killChildren( );
+
+    process.exit( 1 );
+
+} );
 
 Promise.resolve( m.test( ) ).then( function ( ) {
 
@@ -29,10 +62,9 @@ Promise.resolve( m.test( ) ).then( function ( ) {
 
 } ).then( function ( status ) {
 
-    process.on( 'SIGTERM', function ( ) { } );
-    process.kill( -process.pid );
-
     process.stdout.write( '\x07' );
+
+    killChildren( );
 
     process.exit( status );
 

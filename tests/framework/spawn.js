@@ -100,7 +100,7 @@ export async function spawnClient( options = { } ) {
     }
 
     var client = spawn( CLIENT_PATH, commandLine );
-    client.unref( );
+    GLOBAL.addToKillList( client.pid );
 
     client.port = last( compact( flatten( [ options.port ] ) ) );
     client.rpcPort = last( compact( flatten( [ options.rpcport ] ) ) );
@@ -118,6 +118,7 @@ export async function spawnClient( options = { } ) {
 export async function spawnMiner( client ) {
 
     var miner = spawn( MINER_PATH, [ `-o`, `http://127.0.0.1:${client.rpcPort}`, `-u`, RPC_USER, `-p`, RPC_PASSWORD, `-t1` ] );
+    GLOBAL.addToKillList( miner.pid );
 
     console.log( 'Miner spawned' );
 
