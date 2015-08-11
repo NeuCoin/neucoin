@@ -1,3 +1,7 @@
+notifications:
+
+    slack: { secure: L1clMDmm+r90uzoTf+1IAXD1kY5z/gKGsdq6MqQxBWmsP9P2L/UvVKB/OtMXno4pworuFgB/R+3Vn5ZKtwTOEtYJ+np6kUwt8yFo5z6PQWTipslQ+NSIXeFW0/eDCTKPQssEfSOZkiTiF7lVvGO8ntgTUI+m/9ovd9W2Qku1nMKDNCiiQAeGucwRlypVQfxvFaQJEVjKN7rd3D+O8QDcOYozOafyUY/EVENgaPEHeEKpeXGIFPa3IFVDkapEZPtGN2WUI7Ex1iN6DKJlEKETz/LNl4AW8URVWYlIOMTuqkkev6YQsiC1LUw1y0lPArtV2HqP5IK3+ZChaw5M/OubrLuvvg55mEUsBDW2S67sarhLx15Hhn0zD21seou14gUPif2Z3Xr2oy+lC8wGb1swIjOW+ghqcJw4yLXpjRQJ+eS3FgOZjfUk4ZyF0c4ilKdYF2Q2eStLkrX14kRrtfSZugffkp1kYS/fKAyjXkxfNHKhQZHnCFZeNJAGlLrDbP8VIOdjvJ1Yu2/ZpeZNg2jVUzOkRQyTyN5z5VNk3nsMmS2M5q6bqpge3MInWoi7iexn61/+gwB/LPx913qjZLBlsCbOwFegCAUE7fbcC6p/0sGGqfcR2yXTmCDQOUOPtQP/d2K3AV77LjxPBFHENP02lXfaZHt+bfZe6uq0/mCQZsI= }
+
 before_install:
 
     - sudo apt-get install -qq libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libdb++-dev libssl-dev make g++
