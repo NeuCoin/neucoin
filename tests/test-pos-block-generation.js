@@ -33,6 +33,6 @@ export async function test( ) {
 
     expect( rpc.result - blockCount ).to.be.within( BLOCKS_TO_WAIT * 0.8, BLOCKS_TO_WAIT * 1.2 );
 
-    console.log( `For reference, ${rpc.result} have been mined instead of ${BLOCKS_TO_WAIT} (~${Math.floor(rpc.result / BLOCKS_TO_WAIT * 10000) / 100}%)` );
+    console.log( `For reference, ${rpc.result - blockCount} have been mined instead of ${BLOCKS_TO_WAIT} (~${Math.floor((rpc.result - blockCount) / BLOCKS_TO_WAIT * 10000) / 100}%)` );
 
 }
