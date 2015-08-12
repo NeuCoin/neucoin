@@ -3365,6 +3365,14 @@ bool ProcessMessages(CNode* pfrom)
 
     INFINITE_LOOP
     {
+        // Safe guards to prevent the node to ignore a requested shutdown
+        // in case of long processing
+        if (fRequestShutdown)
+        {
+            StartShutdown();
+            return true;
+        }
+
         // Scan for message start
         CDataStream::iterator pstart = search(vRecv.begin(), vRecv.end(), BEGIN(pchMessageStart), END(pchMessageStart));
         int nHeaderSize = vRecv.GetSerializeSize(CMessageHeader());
