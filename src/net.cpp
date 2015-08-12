@@ -1045,11 +1045,11 @@ void ThreadDNSAddressSeed2(void* parg)
 
     printf("Loading addresses from DNS seeds (could take a while)\n");
 
-    for (unsigned int seed_idx = 0; AUTO_DNS_SEEDS[seed_idx][0]; seed_idx++) {
-        if (AUTO_DNS_SEEDS[seed_idx][1][0] == 't') continue;
-
+    for (unsigned int seed_idx = 0; AUTO_DNS_SEEDS[seed_idx][0]; seed_idx++)
+    {
         vector<CNetAddr> vaddr;
         vector<CAddress> vAdd;
+
         if (LookupHost(AUTO_DNS_SEEDS[seed_idx][1], vaddr))
         {
             BOOST_FOREACH(CNetAddr& ip, vaddr)
@@ -1061,6 +1061,7 @@ void ThreadDNSAddressSeed2(void* parg)
                 found++;
             }
         }
+
         addrman.Add(vAdd, CNetAddr(AUTO_DNS_SEEDS[seed_idx][0], true));
     }
 
