@@ -1,4 +1,4 @@
-# Neucoin Official Development Repo
+![](http://i.imgur.com/5P9mGCc.png)
 
 ## What is Neucoin?
 
