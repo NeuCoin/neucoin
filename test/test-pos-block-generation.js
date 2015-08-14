@@ -6,7 +6,7 @@ import { delayExecution }              from './framework/time';
 
 import { mediumFastChain, smallChain } from './_environments';
 
-let BLOCKS_TO_WAIT = 200;
+let BLOCKS_TO_WAIT = 50;
 
 export async function test( ) {
 
