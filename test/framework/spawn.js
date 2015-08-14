@@ -70,7 +70,9 @@ export async function spawnClient( options = { } ) {
         rpcallowip : '*',
 
         gen : false,
-        stakegen : false
+        stakegen : false,
+
+        dnsseed : false
 
     }, options );
 
