@@ -10,6 +10,10 @@
   * [Whitepaper](http://www.neucoin.org/en/whitepaper/)
   * [Forum](http://forum.neucoin.org/)
 
+# Usage
+
+Please check the [docs](https://github.com/althousedev/neucoin/blob/master/docs/) directory for more information.
+
 # Repo Guidelines
 
   * Developers work in their own forks, then submit pull requests when they think their feature or bug fix is ready.
