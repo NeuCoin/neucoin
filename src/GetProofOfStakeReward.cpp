@@ -17,7 +17,7 @@ money_t GetProofOfStakeReward(timestamp_t coinAge, blockheight_t height)
     uint32_t stepCount = sizeof( rewardSteps ) / sizeof( rewardSteps[ 0 ] );
 
     if ( stepIndex >= stepCount )
-        stepIndex = stepCount;
+        stepIndex = stepCount - 1;
 
     money_t rewardCoinYear = COIN * rewardSteps[ stepIndex ] / 10000;
 
