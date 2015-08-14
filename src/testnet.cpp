@@ -33,7 +33,7 @@ void ApplyTestnetParameters(void)
     GENESIS_BLOCK_NONCE        = 2179980296;
     GENESIS_BLOCK_VERSION      = 1;
 
-    BLOCK_CHECKPOINTS          = boost::assign::map_list_of(0, GENESIS_HASH);
+    BLOCK_CHECKPOINTS          = boost::assign::map_list_of(0, GENESIS_HASH)((8 * WEEK) / (10 * MINUTE) + (8 * WEEK) / (1 * MINUTE), "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     STAKE_MODIFIER_CHECKPOINTS = boost::assign::map_list_of(0, 0xfd11f4e7);
 
     POW_MAX_BLOCK              = std::numeric_limits< blockheight_t >::max();
