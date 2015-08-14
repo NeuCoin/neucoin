@@ -21,7 +21,9 @@ ifeq ($(TESTING),1)
   CXXFLAGS += -g -O0 -DTESTING
 endif
 
-all: $(TARGET_HEADLESS)
+default: force $(TARGET_HEADLESS)
+
+all: force $(TARGET_HEADLESS) $(TARGET_QT)
 
 -include $(DEPENDENCIES_HEADLESS) $(DEPENDENCIES_QT)
 
