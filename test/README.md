@@ -2,19 +2,35 @@
 
 What lies in this folder is a simple functional testing framework, covering the RPC behavior of the coin.
 
-Every contributor should make sure that their work doesn't break anything here before submitting a PR (we will check it before merging your modifications, and may close your PR without warning if the tests broke). Additionally, we ask every contributor to write tests when they add a new feature, and to consider writing tests for already-existing-but-still-uncovered features.
+Every contributor should make sure that their work doesn't break anything here before submitting a PR (Travis will check it before merging your modifications, and may close your PR without warning if the tests broke). Additionally, we ask every contributor to write tests when they add a new feature, and to consider writing tests for already-existing-but-still-uncovered features.
 
-## How to use
+## Requirements
 
-First enter `npm install` (requires npm), then just run `node _runner <module>`. For example, `node _runner test-dynamic-checkpointing`.
+  - Prepare your environment for the tests to successfully build the client (check the [doc](https://github.com/neucoin/neucoin/tree/master/doc) directory for more information)
 
-## The current test list
+  - Install node and npm
+
+  - Run `npm install` from inside the test directory to install the test framework dependencies
+
+## Usage
+
+```
+$> node _runner <module>
+```
+
+Of course, replace `<module>` by a test name (cf below).
+
+Note that you can run all tests at once by running `run-all.sh`.
+
+## Current test list
 
 This list is not exhausive, but we will do our best to keep it sync'd with the actual test content. Feel free to report any error. In case of doubt, the actual test source code is the reference.
 
   - **test-dynamic-checkpointing** checks that a dynamic checkpoint is generated at each new PoW block when the private master key is fed into the client command line.
   - **test-reward-maturation** checks that the balance is not yet updated until the mined coins mature.
   - **test-simple-transaction** checks that it is actually possible to mine coins and send them to an other account.
+  - **test-cold-minting** checks that the cold minting feature works correctly (that a cold-mint address can mint without the spending key).
+  - **test-reorganization** checks that the client correctly switches branch when a better one comes around.
 
 The following tests *may* fail even if they are actually right (it should be rare, tho). That's an issue that we haven't been able to solve yet, that is due to how the blocks are generated. The best thing to do is to run them multiple time and check for a majority of success.
 
