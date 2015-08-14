@@ -5,6 +5,7 @@ export var fastChain = {
     GENESIS_TIME               : `1345084287`,
     GENESIS_NONCE              : `1043276304`,
 
+    BLOCK_CHECKPOINTS          : `boost::assign::map_list_of(0, GENESIS_HASH)`,
     STAKE_MODIFIER_CHECKPOINTS : `boost::assign::map_list_of(0, 0xfd11f4e7)`,
 
     POW_INITIAL_TARGET         : `target_t(~uint256(0))`,
@@ -30,6 +31,7 @@ export var mediumFastChain = {
     GENESIS_TIME               : `1345084287`,
     GENESIS_NONCE              : `1043276304`,
 
+    BLOCK_CHECKPOINTS          : `boost::assign::map_list_of(0, GENESIS_HASH)`,
     STAKE_MODIFIER_CHECKPOINTS : `boost::assign::map_list_of(0, 0xfd11f4e7)`,
 
     POW_INITIAL_TARGET         : `target_t(~uint256(0))`,
