@@ -4,17 +4,15 @@ notifications:
 
 before_install:
 
-    - sudo apt-get install -qq libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libdb++-dev libssl-dev make g++
+    # Client dependencies
+    - sudo apt-get install -qq g++ make libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libdb++-dev libssl-dev libqrencode-dev libpng-dev qt5-default pkg-config
 
-    - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-    - sudo apt-get update -qq
-    - sudo apt-get install -qq qtbase5-dev qtdeclarative5-dev
-
+    # Tests dependencies
     - sudo apt-get install -qq nodejs npm
 
 install:
 
-    - cd tests
+    - cd test
     - npm install
     - cp _config.js.example _config.js
 
@@ -23,5 +21,5 @@ script:
     - cd ../src
     - make -f Makefile.unix TESTING=1 neucoind
 
-    - cd ../tests
+    - cd ../test
     - bash run-all.sh
