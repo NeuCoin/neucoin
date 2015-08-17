@@ -21,5 +21,5 @@
     Or, if you wish to build everything:
 
     ```
-    $> make -f Makefile.osx all
+    $> make -f Makefile.unix all
     ```
