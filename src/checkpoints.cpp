@@ -15,25 +15,33 @@
 
 namespace Checkpoints
 {
-    bool CheckHardened( blockheight_t nHeight, hash_t hash) {
-
+    bool CheckHardened( blockheight_t nHeight, hash_t hash)
+    {
         std::map<blockheight_t, hash_t>::const_iterator i = BLOCK_CHECKPOINTS.find(nHeight);
 
         if (i == BLOCK_CHECKPOINTS.end())
             return true;
 
         return hash == i->second;
-
     }
 
-    int GetTotalBlocksEstimate() {
+    int GetTotalBlocksEstimate()
+    {
+        std::map<blockheight_t, hash_t>::const_reverse_iterator i = BLOCK_CHECKPOINTS.rbegin();
 
-        return BLOCK_CHECKPOINTS.rbegin()->first;
+        // Allow the last checkpoint to be a "kill-checkpoint", that will prevent the blockchain from progressing further
+        // In such a case, since this checkpoint is in the future, we don't count it towards the block count estimation
 
+        if (i->second == ~hash_t(0))
+            ++ i;
+
+        assert(i != BLOCK_CHECKPOINTS.rend());
+
+        return i->first;
     }
 
-    CBlockIndex * GetLastCheckpoint(std::map<hash_t, CBlockIndex *> const & mapBlockIndex) {
-
+    CBlockIndex * GetLastCheckpoint(std::map<hash_t, CBlockIndex *> const & mapBlockIndex)
+    {
         typedef std::map<blockheight_t, hash_t> checkpoints_t;
 
         BOOST_REVERSE_FOREACH(checkpoints_t::value_type const & i, BLOCK_CHECKPOINTS) {
@@ -48,7 +56,6 @@ namespace Checkpoints
         }
 
         return NULL;
-
     }
 
     // ppcoin: synchronized checkpoint (centrally broadcasted)
