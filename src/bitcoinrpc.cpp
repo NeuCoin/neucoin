@@ -396,7 +396,7 @@ Value help(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "help [command]\n"
-            "List commands, or get help for a command.");
+            "Without argument, lists the available RPC calls. With an argument, return a command full help.\n");
 
     string strCommand;
     if (params.size() > 0)
@@ -411,9 +411,11 @@ Value stop(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "stop\n"
-            "Stop " COIN_NAME " server.");
+            "Stops the " COIN_NAME " server.\n");
+
     // Shutdown will take long enough that the response should get back
     StartShutdown();
+
     return COIN_NAME " server stopping";
 }
 
@@ -423,7 +425,7 @@ Value getblockcount(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getblockcount\n"
-            "Returns the number of blocks in the longest block chain.");
+            "Returns the number of blocks in the longest block chain.\n");
 
     return nBestHeight;
 }
@@ -435,7 +437,7 @@ Value getblocknumber(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getblocknumber\n"
-            "Deprecated.  Use getblockcount.");
+            "Deprecated. Use getblockcount.\n");
 
     return nBestHeight;
 }
@@ -446,7 +448,7 @@ Value getconnectioncount(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getconnectioncount\n"
-            "Returns the number of connections to other nodes.");
+            "Returns the number of connections to other nodes.\n");
 
     LOCK(cs_vNodes);
     return (int)vNodes.size();
@@ -470,14 +472,15 @@ Value getpeerinfo(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getpeerinfo\n"
-            "Returns data about each connected network node.");
+            "Returns data about each node the client is connected to.\n");
 
     vector<CNodeStats> vstats;
     CopyNodeStats(vstats);
 
     Array ret;
 
-    BOOST_FOREACH(const CNodeStats& stats, vstats) {
+    BOOST_FOREACH(const CNodeStats& stats, vstats)
+    {
         Object obj;
 
         obj.push_back(Pair("addr", stats.addrName));
@@ -504,12 +507,13 @@ Value getdifficulty(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getdifficulty\n"
-            "Returns difficulty as a multiple of the minimum difficulty.");
+            "Returns the difficulty as a multiple of the minimum difficulty.\n");
 
     Object obj;
-    obj.push_back(Pair("proof-of-work",        GetDifficulty()));
-    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
-    obj.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
+    obj.push_back(Pair("proof-of-work", GetDifficulty()));
+    obj.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    obj.push_back(Pair("search-interval", (int)nLastCoinStakeSearchInterval));
+
     return obj;
 }
 
@@ -519,7 +523,8 @@ Value getgenerate(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getgenerate\n"
-            "Returns true or false.");
+            "Returns true if the node has been set to mine PoW blocks.\n"
+            "Note that it is not recommanded for you to mine using the client. It is advised to use a dedicated software instead.\n");
 
     return GetBoolArg("-gen");
 }
@@ -530,8 +535,8 @@ Value setgenerate(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "setgenerate <generate> [genproclimit]\n"
-            "<generate> is true or false to turn generation on or off.\n"
-            "Generation is limited to [genproclimit] processors, -1 is unlimited.");
+            "Enables or disables the PoW block generation, according to the <generate> switch.\n"
+            "You may also use this command to set a new miner processor usage limit (-1 is unlimited).\n");
 
     bool fGenerate = true;
     if (params.size() > 0)
@@ -541,12 +546,16 @@ Value setgenerate(const Array& params, bool fHelp)
     {
         int nGenProcLimit = params[1].get_int();
         mapArgs["-genproclimit"] = itostr(nGenProcLimit);
-        if (nGenProcLimit == 0)
-            fGenerate = false;
-    }
-    mapArgs["-gen"] = (fGenerate ? "1" : "0");
 
+        if (nGenProcLimit == 0)
+        {
+            fGenerate = false;
+        }
+    }
+
+    mapArgs["-gen"] = (fGenerate ? "1" : "0");
     GenerateBitcoins(fGenerate, pwalletMain);
+
     return Value::null;
 }
 
@@ -556,11 +565,12 @@ Value gethashespersec(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "gethashespersec\n"
-            "Returns a recent hashes per second performance measurement while generating.");
+            "Returns a recent hashes per second performance measurement while generating.\n");
 
     if (GetTimeMillis() - nHPSTimerStart > 8000)
-        return (boost::int64_t)0;
-    return (boost::int64_t)dHashesPerSec;
+        return (boost::int64_t) 0;
+
+    return (boost::int64_t) dHashesPerSec;
 }
 
 
@@ -570,13 +580,15 @@ Value getnetworkghps(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getnetworkghps\n"
-            "Returns a recent Ghash/second network mining estimate.");
+            "Returns a recent Ghash/second network mining estimate.\n");
 
     int64 nTargetSpacingWorkMin = 30;
     int64 nTargetSpacingWork = nTargetSpacingWorkMin;
     int64 nInterval = 72;
+
     CBlockIndex* pindex = pindexGenesisBlock;
     CBlockIndex* pindexPrevWork = pindexGenesisBlock;
+
     while (pindex)
     {
         // Exponential moving average of recent proof-of-work block spacing
@@ -589,7 +601,9 @@ Value getnetworkghps(const Array& params, bool fHelp)
         }
         pindex = pindex->pnext;
     }
+
     double dNetworkGhps = GetDifficulty() * 4.294967296 / nTargetSpacingWork;
+
     return dNetworkGhps;
 }
 
@@ -599,9 +613,10 @@ Value getinfo(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getinfo\n"
-            "Returns an object containing various state info.");
+            "Returns an object containing various state info.\n");
 
     Object obj;
+
     obj.push_back(Pair("version",       FormatFullVersion()));
     obj.push_back(Pair("protocolversion",(int)PROTOCOL_VERSION));
     obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
@@ -617,9 +632,12 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("keypoololdest", (boost::int64_t)pwalletMain->GetOldestKeyPoolTime()));
     obj.push_back(Pair("keypoolsize",   pwalletMain->GetKeyPoolSize()));
     obj.push_back(Pair("paytxfee",      ValueFromAmount(nTransactionFee)));
+
     if (pwalletMain->IsCrypted())
         obj.push_back(Pair("unlocked_until", (boost::int64_t)nWalletUnlockTime / 1000));
+
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
+
     return obj;
 }
 
@@ -629,19 +647,21 @@ Value getmininginfo(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getmininginfo\n"
-            "Returns an object containing mining-related information.");
+            "Returns an object containing mining-related information.\n");
 
     Object obj;
-    obj.push_back(Pair("blocks",        (int)nBestHeight));
-    obj.push_back(Pair("currentblocksize",(uint64_t)nLastBlockSize));
-    obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
-    obj.push_back(Pair("difficulty",    (double)GetDifficulty()));
-    obj.push_back(Pair("errors",        GetWarnings("statusbar")));
-    obj.push_back(Pair("generate",      GetBoolArg("-gen")));
-    obj.push_back(Pair("genproclimit",  (int)GetArg("-genproclimit", -1)));
-    obj.push_back(Pair("hashespersec",  gethashespersec(params, false)));
-    obj.push_back(Pair("networkghps",   getnetworkghps(params, false)));
-    obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
+
+    obj.push_back(Pair("blocks",           (int)nBestHeight));
+    obj.push_back(Pair("currentblocksize", (uint64_t)nLastBlockSize));
+    obj.push_back(Pair("currentblocktx",   (uint64_t)nLastBlockTx));
+    obj.push_back(Pair("difficulty",       (double)GetDifficulty()));
+    obj.push_back(Pair("errors",           GetWarnings("statusbar")));
+    obj.push_back(Pair("generate",         GetBoolArg("-gen")));
+    obj.push_back(Pair("genproclimit",     (int)GetArg("-genproclimit", -1)));
+    obj.push_back(Pair("hashespersec",     gethashespersec(params, false)));
+    obj.push_back(Pair("networkghps",      getnetworkghps(params, false)));
+    obj.push_back(Pair("pooledtx",         (uint64_t)mempool.size()));
+
     return obj;
 }
 
@@ -651,9 +671,8 @@ Value getnewaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress [account]\n"
-            "Returns a new " COIN_NAME " address for receiving payments.  "
-            "If [account] is specified (recommended), it is added to the address book "
-            "so payments received with the address will be credited to [account].");
+            "Returns a new " COIN_NAME " address that you can use to receive payments.\n"
+            "If [account] is specified (recommended), the address will be added to the address book, so that payments received on it will be credited to the right account.\n");
 
     // Parse the account first so we don't generate a key if there's an error
     string strAccount;
@@ -667,8 +686,8 @@ Value getnewaddress(const Array& params, bool fHelp)
     CPubKey newKey;
     if (!pwalletMain->GetKeyFromPool(newKey, false))
         throw JSONRPCError(-12, "Error: Keypool ran out, please call keypoolrefill first");
-    CKeyID keyID = newKey.GetID();
 
+    CKeyID keyID = newKey.GetID();
     pwalletMain->SetAddressBookName(keyID, strAccount);
 
     return CBitcoinAddress(keyID).ToString();
@@ -718,16 +737,13 @@ Value getaccountaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccountaddress <account>\n"
-            "Returns the current " COIN_NAME " address for receiving payments to this account.");
+            "Returns an address that can be used to receive payments on the specified this account.\n"
+            "Note that this command will generate a new address if the previous has already received payments.\n");
 
     // Parse the account first so we don't generate a key if there's an error
     string strAccount = AccountFromValue(params[0]);
 
-    Value ret;
-
-    ret = GetAccountAddress(strAccount).ToString();
-
-    return ret;
+    return GetAccountAddress(strAccount).ToString();
 }
 
 
@@ -737,7 +753,7 @@ Value setaccount(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "setaccount <address> <account>\n"
-            "Sets the account associated with the given address.");
+            "Sets the account associated with the given address.\n");
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
@@ -767,7 +783,7 @@ Value getaccount(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccount <address>\n"
-            "Returns the account associated with the given address.");
+            "Returns the account associated with the given address.\n");
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
@@ -786,7 +802,7 @@ Value getaddressesbyaccount(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaddressesbyaccount <account>\n"
-            "Returns the list of addresses for the given account.");
+            "Returns the address list for the given account.\n");
 
     string strAccount = AccountFromValue(params[0]);
 
@@ -807,8 +823,8 @@ Value settxfee(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 1 || AmountFromValue(params[0]) < MIN_TX_FEES)
         throw runtime_error(
             "settxfee <amount>\n"
-            "<amount> is a real and is rounded to 0.01 (cent)\n"
-            "Minimum and default transaction fee per KB is 1 cent");
+            "Sets the base fee that the client will pay when creating a transaction, without <amount> being a real rounded to the nearest 0.01 (cent).\n"
+            "The minimum and default base transaction fee per KB is 1 cent.\n");
 
     nTransactionFee = AmountFromValue(params[0]);
     nTransactionFee = (nTransactionFee / CENT) * CENT;  // round to cent
@@ -819,13 +835,14 @@ Value sendtoaddress(const Array& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 4))
         throw runtime_error(
-            "sendtoaddress <address> <amount> [comment] [comment-to]\n"
-            "<amount> is a real and is rounded to the nearest 0.000001\n"
-            "requires wallet passphrase to be set with walletpassphrase first");
+            "sendtoaddress <toaddress> <amount> [comment] [comment-to]\n"
+            "Creates a transaction transfering <amount> coins to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
+            "Your wallet being encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 4))
         throw runtime_error(
-            "sendtoaddress <address> <amount> [comment] [comment-to]\n"
-            "<amount> is a real and is rounded to the nearest 0.000001");
+            "sendtoaddress <toaddress> <amount> [comment] [comment-to]\n"
+            "Creates a transaction transfering <amount> coins to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
+            "If your wallet is encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
@@ -844,7 +861,7 @@ Value sendtoaddress(const Array& params, bool fHelp)
         wtx.mapValue["to"]      = params[3].get_str();
 
     if (pwalletMain->IsLocked())
-        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.\n");
 
     string strError = pwalletMain->SendMoneyToDestination(address.Get(), nAmount, wtx);
     if (strError != "")
@@ -858,10 +875,10 @@ Value signmessage(const Array& params, bool fHelp)
     if (fHelp || params.size() != 2)
         throw runtime_error(
             "signmessage <address> <message>\n"
-            "Sign a message with the private key of an address");
+            "Signs a message with the private key of an address.\n");
 
     if (pwalletMain->IsLocked())
-        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.\n");
 
     string strAddress = params[0].get_str();
     string strMessage = params[1].get_str();
@@ -894,7 +911,7 @@ Value verifymessage(const Array& params, bool fHelp)
     if (fHelp || params.size() != 3)
         throw runtime_error(
             "verifymessage <address> <signature> <message>\n"
-            "Verify a signed message");
+            "Verifies a message previously signed via signmessage.");
 
     string strAddress  = params[0].get_str();
     string strSign     = params[1].get_str();
@@ -931,7 +948,7 @@ Value getreceivedbyaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "getreceivedbyaddress <address> [minconf=1]\n"
-            "Returns the total amount received by <address> in transactions with at least [minconf] confirmations.");
+            "Returns the total amount received by <address>, in transactions with at least [minconf] confirmations.\n");
 
     // Bitcoin address
     CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
@@ -980,7 +997,7 @@ Value getreceivedbyaccount(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "getreceivedbyaccount <account> [minconf=1]\n"
-            "Returns the total amount received by addresses with <account> in transactions with at least [minconf] confirmations.");
+            "Returns the total amount received by addresses from <account>, in transactions with at least [minconf] confirmations.\n");
 
     // Minimum confirmations
     int nMinDepth = 1;
@@ -1051,7 +1068,7 @@ Value getbalance(const Array& params, bool fHelp)
         throw runtime_error(
             "getbalance [account] [minconf=1]\n"
             "If [account] is not specified, returns the server's total available balance.\n"
-            "If [account] is specified, returns the balance in the account.");
+            "If [account] is specified, returns the balance in the account.\n");
 
     if (params.size() == 0)
         return  ValueFromAmount(pwalletMain->GetBalance());
@@ -1103,14 +1120,17 @@ Value movecmd(const Array& params, bool fHelp)
     if (fHelp || params.size() < 3 || params.size() > 5)
         throw runtime_error(
             "move <fromaccount> <toaccount> <amount> [minconf=1] [comment]\n"
-            "Move from one account in your wallet to another.");
+            "Moves <amount> coins from <fromaccount> to <toaccount>.\n"
+            "Note that no actual transaction is created: all that this command does is decrease an account balance, and increase another account balance.\n");
 
     string strFrom = AccountFromValue(params[0]);
     string strTo = AccountFromValue(params[1]);
     int64 nAmount = AmountFromValue(params[2]);
+
     if (params.size() > 3)
         // unused parameter, used to be nMinDepth, keep type-checking it though
         (void)params[3].get_int();
+
     string strComment;
     if (params.size() > 4)
         strComment = params[4].get_str();
@@ -1155,7 +1175,7 @@ Value addnode(const Array& params, bool fHelp)
     if (fHelp || params.size() != 2 || (strCommand != "onetry" && strCommand != "add"))
         throw runtime_error(
             "addnode <node> <add|remove|onetry>\n"
-            "Attempts add or remove <node> from the addnode list or try a connection to <node> once.");
+            "Attempts to add or remove <node> from the addnode list, or try to connect to <node> once.\n");
 
     string target = params[0].get_str();
     CAddress addr(CService(target, GetDefaultPort(), fAllowDNS));
@@ -1177,13 +1197,14 @@ Value sendfrom(const Array& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() < 3 || params.size() > 6))
         throw runtime_error(
-            "sendfrom <from address> <to address> <amount> [minconf=1] [comment] [comment-to]\n"
-            "<amount> is a real and is rounded to the nearest 0.000001\n"
-            "requires wallet passphrase to be set with walletpassphrase first");
+            "sendfrom <fromaddress> <toaddress> <amount> [minconf=1] [comment] [comment-to]\n"
+            "Creates a transaction transfering <amount> coins from <fromaddress> to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
+            "Your wallet being encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() < 3 || params.size() > 6))
         throw runtime_error(
-            "sendfrom <from address> <to address> <amount> [minconf=1] [comment] [comment-to]\n"
-            "<amount> is a real and is rounded to the nearest 0.000001");
+            "sendfrom <fromaddress> <toaddress> <amount> [minconf=1] [comment] [comment-to]\n"
+            "Creates a transaction transfering <amount> coins to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
+            "If your wallet is encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
 
     string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
@@ -1204,7 +1225,7 @@ Value sendfrom(const Array& params, bool fHelp)
         wtx.mapValue["to"]      = params[5].get_str();
 
     if (pwalletMain->IsLocked())
-        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.\n");
 
     // Check funds
     int64 nBalance = GetAccountBalance(strAccount, nMinDepth);
@@ -1224,13 +1245,14 @@ Value sendmany(const Array& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 4))
         throw runtime_error(
-            "sendmany <fromaccount> {address:amount,...} [minconf=1] [comment]\n"
-            "amounts are double-precision floating point numbers\n"
-            "requires wallet passphrase to be set with walletpassphrase first");
+            "sendmany <fromaccount> {toaddress:amount,...} [minconf=1] [comment]\n"
+            "Creates multiple transactions transfering <amount> coins from <fromaccount> to <toaddress>. Each transaction is a single key/value pair in a JSON object.\n"
+            "Your wallet being encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 4))
         throw runtime_error(
             "sendmany <fromaccount> {address:amount,...} [minconf=1] [comment]\n"
-            "amounts are double-precision floating point numbers");
+            "Creates multiple transactions transfering <amount> coins from <fromaccount> to <toaddress>. Each transaction is a single key/value pair in a JSON object.\n"
+            "If your wallet is encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
 
     string strAccount = AccountFromValue(params[0]);
     Object sendTo = params[1].get_obj();
@@ -1268,9 +1290,9 @@ Value sendmany(const Array& params, bool fHelp)
     }
 
     if (pwalletMain->IsLocked())
-        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.\n");
     if (fWalletUnlockMintOnly)
-        throw JSONRPCError(-13, "Error: Wallet unlocked for block minting only.");
+        throw JSONRPCError(-13, "Error: Wallet unlocked for block minting only.\n");
 
     // Check funds
     int64 nBalance = GetAccountBalance(strAccount, nMinDepth);
@@ -1298,9 +1320,9 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() < 2 || params.size() > 3)
     {
         string msg = "addmultisigaddress <nrequired> <'[\"key\",\"key\"]'> [account]\n"
-            "Add a nrequired-to-sign multisignature address to the wallet\"\n"
-            "each key is a bitcoin address or hex-encoded public key\n"
-            "If [account] is specified, assign address to [account].";
+            "Adds a nrequired-to-sign multisignature address to the wallet.\n"
+            "Each key is a bitcoin address, or an hex-encoded public key.\n"
+            "If [account] is specified, assign address to [account].\n";
         throw runtime_error(msg);
     }
 
@@ -1314,9 +1336,8 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     if (nRequired < 1)
         throw runtime_error("a multisignature address must require at least one key to redeem");
     if ((int)keys.size() < nRequired)
-        throw runtime_error(
-            strprintf("not enough keys supplied "
-                      "(got %d keys, but need at least %d to redeem)", keys.size(), nRequired));
+        throw runtime_error(strprintf("not enough keys supplied (got %d keys, but need at least %d to redeem)", keys.size(), nRequired));
+
     std::vector<CKey> pubkeys;
     pubkeys.resize(keys.size());
     for (unsigned int i = 0; i < keys.size(); i++)
@@ -1469,13 +1490,15 @@ Value listreceivedbyaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "listreceivedbyaddress [minconf=1] [includeempty=false]\n"
-            "[minconf] is the minimum number of confirmations before payments are included.\n"
-            "[includeempty] whether to include addresses that haven't received any payments.\n"
             "Returns an array of objects containing:\n"
-            "  \"address\" : receiving address\n"
-            "  \"account\" : the account of the receiving address\n"
-            "  \"amount\" : total amount received by the address\n"
-            "  \"confirmations\" : number of confirmations of the most recent transaction included");
+            "\n"
+            "  - \"address\" : receiving address\n"
+            "  - \"account\" : the account of the receiving address\n"
+            "  - \"amount\" : total amount received by the address\n"
+            "  - \"confirmations\" : the confirmation count of the most recent transaction included\n"
+            "\n"
+            "No payment will be accepted before having reached at least [minconf] confirmations.\n"
+            "If [includeempty] is true, the addresses that haven't received any payments will be included too.\n");
 
     return ListReceived(params, false);
 }
@@ -1485,12 +1508,14 @@ Value listreceivedbyaccount(const Array& params, bool fHelp)
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "listreceivedbyaccount [minconf=1] [includeempty=false]\n"
-            "[minconf] is the minimum number of confirmations before payments are included.\n"
-            "[includeempty] whether to include accounts that haven't received any payments.\n"
             "Returns an array of objects containing:\n"
-            "  \"account\" : the account of the receiving addresses\n"
-            "  \"amount\" : total amount received by addresses with this account\n"
-            "  \"confirmations\" : number of confirmations of the most recent transaction included");
+            "\n"
+            "  - \"account\" : the account name\n"
+            "  - \"amount\" : the total amount received by addresses from this account\n"
+            "  - \"confirmations\" : the confirmation count of the most recent transaction included\n"
+            "\n"
+            "No payment will be accepted before having reached at least [minconf] confirmations.\n"
+            "If [includeempty] is true, the accounts that haven't received any payments will be included too.\n");
 
     return ListReceived(params, true);
 }
@@ -1593,7 +1618,7 @@ Value listtransactions(const Array& params, bool fHelp)
     if (fHelp || params.size() > 3)
         throw runtime_error(
             "listtransactions [account] [count=10] [from=0]\n"
-            "Returns up to [count] most recent transactions skipping the first [from] transactions for account [account].");
+            "Returns up to [count] transactions, ordered by date descending, skipping the first [from], for account [account].\n");
 
     string strAccount = "*";
     if (params.size() > 0)
@@ -1668,7 +1693,7 @@ Value listaccounts(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "listaccounts [minconf=1]\n"
-            "Returns Object that has account names as keys, account balances as values.");
+            "Returns an object that contains an entry for each account, using the the account name as key, and the account balance as value.\n");
 
     int nMinDepth = 1;
     if (params.size() > 0)
@@ -1719,7 +1744,7 @@ Value listsinceblock(const Array& params, bool fHelp)
     if (fHelp)
         throw runtime_error(
             "listsinceblock [blockhash] [target-confirmations]\n"
-            "Get all transactions in blocks since block [blockhash], or all transactions if omitted");
+            "Get all transactions in blocks since block [blockhash], or all transactions if omitted.\n");
 
     CBlockIndex *pindex = NULL;
     int target_confirms = 1;
@@ -1817,7 +1842,7 @@ Value backupwallet(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "backupwallet <destination>\n"
-            "Safely copies wallet.dat to destination, which can be a directory or a path with filename.");
+            "Safely copies wallet.dat to <destination>, which can be a directory or a path with filename.\n");
 
     string strDest = params[0].get_str();
     BackupWallet(*pwalletMain, strDest);
@@ -1831,19 +1856,21 @@ Value keypoolrefill(const Array& params, bool fHelp)
     if (pwalletMain->IsCrypted() && (fHelp || params.size() > 0))
         throw runtime_error(
             "keypoolrefill\n"
-            "Fills the keypool, requires wallet passphrase to be set.");
+            "Fills the keypool.\n"
+            "Your wallet being encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() > 0))
         throw runtime_error(
             "keypoolrefill\n"
-            "Fills the keypool.");
+            "Fills the keypool.\n"
+            "If your wallet is encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
 
     if (pwalletMain->IsLocked())
-        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+        throw JSONRPCError(-13, "Error: Please enter the wallet passphrase with walletpassphrase first.\n");
 
     pwalletMain->TopUpKeyPool();
 
     if (pwalletMain->GetKeyPoolSize() < GetArg("-keypool", 100))
-        throw JSONRPCError(-4, "Error refreshing keypool.");
+        throw JSONRPCError(-4, "Error refreshing keypool.\n");
 
     return Value::null;
 }
@@ -1897,18 +1924,17 @@ void ThreadCleanWalletPassphrase(void* parg)
 
 Value walletpassphrase(const Array& params, bool fHelp)
 {
-    if (pwalletMain->IsCrypted() && (fHelp || params.size() < 2 || params.size() > 3))
+    if (fHelp || params.size() < 2 || params.size() > 3)
         throw runtime_error(
             "walletpassphrase <passphrase> <timeout> [mintonly]\n"
             "Stores the wallet decryption key in memory for <timeout> seconds.\n"
-            "mintonly is optional true/false allowing only block minting.");
-    if (fHelp)
-        return true;
+            "The [mintonly] parameter is optional, and instructs the node to only allow block minting if set.\n");
+
     if (!pwalletMain->IsCrypted())
-        throw JSONRPCError(-15, "Error: running with an unencrypted wallet, but walletpassphrase was called.");
+        throw JSONRPCError(-15, "Error: running with an unencrypted wallet, but walletpassphrase was called.\n");
 
     if (!pwalletMain->IsLocked())
-        throw JSONRPCError(-17, "Error: Wallet is already unlocked, use walletlock first if need to change unlock settings.");
+        throw JSONRPCError(-17, "Error: Wallet is already unlocked, use walletlock first if need to change unlock settings.\n");
 
     // Note that the walletpassphrase is stored in params[0] which is not mlock()ed
     SecureString strWalletPass;
@@ -1920,12 +1946,12 @@ Value walletpassphrase(const Array& params, bool fHelp)
     if (strWalletPass.length() > 0)
     {
         if (!pwalletMain->Unlock(strWalletPass))
-            throw JSONRPCError(-14, "Error: The wallet passphrase entered was incorrect.");
+            throw JSONRPCError(-14, "Error: The wallet passphrase entered was incorrect.\n");
     }
     else
         throw runtime_error(
             "walletpassphrase <passphrase> <timeout>\n"
-            "Stores the wallet decryption key in memory for <timeout> seconds.");
+            "Stores the wallet decryption key in memory for <timeout> seconds.\n");
 
     CreateThread(ThreadTopUpKeyPool, NULL);
     int64* pnSleepTime = new int64(params[1].get_int64());
@@ -1943,14 +1969,13 @@ Value walletpassphrase(const Array& params, bool fHelp)
 
 Value walletpassphrasechange(const Array& params, bool fHelp)
 {
-    if (pwalletMain->IsCrypted() && (fHelp || params.size() != 2))
+    if (fHelp || params.size() != 2)
         throw runtime_error(
             "walletpassphrasechange <oldpassphrase> <newpassphrase>\n"
-            "Changes the wallet passphrase from <oldpassphrase> to <newpassphrase>.");
-    if (fHelp)
-        return true;
+            "Changes the wallet passphrase from <oldpassphrase> to <newpassphrase>.\n");
+
     if (!pwalletMain->IsCrypted())
-        throw JSONRPCError(-15, "Error: running with an unencrypted wallet, but walletpassphrasechange was called.");
+        throw JSONRPCError(-15, "Error: running with an unencrypted wallet, but walletpassphrasechange was called.\n");
 
     // TODO: get rid of these .c_str() calls by implementing SecureString::operator=(std::string)
     // Alternately, find a way to make params[0] mlock()'d to begin with.
@@ -1965,10 +1990,10 @@ Value walletpassphrasechange(const Array& params, bool fHelp)
     if (strOldWalletPass.length() < 1 || strNewWalletPass.length() < 1)
         throw runtime_error(
             "walletpassphrasechange <oldpassphrase> <newpassphrase>\n"
-            "Changes the wallet passphrase from <oldpassphrase> to <newpassphrase>.");
+            "Changes the wallet passphrase from <oldpassphrase> to <newpassphrase>.\n");
 
     if (!pwalletMain->ChangeWalletPassphrase(strOldWalletPass, strNewWalletPass))
-        throw JSONRPCError(-14, "Error: The wallet passphrase entered was incorrect.");
+        throw JSONRPCError(-14, "Error: The wallet passphrase entered was incorrect.\n");
 
     return Value::null;
 }
@@ -1976,16 +2001,14 @@ Value walletpassphrasechange(const Array& params, bool fHelp)
 
 Value walletlock(const Array& params, bool fHelp)
 {
-    if (pwalletMain->IsCrypted() && (fHelp || params.size() != 0))
+    if (fHelp || params.size() != 0)
         throw runtime_error(
             "walletlock\n"
-            "Removes the wallet encryption key from memory, locking the wallet.\n"
-            "After calling this method, you will need to call walletpassphrase again\n"
-            "before being able to call any methods which require the wallet to be unlocked.");
-    if (fHelp)
-        return true;
+            "Removes the wallet encryption key from memory, effectively locking the wallet.\n"
+            "After calling this method, you will need to call walletpassphrase again before being able to call any method requiring the wallet to be unlocked.\n");
+
     if (!pwalletMain->IsCrypted())
-        throw JSONRPCError(-15, "Error: running with an unencrypted wallet, but walletlock was called.");
+        throw JSONRPCError(-15, "Error: running with an unencrypted wallet, but walletlock was called.\n");
 
     {
         LOCK(cs_nWalletUnlockTime);
@@ -1999,14 +2022,13 @@ Value walletlock(const Array& params, bool fHelp)
 
 Value encryptwallet(const Array& params, bool fHelp)
 {
-    if (!pwalletMain->IsCrypted() && (fHelp || params.size() != 1))
+    if (fHelp || params.size() != 1)
         throw runtime_error(
             "encryptwallet <passphrase>\n"
-            "Encrypts the wallet with <passphrase>.");
-    if (fHelp)
-        return true;
+            "Encrypts the wallet with <passphrase>.\n");
+
     if (pwalletMain->IsCrypted())
-        throw JSONRPCError(-15, "Error: running with an encrypted wallet, but encryptwallet was called.");
+        throw JSONRPCError(-15, "Error: running with an encrypted wallet, but encryptwallet was called.\n");
 
     // TODO: get rid of this .c_str() by implementing SecureString::operator=(std::string)
     // Alternately, find a way to make params[0] mlock()'d to begin with.
@@ -2017,10 +2039,10 @@ Value encryptwallet(const Array& params, bool fHelp)
     if (strWalletPass.length() < 1)
         throw runtime_error(
             "encryptwallet <passphrase>\n"
-            "Encrypts the wallet with <passphrase>.");
+            "Encrypts the wallet with <passphrase>.\n");
 
     if (!pwalletMain->EncryptWallet(strWalletPass))
-        throw JSONRPCError(-16, "Error: Failed to encrypt the wallet.");
+        throw JSONRPCError(-16, "Error: Failed to encrypt the wallet.\n");
 
     // BDB seems to have a bad habit of writing old data into
     // slack space in .dat files; that is bad if the old data is
@@ -2069,7 +2091,7 @@ Value validateaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "validateaddress <address>\n"
-            "Return information about <address>.");
+            "Returns various informations about <address>.\n");
 
     CBitcoinAddress address(params[0].get_str());
     bool isValid = address.IsValid();
@@ -2099,17 +2121,20 @@ Value getwork(const Array& params, bool fHelp)
         throw runtime_error(
             "getwork [data]\n"
             "If [data] is not specified, returns formatted hash data to work on:\n"
-            "  \"midstate\" : precomputed hash state after hashing the first half of the data (DEPRECATED)\n" // deprecated
-            "  \"data\" : block data\n"
-            "  \"hash1\" : formatted hash buffer for second hash (DEPRECATED)\n" // deprecated
-            "  \"target\" : little endian hash target\n"
-            "If [data] is specified, tries to solve the block and returns true if it was successful.");
+            "\n"
+            "  - \"midstate\" : precomputed hash state after hashing the first half of the data (DEPRECATED)\n" // deprecated
+            "  - \"data\" : block data\n"
+            "  - \"hash1\" : formatted hash buffer for second hash (DEPRECATED)\n" // deprecated
+            "  - \"target\" : little endian hash target\n"
+            "\n"
+            "If [data] is specified, tries to solve the block and returns true if it was successful.\n"
+            "Note that this command is stateful : each time you call it without parameter, every previous result will be invalidated.\n");
 
     if (vNodes.empty())
         throw JSONRPCError(-9, COIN_NAME " is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(-10, COIN_NAME " is downloading blocks...");
+        throw JSONRPCError(-10, COIN_NAME " is downloading blocks...\n");
 
     typedef map<uint256, pair<CBlock*, CScript> > mapNewBlock_t;
     static mapNewBlock_t mapNewBlock;
@@ -2208,22 +2233,24 @@ Value getblocktemplate(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getblocktemplate [params]\n"
-            "Returns data needed to construct a block to work on:\n"
-            "  \"version\" : block version\n"
-            "  \"previousblockhash\" : hash of current highest block\n"
-            "  \"transactions\" : contents of non-coinbase transactions that should be included in the next block\n"
-            "  \"coinbaseaux\" : data that should be included in coinbase\n"
-            "  \"coinbasevalue\" : maximum allowable input to coinbase transaction, including the generation award and transaction fees\n"
-            "  \"target\" : hash target\n"
-            "  \"mintime\" : minimum timestamp appropriate for next block\n"
-            "  \"curtime\" : current timestamp\n"
-            "  \"mutable\" : list of ways the block template may be changed\n"
-            "  \"noncerange\" : range of valid nonces\n"
-            "  \"sigoplimit\" : limit of sigops in blocks\n"
-            "  \"sizelimit\" : limit of block size\n"
-            "  \"bits\" : compressed target of next block\n"
-            "  \"height\" : height of the next block\n"
-            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.");
+            "Returns the data needed to construct a block to work on:\n"
+            "\n"
+            "  - \"version\" : block version\n"
+            "  - \"previousblockhash\" : hash of current highest block\n"
+            "  - \"transactions\" : contents of non-coinbase transactions that should be included in the next block\n"
+            "  - \"coinbaseaux\" : data that should be included in coinbase\n"
+            "  - \"coinbasevalue\" : maximum allowable input to coinbase transaction, including the generation award and transaction fees\n"
+            "  - \"target\" : hash target\n"
+            "  - \"mintime\" : minimum timestamp appropriate for next block\n"
+            "  - \"curtime\" : current timestamp\n"
+            "  - \"mutable\" : list of ways the block template may be changed\n"
+            "  - \"noncerange\" : range of valid nonces\n"
+            "  - \"sigoplimit\" : limit of sigops in blocks\n"
+            "  - \"sizelimit\" : limit of block size\n"
+            "  - \"bits\" : compressed target of next block\n"
+            "  - \"height\" : height of the next block\n"
+            "\n"
+            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n");
 
     std::string strMode = "template";
     if (params.size() > 0)
@@ -2244,7 +2271,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
             throw JSONRPCError(-9, COIN_NAME " is not connected!");
 
         if (IsInitialBlockDownload())
-            throw JSONRPCError(-10, COIN_NAME " is downloading blocks...");
+            throw JSONRPCError(-10, COIN_NAME " is downloading blocks...\n");
 
         // Update block
         static unsigned int nTransactionsUpdatedLast;
@@ -2361,9 +2388,9 @@ Value submitblock(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "submitblock <hex data> [optional-params-obj]\n"
-            "[optional-params-obj] parameter is currently ignored.\n"
             "Attempts to submit new block to network.\n"
-            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.");
+            "Note that the [optional-params-obj] parameter is currently ignored.\n"
+            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n");
 
     vector<unsigned char> blockData(ParseHex(params[0].get_str()));
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
@@ -2393,12 +2420,12 @@ Value getblockhash(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getblockhash <index>\n"
-            "Returns hash of block in best-block-chain at <index>.");
+            "Returns the hash of the <index>-nth block from the longest blockchain.\n");
 
     int nHeight = params[0].get_int();
 
     if (nHeight < 0 || nHeight > nBestHeight)
-        throw runtime_error("Block number out of range.");
+        throw runtime_error("Block number out of range.\n");
 
     CBlockIndex* pblockindex = mapBlockIndex.at(hashBestChain);
 
@@ -2413,7 +2440,7 @@ Value getbestblockhash(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getbestblockhash\n"
-            "Returns the hash of the best block in the longest block chain");
+            "Returns the hash of the best block from the longest blockchain.\n");
 
     CBlockIndex* pblockindex = mapBlockIndex.at(hashBestChain);
 
@@ -2425,9 +2452,9 @@ Value getblock(const Array& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 3)
         throw runtime_error(
             "getblock <hash> [txinfo] [txdetails]\n"
-            "txinfo optional to print more detailed tx info\n"
-            "txdetails optional to print even more detailed tx info\n"
-            "Returns details of a block with given block-hash.");
+            "Returns various informations about a block.\n"
+            "If <txinfo> is 1 (not true!), the command will print more detailed transaction infos.\n"
+            "If <txdetails> is 1 (again, not true!), the command will print even more detailed transaction infos.\n");
 
     std::string strHash = params[0].get_str();
     uint256 hash(strHash);
@@ -2452,7 +2479,7 @@ Value getcheckpoint(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getcheckpoint\n"
-            "Show info of synchronized checkpoint.\n");
+            "Returns various informations about the latest synchronized checkpoint.\n");
 
     Object result;
     CBlockIndex* pindexCheckpoint;
@@ -2475,10 +2502,9 @@ Value reservebalance(const Array& params, bool fHelp)
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "reservebalance [<reserve> [amount]]\n"
-            "<reserve> is true or false to turn balance reserve on or off.\n"
-            "<amount> is a real and rounded to cent.\n"
-            "Set reserve amount not participating in network protection.\n"
-            "If no parameters provided current setting is printed.\n");
+            "Enables or disables the reserve according to the boolean <reserve>. As long as the reserve is enabled, the client will prevent at least <amount> of your coins from minting, effectively preventing them from contributing to the network protection.\n"
+            "You may use this command if you want to keep a minimal amount of coins available at all time, as a safety fund.\n"
+            "Called without parameters, this function simply returns the reserve current settings.\n");
 
     if (params.size() > 0)
     {
@@ -2501,12 +2527,14 @@ Value reservebalance(const Array& params, bool fHelp)
         }
     }
 
-    Object result;
     int64 nReserveBalance = 0;
     if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
         throw runtime_error("invalid reserve balance amount\n");
+
+    Object result;
     result.push_back(Pair("reserve", (nReserveBalance > 0)));
     result.push_back(Pair("amount", ValueFromAmount(nReserveBalance)));
+
     return result;
 }
 
@@ -2517,20 +2545,27 @@ Value checkwallet(const Array& params, bool fHelp)
     if (fHelp || params.size() > 0)
         throw runtime_error(
             "checkwallet\n"
-            "Check wallet for integrity.\n");
+            "Checks the wallet integrity.\n");
 
     int nMismatchSpent;
     int64 nBalanceInQuestion;
     pwalletMain->FixSpentCoins(nMismatchSpent, nBalanceInQuestion, true);
-    Object result;
+
     if (nMismatchSpent == 0)
+    {
+        Object result;
         result.push_back(Pair("wallet check passed", true));
+
+        return result;
+    }
     else
     {
+        Object result;
         result.push_back(Pair("mismatched spent coins", nMismatchSpent));
         result.push_back(Pair("amount in question", ValueFromAmount(nBalanceInQuestion)));
+
+        return result;
     }
-    return result;
 }
 
 
@@ -2540,20 +2575,28 @@ Value repairwallet(const Array& params, bool fHelp)
     if (fHelp || params.size() > 0)
         throw runtime_error(
             "repairwallet\n"
-            "Repair wallet if checkwallet reports any problem.\n");
+            "Tries to repair the wallet if checkwallet reports any problem.\n"
+            "Remember to always backup first! You may use backupwallet for this.\n");
 
     int nMismatchSpent;
     int64 nBalanceInQuestion;
     pwalletMain->FixSpentCoins(nMismatchSpent, nBalanceInQuestion);
-    Object result;
+
     if (nMismatchSpent == 0)
+    {
+        Object result;
         result.push_back(Pair("wallet check passed", true));
+
+        return result;
+    }
     else
     {
+        Object result;
         result.push_back(Pair("mismatched spent coins", nMismatchSpent));
         result.push_back(Pair("amount affected by repair", ValueFromAmount(nBalanceInQuestion)));
+
+        return result;
     }
-    return result;
 }
 
 // ppcoin: make a public-private key pair
@@ -2562,8 +2605,8 @@ Value makekeypair(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "makekeypair [prefix]\n"
-            "Make a public/private key pair.\n"
-            "[prefix] is optional preferred prefix for the public key.\n");
+            "Generates a new public/private key pair.\n"
+            "The [prefix] parameter is optional, and instructs the generation process to look for a key beginning with [prefix] (for vanity purposes).\n");
 
     string strPrefix = "";
     if (params.size() > 0)
@@ -2571,8 +2614,8 @@ Value makekeypair(const Array& params, bool fHelp)
 
     CKey key;
     int nCount = 0;
-    do
-    {
+
+    do {
         key.MakeNewKey(false);
         nCount++;
     } while (nCount < 10000 && strPrefix != HexStr(key.GetPubKey().Raw()).substr(0, strPrefix.size()));
@@ -2581,9 +2624,11 @@ Value makekeypair(const Array& params, bool fHelp)
         return Value::null;
 
     CPrivKey vchPrivKey = key.GetPrivKey();
+
     Object result;
     result.push_back(Pair("PrivateKey", HexStr<CPrivKey::iterator>(vchPrivKey.begin(), vchPrivKey.end())));
     result.push_back(Pair("PublicKey", HexStr(key.GetPubKey().Raw())));
+
     return result;
 }
 
@@ -2599,14 +2644,9 @@ Value sendalert(const Array& params, bool fHelp)
     if (fHelp || params.size() < 6)
         throw runtime_error(
             "sendalert <message> <privatekey> <minver> <maxver> <priority> <id> [cancelupto]\n"
-            "<message> is the alert text message\n"
-            "<privatekey> is hex string of alert master private key\n"
-            "<minver> is the minimum applicable internal client version\n"
-            "<maxver> is the maximum applicable internal client version\n"
-            "<priority> is integer priority number\n"
-            "<id> is the alert id\n"
-            "[cancelupto] cancels all alert id's up to this number\n"
-            "Returns true or false.");
+            "Signs <message> with <privatekey>, and sends it as an alert to the network nodes that match the <minver>-<maxver> version range.\n"
+            "Note that this command is only intended to be used by the coin administrators, who are the only one to possess the right <privatekey>.\n"
+            "The [cancelupto] parameter will cancel all alert id's up to the [cancelupto]-nth one.\n");
 
     CAlert alert;
     CKey key;
@@ -2665,7 +2705,7 @@ Value getrawtransaction(const Array& params, bool fHelp)
             "If verbose=0, returns a string that is\n"
             "serialized, hex-encoded data for <txid>.\n"
             "If verbose is non-zero, returns an Object\n"
-            "with information about <txid>.");
+            "with information about <txid>.\n");
 
     uint256 hash;
     hash.SetHex(params[0].get_str());
@@ -2775,7 +2815,7 @@ Value createrawtransaction(const Array& params, bool fHelp)
             "sending to given address(es).\n"
             "Returns hex-encoded raw transaction.\n"
             "Note that the transaction's inputs are not signed, and\n"
-            "it is not stored in the wallet or transmitted to the network.");
+            "it is not stored in the wallet or transmitted to the network.\n");
 
     Array inputs = params[0].get_array();
     Object sendTo = params[1].get_obj();
@@ -2833,7 +2873,7 @@ Value decoderawtransaction(const Array& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "decoderawtransaction <hex string>\n"
-            "Return a JSON object representing the serialized, hex-encoded transaction.");
+            "Return a JSON object representing the serialized, hex-encoded transaction.\n");
 
     vector<unsigned char> txData(ParseHex(params[0].get_str()));
     CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
@@ -2933,7 +2973,7 @@ Value signrawtransaction(const Array& params, bool fHelp)
         }
     }
     else if(fWalletUnlockMintOnly)
-        throw JSONRPCError(-102, "Wallet is unlocked for minting only.");
+        throw JSONRPCError(-102, "Wallet is unlocked for minting only.\n");
     else if(pwalletMain->IsLocked())
         throw JSONRPCError(-13, "The wallet must be unlocked with walletpassphrase first");
 
@@ -3057,7 +3097,7 @@ Value sendrawtransaction(const Array& params, bool fHelp)
         throw runtime_error(
             "sendrawtransaction <hex string> [checkinputs=0]\n"
             "Submits raw transaction (serialized, hex-encoded) to local node and network.\n"
-            "If checkinputs is non-zero, checks the validity of the inputs of the transaction before sending it.");
+            "If checkinputs is non-zero, checks the validity of the inputs of the transaction before sending it.\n");
 
     // parse hex string from parameter
     vector<unsigned char> txData(ParseHex(params[0].get_str()));
@@ -3107,7 +3147,7 @@ Value getrawmempool(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getrawmempool\n"
-            "Returns all transaction ids in memory pool.");
+            "Returns all transaction ids in memory pool.\n");
 
     vector<uint256> vtxid;
     mempool.queryHashes(vtxid);
@@ -3127,7 +3167,7 @@ Value addcoldmintingaddress(const Array& params, bool fHelp)
             "Add a cold minting address to the wallet.\n"
             "The coins sent to this address will be mintable only with the minting private key.\n"
             "And they will be spandable only with the spending private key.\n"
-            "If [account] is specified, assign address to [account].");
+            "If [account] is specified, assign address to [account].\n");
 
     std::string strAccount;
     if (params.size() > 2)
@@ -3813,7 +3853,7 @@ Object CallRPC(const string& strMethod, const Array& params)
     if (mapArgs["-rpcuser"] == "" && mapArgs["-rpcpassword"] == "")
         throw runtime_error(strprintf(
             _("You must set rpcpassword=<password> in the configuration file:\n%s\n"
-              "If the file does not exist, create it with owner-readable-only file permissions."),
+              "If the file does not exist, create it with owner-readable-only file permissions.\n"),
                 GetConfigFile().string().c_str()));
 
     // Connect to localhost
