@@ -20,12 +20,14 @@ Run the client with `stakegen=0`. Note that you won't mint anything as long as t
 
 What you're looking for is called "cold minting". The procedure for this to work is a bit complicated:
 
-  - First, you have to generate an address; we will call it the "spending address".
-  - The other party has to generate an other address; we will call it the "minting address".
-  - Finally, both you and the other party have to do the following RPC command (be careful about the order of the two parameters! Otherwise, you could lock yourself out of your coins):
+  - First, you have to generate an address; we will call it the "minting address".
+  - You then have to generate an other address; we will call it the "spending address".
+  - Uses the `addcoldmintingaddress` RPC command to merge the minting and spending addresses together (be careful about the order of the two parameters! Otherwise, you could lock yourself out of your coins).
+  - You will obtain a new address. Transfer some funds on it as you wish (this adress will still count toward your balance).
+  - Finally, export the minting address private key using `dumpprivkey`, and send it to whoever you want to be able to mint for you, along with both the minting address and the spending address.
 
-    ```
-    addcoldmintingaddress "<minting address>" "<spending address>"
-    ```
+This person will then have to do the following on their side:
 
-If everything went fine, the other party will now be able to mint your coins, sending the rewards on the same address (effectively collecting your interests for you). Your coins will still appear in your balance, and you will be able to spend them as usual (just note that they will be unavailable for a short period after each successful minting they contributed to, as always).
+  - First, they will import the minting address private key in their wallet, using `importprivkey`.
+  - Then they will register the coldminting adress, using `addcoldmintingaddress` (the keys have to be in the same order than in the first step).
+  - That's all! They will now be able to mint your coins, but not to spend them (the coldminting balance will be show in the `mintingonly` field from the `getinfo` RPC call).
