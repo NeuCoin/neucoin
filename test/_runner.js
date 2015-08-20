@@ -35,7 +35,7 @@ function killChildren( ) {
     killList = [ ];
 
     currentKillList.forEach( function ( pid ) {
-        process.kill( pid, 'SIGTERM' );
+        process.kill( pid, 'SIGKILL' );
     } );
 
 }
