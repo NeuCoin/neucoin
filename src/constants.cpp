@@ -99,6 +99,11 @@ timestamp_t                       POS_TARGET_SPACING          = 1 * MINUTE;
 
 money_t                           POW_BLOCK_REWARD            = 1141 * COIN;
 
+//                                Reward for each PoS block mined - should be IGNORED by GetProofOfStakeReward() if zero
+//                                You probably don't want to use it in production, since it totally ignores the coinAge or any other parameter - it's only usage is for testing purposes only
+
+money_t                           POS_BLOCK_REWARD            = 0;
+
 //                                The delay required for a coin to stake, and the delay after which a coin won't get any more bonuses
 
 timestamp_t                       STAKE_MIN_AGE               = 138240 * SECOND; // = 1.6 days, which is a bit higher than the stake modifier selection interval (1.56 days)

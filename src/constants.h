@@ -71,6 +71,7 @@ extern timestamp_t                       POW_TARGET_SPACING;
 extern timestamp_t                       POS_TARGET_SPACING;
 
 extern money_t                           POW_BLOCK_REWARD;
+extern money_t                           POS_BLOCK_REWARD;
 
 extern timestamp_t                       STAKE_MIN_AGE;
 extern timestamp_t                       STAKE_MAX_AGE;

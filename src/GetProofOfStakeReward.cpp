@@ -1,11 +1,15 @@
 #include <stdint.h>
 
+#include "constants.h"
 #include "types.h"
 
 #include "GetProofOfStakeReward.h"
 
 money_t GetProofOfStakeReward(timestamp_t coinAge, blockheight_t height)
 {
+    if (POS_BLOCK_REWARD)
+        return POS_BLOCK_REWARD;
+
     // The actual formula is shaped as (A + exp(B * nHeight) + C)
     // Since we can't use float, and that using fixed-point numbers would be both complex and error-prone, we chose to use a step-by-step solution
     // Each array cell is the reward given starting from a specific bloc height. Each cells will be applied for the next 43,836 blocks (about a month)
