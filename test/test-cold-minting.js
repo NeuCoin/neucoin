@@ -10,7 +10,7 @@ export async function test( ) {
 
     await compileWith( fastChain, smallChain );
 
-    var client1 = await spawnClient( { } );
+    var client1 = await spawnClient( );
     var client2 = await spawnClient( { addnode : client1.target } );
 
     await mineSomePowBlocks( client1, 63 );
@@ -21,7 +21,10 @@ export async function test( ) {
     expect( rpc.result ).to.equal( 63 );
 
     var { result : spendingAddress } = await sendRpcQuery( client1, { method : 'getnewaddress' } );
-    var { result : mintingAddress } = await sendRpcQuery( client2, { method : 'getnewaddress' } );
+    var { result : mintingAddress } = await sendRpcQuery( client1, { method : 'getnewaddress' } );
+
+    var { result : mintingPrivateKey } = await sendRpcQuery( client1, { method : 'dumpprivkey', params : [ mintingAddress ] } );
+    await sendRpcQuery( client2, { method : 'importprivkey', params : [ mintingPrivateKey ] } );
 
     var { result : coldMintingAddress1 } = await sendRpcQuery( client1, { method : 'addcoldmintingaddress', params : [ mintingAddress, spendingAddress ] } );
     var { result : coldMintingAddress2 } = await sendRpcQuery( client2, { method : 'addcoldmintingaddress', params : [ mintingAddress, spendingAddress ] } );
@@ -31,17 +34,19 @@ export async function test( ) {
     var rpc = await sendRpcQuery( client1, { method : 'sendtoaddress', params : [ coldMintingAddress1, 30 ] } );
 
     await mineSomePowBlocks( client1, 1 );
-
-    var rpc = await sendRpcQuery( client1, { method : 'getbalance' } );
-
-    expect( rpc.result ).to.equal( 64 );
-
-    await mintSomePosBlocks( client1, 1 );
-    await mineSomePowBlocks( client1, 1 );
     await mineSomePowBlocks( client1, 1 );
 
     var rpc = await sendRpcQuery( client1, { method : 'getbalance' } );
 
-    expect( rpc.result ).to.be.above( 63 );
+    expect( rpc.result ).to.equal( 65 );
+
+    await delayExecution( 15 );
+    await mintSomePosBlocks( client2, 1 );
+    await delayExecution( 15 );
+    await mineForMaturation( client1, 1 );
+
+    var rpc = await sendRpcQuery( client1, { method : 'getbalance' } );
+
+    expect( rpc.result ).to.be.above( 66 );
 
 }

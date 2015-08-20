@@ -20,6 +20,9 @@ export var fastChain = {
     STAKE_MIN_AGE              : `0 * SECOND`,
     STAKE_MAX_AGE              : `0 * SECOND`,
 
+    STAKE_COIN_STEP            : `1`,
+    STAKE_AGE_STEP             : `1`,
+
     COINBASE_MATURITY          : `1`
 
 };
@@ -55,7 +58,9 @@ export var mediumFastChain = {
 export var smallChain = {
 
     COIN_PREMINE      : `0 * COIN`,
+
     POW_BLOCK_REWARD  : `1 * COIN`,
+    POS_BLOCK_REWARD  : `1 * COIN`,
 
     MIN_TX_FEES       : `0 * COIN`,
     MIN_RELAY_TX_FEES : `0 * COIN`
