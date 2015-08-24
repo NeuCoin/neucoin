@@ -7,6 +7,7 @@ ui_*.h
 *.moc
 
 *~
+.#*
 .DS_Store
 
 /src/core
@@ -22,3 +23,5 @@ ui_*.h
 
 /src/neucoind.exe
 /src/neucoin-qt.exe
+
+/src/neucoin-qt.app

@@ -14,26 +14,43 @@
 #include "qtipcserver.h"
 
 #include <QApplication>
-#include <QMessageBox>
-#include <QTextCodec>
-#include <QLocale>
-#include <QTranslator>
-#include <QSplashScreen>
+#include <QCoreApplication>
+#include <QDebug>
+#include <QDir>
 #include <QLibraryInfo>
+#include <QLocale>
+#include <QMessageBox>
+#include <QSplashScreen>
+#include <QStringList>
+#include <QString>
+#include <QTextCodec>
+#include <QTranslator>
+
+#if defined(MAC_OSX)
+#include <mach-o/dyld.h>
+#endif
 
 #include <boost/interprocess/ipc/message_queue.hpp>
 
 #include "CheckClientSanity.h"
 
 #if defined(BITCOIN_NEED_QT_PLUGINS) && !defined(_BITCOIN_QT_PLUGINS_INCLUDED)
-#define _BITCOIN_QT_PLUGINS_INCLUDED
-#define __INSURE__
-#include <QtPlugin>
+
+#  define _BITCOIN_QT_PLUGINS_INCLUDED
+#  define __INSURE__
+
+#  include <QtPlugin>
+
 Q_IMPORT_PLUGIN(qcncodecs)
 Q_IMPORT_PLUGIN(qjpcodecs)
 Q_IMPORT_PLUGIN(qtwcodecs)
 Q_IMPORT_PLUGIN(qkrcodecs)
 Q_IMPORT_PLUGIN(qtaccessiblewidgets)
+
+#  if defined(MAC_OSX)
+Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin)
+#  endif
+
 #endif
 
 // Need a global reference for the notifications to find the GUI
@@ -160,6 +177,31 @@ int main(int argc, char *argv[])
             catch (boost::interprocess::interprocess_exception &ex) {
                 break;
             }
+        }
+    }
+#endif
+
+#if defined(MAC_OSX)
+    {
+        // Push the an extra plugin directory, required when bundling the application (since they probably won't be on the system)
+        // We can't use QCoreApplication::applicationDirPath() at this point yet, because QCoreApplication isn't ready yet. And we can't do it later, because of the qcocoa plugin.
+
+        char path[1024];
+        uint32_t size = sizeof(path);
+
+        _NSGetExecutablePath(path, &size);
+
+        if (size < 0)
+            std::exit(1);
+
+        QString applicationFilePath = QString(path);
+	QString applicationDirPath = QFileInfo(applicationFilePath).path();
+
+        if (QFileInfo(QDir::cleanPath(QDir(applicationDirPath).absoluteFilePath(".."))).isBundle())
+        {
+            QString pluginPath = QDir::cleanPath(QDir(applicationDirPath).absoluteFilePath("../Contents/Plugins"));
+            QStringList pluginPaths = QStringList() << pluginPath;
+            QCoreApplication::setLibraryPaths(pluginPaths);
         }
     }
 #endif

@@ -8,6 +8,11 @@ BREW_PATH = /usr/local/opt
 BOOST_SUFFIX = -mt
 QT_MID_SUFFIX = #NO SUFFIX
 
+LRELEASE = $(BREW_PATH)/qt5/bin/lrelease
+MOC = $(BREW_PATH)/qt5/bin/moc
+UIC = $(BREW_PATH)/qt5/bin/uic
+RCC = $(BREW_PATH)/qt5/bin/rcc
+
 include Makefile.default
 
 CXXFLAGS += -I $(BREW_PATH)/boost/include -I $(BREW_PATH)/berkeley-db/include -I $(BREW_PATH)/openssl/include -I $(BREW_PATH)/qt5/include/QtCore -I $(BREW_PATH)/qt5/include/QtGui -I $(BREW_PATH)/Qt5/include/QtWidgets -I $(BREW_PATH)/qt5/include -I $(BREW_PATH)/qrencode/include
@@ -19,3 +24,6 @@ LDFLAGS_QT += -L $(BREW_PATH)/boost/lib -L $(BREW_PATH)/berkeley-db/lib -L $(BRE
 LIBRARIES_QT := $(filter-out Qt%, $(LIBRARIES_QT))
 
 include Makefile.common
+
+$(TARGET_QT).app: $(TARGET_QT)
+	../contrib/osx-packaging/make-bundle.sh $@ $<
