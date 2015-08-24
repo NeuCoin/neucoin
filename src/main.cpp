@@ -2033,8 +2033,6 @@ bool CBlock::AcceptBlock()
 
 bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 {
-
-    printf("PFROM IS %p\n", pfrom);
     // Check for duplicate
     uint256 hash = pblock->GetHash();
     if (mapBlockIndex.count(hash))
@@ -2051,33 +2049,6 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // Preliminary checks
     if (!pblock->CheckBlock())
         return error("ProcessBlock() : CheckBlock FAILED");
-
-    // ppcoin: verify hash target and signature of coinstake tx
-    if (pblock->IsProofOfStake())
-    {
-        uint256 hashProofOfStake = 0;
-
-        std::map<uint256, CBlockIndex*>::iterator it = mapBlockIndex.find(pblock->hashPrevBlock);
-
-        if (it == mapBlockIndex.end())
-        {
-            printf("WARNING: ProcessBlock(): parent block, requiredq for proof-of-stake check, is missing");
-            return false;
-        }
-
-        const CBlockIndex * pindexPrev = it->second;
-
-        if (!CheckProofOfStake(pindexPrev, pblock->vtx[1], pblock->nBits, hashProofOfStake))
-        {
-            printf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
-            return false; // do not error here as we expect this during initial block download
-        }
-
-        if (!mapProofOfStake.count(hash)) // add to mapProofOfStake
-        {
-            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
-        }
-    }
 
     CBlockIndex* pcheckpoint = Checkpoints::GetLastSyncCheckpoint();
     if (pcheckpoint && pblock->hashPrevBlock != hashBestChain && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
@@ -2101,21 +2072,31 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     if (!IsInitialBlockDownload())
         Checkpoints::AskForPendingSyncCheckpoint(pfrom);
 
-    // If don't already have its previous block, shunt it off to holding area until we get it
-    if (!mapBlockIndex.count(pblock->hashPrevBlock))
+    // Find the previous block
+    std::map<uint256, CBlockIndex*>::iterator parentBlockIt = mapBlockIndex.find(pblock->hashPrevBlock);
+
+    // If we don't already have it, shunt off the block to the holding area until we get its parent
+    if (parentBlockIt == mapBlockIndex.end())
     {
         printf("ProcessBlock: ORPHAN BLOCK, prev=%s\n", pblock->hashPrevBlock.ToString().substr(0,20).c_str());
+
         CBlock* pblock2 = new CBlock(*pblock);
+
         // ppcoin: check proof-of-stake
         if (pblock2->IsProofOfStake())
         {
             // Limited duplicity on stake: prevents block flood attack
             // Duplicate stake allowed only when there is orphan child block
             if (setStakeSeenOrphan.count(pblock2->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
+            {
                 return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for orphan block %s", pblock2->GetProofOfStake().first.ToString().c_str(), pblock2->GetProofOfStake().second, hash.ToString().c_str());
+            }
             else
+            {
                 setStakeSeenOrphan.insert(pblock2->GetProofOfStake());
+            }
         }
+
         mapOrphanBlocks.insert(make_pair(hash, pblock2));
         mapOrphanBlocksByPrev.insert(make_pair(pblock2->hashPrevBlock, pblock2));
 
@@ -2123,12 +2104,35 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         if (pfrom)
         {
             pfrom->PushGetBlocks(pindexBest, GetOrphanRoot(pblock2));
+
             // ppcoin: getblocks may not obtain the ancestor block rejected
             // earlier by duplicate-stake check so we ask for it again directly
             if (!IsInitialBlockDownload())
+            {
                 pfrom->AskFor(CInv(MSG_BLOCK, WantedByOrphan(pblock2)));
+            }
         }
+
         return true;
+    }
+
+    // ppcoin: verify hash target and signature of coinstake tx
+    if (pblock->IsProofOfStake())
+    {
+        uint256 hashProofOfStake = 0;
+
+        const CBlockIndex * pindexPrev = parentBlockIt->second;
+
+        if (!CheckProofOfStake(pindexPrev, pblock->vtx[1], pblock->nBits, hashProofOfStake))
+        {
+            printf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
+            return false; // do not error here as we expect this during initial block download
+        }
+
+        if (!mapProofOfStake.count(hash)) // add to mapProofOfStake
+        {
+            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
+        }
     }
 
     // Store to disk
