@@ -1290,11 +1290,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 {
     CBlockIndex const * pLastBlockIndex = DYN_POW_TAIL;
 
-    // The following split & combine thresholds are important to security
-    // Should not be adjusted if you don't understand the consequences
 
-    int64 nCombineThreshold = GetProofOfWorkReward(pLastBlockIndex->nHeight) / 3;
-    static unsigned int nStakeSplitAge = 90 * DAY;
+    int64 nCombineThreshold = GetProofOfWorkReward(pLastBlockIndex->nHeight) / COMBINE_THRESHOLD;
 
     CBigNum bnTargetPerCoinDay;
     bnTargetPerCoinDay.SetCompact(nBits);
@@ -1430,7 +1427,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 nCredit += pcoin.first->vout[pcoin.second].nValue;
                 vwtxPrev.push_back(pcoin.first);
                 txNew.vout.push_back(CTxOut(0, scriptPubKeyOut));
-                if (block.GetBlockTime() + nStakeSplitAge > txNew.nTime)
+                if (block.GetBlockTime() + STAKE_SPLIT_AGE > txNew.nTime)
                     txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinStake : added kernel type=%d\n", whichType);
