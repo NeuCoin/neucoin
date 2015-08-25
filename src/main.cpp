@@ -2145,20 +2145,45 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // Recursively process any orphan blocks that depended on this one
     vector<uint256> vWorkQueue;
     vWorkQueue.push_back(hash);
+
     for (unsigned int i = 0; i < vWorkQueue.size(); i++)
     {
         uint256 hashPrev = vWorkQueue[i];
-        for (multimap<uint256, CBlock*>::iterator mi = mapOrphanBlocksByPrev.lower_bound(hashPrev);
-             mi != mapOrphanBlocksByPrev.upper_bound(hashPrev);
-             ++mi)
+        CBlockIndex* pindexPrev = mapBlockIndex.at(hashPrev);
+
+        for (multimap<uint256, CBlock*>::iterator mi = mapOrphanBlocksByPrev.lower_bound(hashPrev); mi != mapOrphanBlocksByPrev.upper_bound(hashPrev); ++mi)
         {
+            bool validated = true;
+
             CBlock* pblockOrphan = (*mi).second;
-            if (pblockOrphan->AcceptBlock())
-                vWorkQueue.push_back(pblockOrphan->GetHash());
-            mapOrphanBlocks.erase(pblockOrphan->GetHash());
+            uint256 orphanHash = pblockOrphan->GetHash();
+
+            if (pblockOrphan->IsProofOfStake())
+            {
+                uint256 hashProofOfStake = 0;
+
+                if (CheckProofOfStake(pindexPrev, pblockOrphan->vtx[1], pblockOrphan->nBits, hashProofOfStake))
+                {
+                    if (!mapProofOfStake.count(orphanHash))
+                        mapProofOfStake.insert(make_pair(orphanHash, hashProofOfStake));
+
+                    validated = true;
+                }
+                else
+                {
+                    validated = false;
+                }
+            }
+
+            if (validated && pblockOrphan->AcceptBlock())
+                vWorkQueue.push_back(orphanHash);
+
+            mapOrphanBlocks.erase(orphanHash);
             setStakeSeenOrphan.erase(pblockOrphan->GetProofOfStake());
+
             delete pblockOrphan;
         }
+
         mapOrphanBlocksByPrev.erase(hashPrev);
     }
 
