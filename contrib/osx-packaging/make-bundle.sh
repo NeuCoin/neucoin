@@ -11,6 +11,7 @@ mkdir -p "$BUNDLE"/Contents/Libraries/
 mkdir -p "$BUNDLE"/Contents/MacOS/
 mkdir -p "$BUNDLE"/Contents/Plugins/
 mkdir -p "$BUNDLE"/Contents/Plugins/platforms/
+mkdir -p "$BUNDLE"/Contents/Resources/
 
 push_dependencies()
 {
@@ -32,9 +33,10 @@ push_dependencies()
 }
 
 cp "$DIRECTORY"/Info.plist "$BUNDLE"/Contents/
+cp "$DIRECTORY"/Icon.icns "$BUNDLE"/Contents/Resources/
 
-cp "$BINARY" "$BUNDLE"/Contents/MacOS/
-push_dependencies "$BUNDLE"/Contents/MacOS/"$BINARY"
+cp "$BINARY" "$BUNDLE"/Contents/MacOS/client-qt
+push_dependencies "$BUNDLE"/Contents/MacOS/client-qt
 
 cp /usr/local/opt/qt5/plugins/platforms/libqcocoa.dylib "$BUNDLE"/Contents/Plugins/platforms/
 push_dependencies "$BUNDLE"/Contents/Plugins/platforms/libqcocoa.dylib
