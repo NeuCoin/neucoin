@@ -11,7 +11,7 @@ let PRIVATE_KEY = '308201130201010420e8c90e40cdbebaaaa634302153ea1741a28227b1366
 
 export async function test( ) {
 
-    await compileWith( fastChain, smallChain );
+    await compileWith( fastChain, smallChain, { CHECKPOINT_PUBLIC_KEY : `"${PUBLIC_KEY}"` } );
 
     var client1 = await spawnClient( { checkpointkey : PRIVATE_KEY } );
     var client2 = await spawnClient( { addnode : client1.target } );
