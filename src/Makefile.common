@@ -13,6 +13,11 @@ reverse = $(if $(1),$(call reverse,$(wordlist 2,$(words $(1)),$(1)))) $(firstwor
 # Same thing, but also add the "-l" prefix for the linker
 librarify = $(addprefix -l, $(call reverse,$(1)))
 
+ifeq ($(M32),1)
+  LDFLAGS_HEADLESS += -m32
+  LDFLAGS_QT += -m32
+endif
+
 ifeq ($(DEBUG),1)
   CXXFLAGS += -g -O0
 endif
@@ -31,7 +36,7 @@ all: force $(TARGET_HEADLESS) $(TARGET_QT)
 	@HASH=`$(MD5SUM) <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
 .make.ldflags: force
-	@HASH=`$(MD5SUM) <<< '$(CONSTANTS) :: $(LDFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
+	@HASH=`$(MD5SUM) <<< '$(CONSTANTS) :: $(LDFLAGS_HEADLESS) :: $(LDFLAGS_QT)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
 
 $(TARGET_HEADLESS): $(OBJECTS_HEADLESS) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_HEADLESS) $(LDFLAGS_HEADLESS) $(call librarify, $(LIBRARIES_HEADLESS))
