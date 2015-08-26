@@ -87,6 +87,8 @@ extern timestamp_t                       TARGET_TIMESPAN;
 extern std::string                       CHECKPOINT_PUBLIC_KEY;
 extern std::string                       CHECKPOINT_PRIVATE_KEY;
 
+extern std::string                       CALERT_PUBLIC_KEY;
+
 extern money_t                           MIN_TXOUT_AMOUNT;
 
 extern uint32_t                          MAX_BLOCK_SIZE_GEN;

@@ -127,8 +127,12 @@ timestamp_t                       TARGET_TIMESPAN             = 2 * HOUR;
 // -- You can use the -checkpointkey command line parameter to specify the private key. If you do this, and if the private key is correct, your client will start sending checkpoints regularly
 // -- In order to generate a new valid checkpoint key, you have to use the `makekeypair` rpc command - don't try to generate it yourself
 
-std::string                       CHECKPOINT_PUBLIC_KEY       = "042f43a2e1e8185eb0f25380f4caa6de24d6a638ceb01374450207c9d25bfa586a20cc1295c686d20e090b324054aa4b93b405c9fea50df8bca0b70cca6b6758fc";
+std::string                       CHECKPOINT_PUBLIC_KEY       = "0403670e327036fd64f3223127899b7cb0621f22c2d4db4f083c7118de4371e5fa7576dd425b35e7f8fdccb964181ddb3f8f6671fefc8334d484f91582f9b7a721";
 std::string                       CHECKPOINT_PRIVATE_KEY      = ""; // Do NOT set it here; use -checkpointkey instead
+
+// -- The private key has to be specified when you use the sendalert rpc call. It doesn't have to be in the source code.
+
+std::string                       CALERT_PUBLIC_KEY           = "04307016586db2c746625934216faae1382d7a1da71b163d94f7dc8854a97443ea80f2c3181ea11c5591da3e2944c19b5e9d0d5955fed1b75026ace30b369ed9a2";
 
 // -- These variables should probably not be modified, since they rely on the previous ones
 

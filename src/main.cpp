@@ -2596,7 +2596,7 @@ void PrintBlockTree()
 map<uint256, CAlert> mapAlerts;
 CCriticalSection cs_mapAlerts;
 
-static string strMintMessage = _("Info: Minting suspended due to locked wallet.");
+static string strMintMessage = _("Notice: Minting suspended due to locked wallet.");
 static string strMintWarning;
 
 string GetWarnings(string strFor)
@@ -2604,6 +2604,7 @@ string GetWarnings(string strFor)
     int nPriority = 0;
     string strStatusBar;
     string strRPC;
+
     if (GetBoolArg("-testsafemode"))
         strRPC = "test";
 
@@ -2626,19 +2627,20 @@ string GetWarnings(string strFor)
     if (Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 10))
     {
         nPriority = 100;
-        strStatusBar = "WARNING: Checkpoint is too old. Wait for block chain to download, or notify developers of the issue.";
+        strStatusBar = "Notice: No sync-checkpointCheckpoint received since quite a long time.";
     }
 
     // ppcoin: if detected invalid checkpoint enter safe mode
     if (Checkpoints::hashInvalidCheckpoint != 0)
     {
         nPriority = 3000;
-        strStatusBar = strRPC = "WARNING: Invalid checkpoint found! Displayed transactions may not be correct! You may need to upgrade, or notify developers of the issue.";
+        strStatusBar = strRPC = "Warning: An invalid checkpoint has been found! Displayed transactions may not be correct! You may need to upgrade, and/or notify developers of the issue.";
     }
 
     // Alerts
     {
         LOCK(cs_mapAlerts);
+
         BOOST_FOREACH(PAIRTYPE(const uint256, CAlert)& item, mapAlerts)
         {
             const CAlert& alert = item.second;
@@ -2646,8 +2648,11 @@ string GetWarnings(string strFor)
             {
                 nPriority = alert.nPriority;
                 strStatusBar = alert.strStatusBar;
+
                 if (nPriority > 1000)
+                {
                     strRPC = strStatusBar;  // ppcoin: safe mode for high alert
+                }
             }
         }
     }
@@ -2656,6 +2661,7 @@ string GetWarnings(string strFor)
         return strStatusBar;
     else if (strFor == "rpc")
         return strRPC;
+
     assert(!"GetWarnings() : invalid parameter");
     return "error";
 }
