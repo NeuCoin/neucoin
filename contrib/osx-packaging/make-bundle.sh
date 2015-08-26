@@ -11,7 +11,6 @@ mkdir -p "$BUNDLE"/Contents/Libraries/
 mkdir -p "$BUNDLE"/Contents/MacOS/
 mkdir -p "$BUNDLE"/Contents/Plugins/
 mkdir -p "$BUNDLE"/Contents/Plugins/platforms/
-mkdir -p "$BUNDLE"/Contents/Resources/
 
 push_dependencies()
 {
@@ -33,7 +32,6 @@ push_dependencies()
 }
 
 cp "$DIRECTORY"/Info.plist "$BUNDLE"/Contents/
-cp "$DIRECTORY"/qt.conf "$BUNDLE"/Contents/Resources/
 
 cp "$BINARY" "$BUNDLE"/Contents/MacOS/
 push_dependencies "$BUNDLE"/Contents/MacOS/"$BINARY"
