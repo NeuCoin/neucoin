@@ -2596,7 +2596,7 @@ void PrintBlockTree()
 map<uint256, CAlert> mapAlerts;
 CCriticalSection cs_mapAlerts;
 
-static string strMintMessage = _("Notice: Minting suspended due to locked wallet.");
+static string strMintMessage = _("Warning: Minting suspended due to locked wallet.");
 static string strMintWarning;
 
 string GetWarnings(string strFor)
@@ -2627,7 +2627,7 @@ string GetWarnings(string strFor)
     if (Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 10))
     {
         nPriority = 100;
-        strStatusBar = "Notice: No sync-checkpointCheckpoint received since quite a long time.";
+        strStatusBar = "Warning: No sync-checkpoint received since quite a long time.";
     }
 
     // ppcoin: if detected invalid checkpoint enter safe mode
