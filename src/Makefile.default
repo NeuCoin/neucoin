@@ -4,7 +4,7 @@ BOOST_SUFFIX ?= #NO SUFFIX
 QT_MID_SUFFIX ?= 5
 
 # We unfortunately can't specialize CXXFLAGS for each target, since they both share the same object files
-CXXFLAGS = -I $(shell pwd)/qt/forms -I $(shell pwd)/qt -I $(shell pwd) $(CPPFLAGS_HEADLESS)
+CXXFLAGS = -I $(shell pwd)/qt/forms -I $(shell pwd)/qt -I $(shell pwd) -DHAVE_BUILD_INFO
 
 LDFLAGS_HEADLESS =
 LDFLAGS_QT =

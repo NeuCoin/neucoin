@@ -44,6 +44,9 @@ $(TARGET_HEADLESS): $(OBJECTS_HEADLESS) .make.ldflags
 $(TARGET_QT): $(OBJECTS_QT) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_QT) $(LDFLAGS_QT) $(call librarify, $(LIBRARIES_QT))
 
+build.h: force
+	../contrib/build-versioning/generate-build-version.sh $@
+
 %.qm: %.ts
 	$(LRELEASE) -qm $@ $<
 
@@ -68,7 +71,7 @@ ui_%.h: %.ui
 generated_files: force \
 	$(join $(dir $(filter %.ui, $(SOURCES_QT))), $(patsubst %.ui, ui_%.h, $(notdir $(filter %.ui, $(SOURCES_QT))))) \
 	$(join $(dir $(filter %.h, $(SOURCES_QT))), $(patsubst %.h, %.moc, $(notdir $(filter %.h, $(SOURCES_QT))))) \
-	init.qt.cpp wallet.qt.cpp
+	init.qt.cpp wallet.qt.cpp build.h
 
 clean: force
 	$(RM) -f **/*.o
