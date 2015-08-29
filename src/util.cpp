@@ -200,42 +200,38 @@ static FILE* fileout = NULL;
 inline int OutputDebugStringF(const char* pszFormat, ...)
 {
     int ret = 0;
-    if (fPrintToConsole)
+
+    if (!fileout)
     {
-        // print to console
-        va_list arg_ptr;
-        va_start(arg_ptr, pszFormat);
-        ret = vprintf(pszFormat, arg_ptr);
-        va_end(arg_ptr);
-    }
-    else
-    {
-        // print to debug.log
-        if (!fileout)
+        if (!fPrintToConsole)
         {
             boost::filesystem::path pathDebug = GetDataDir() / "debug.log";
             fileout = fopen(pathDebug.string().c_str(), "a");
-            if (fileout) setbuf(fileout, NULL); // unbuffered
         }
-        if (fileout)
+        else
         {
-            static bool fStartedNewLine = true;
-            static boost::mutex mutexDebugLog;
-            boost::mutex::scoped_lock scoped_lock(mutexDebugLog);
-
-            // Debug print useful for profiling
-            if (fLogTimestamps && fStartedNewLine)
-                fprintf(fileout, "%s ", DateTimeStrFormat(GetTime()).c_str());
-            if (pszFormat[strlen(pszFormat) - 1] == '\n')
-                fStartedNewLine = true;
-            else
-                fStartedNewLine = false;
-
-            va_list arg_ptr;
-            va_start(arg_ptr, pszFormat);
-            ret = vfprintf(fileout, pszFormat, arg_ptr);
-            va_end(arg_ptr);
+            fileout = stdout;
         }
+        if (fileout) setbuf(fileout, NULL); // unbuffered
+    }
+    if (fileout)
+    {
+        static bool fStartedNewLine = true;
+        static boost::mutex mutexDebugLog;
+        boost::mutex::scoped_lock scoped_lock(mutexDebugLog);
+
+        // Debug print useful for profiling
+        if (fLogTimestamps && fStartedNewLine)
+            fprintf(fileout, "%s ", DateTimeStrFormat(GetTime()).c_str());
+        if (pszFormat[strlen(pszFormat) - 1] == '\n')
+            fStartedNewLine = true;
+        else
+            fStartedNewLine = false;
+
+        va_list arg_ptr;
+        va_start(arg_ptr, pszFormat);
+        ret = vfprintf(fileout, pszFormat, arg_ptr);
+        va_end(arg_ptr);
     }
 
 #ifdef WIN32
