@@ -1,0 +1,47 @@
+# Maintainer: Sylvain "Magicking" Laurent <sylvain@neucoin.org>
+
+pkgbase=neucoin
+pkgname=('neucoin-daemon-git' 'neucoin-qt-git')
+pkgver=0.4.0.0
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://www.neucoin.org/"
+makedepends=('boost' 'miniupnpc' 'git' 'openssl')
+license=('MIT')
+provides=(${pkgname%-*}=$pkgver)
+source=($pkgbase::git+https://github.com/althousedev/$pkgbase.git
+      neucoind.service
+      neucoin-qt.install)
+sha256sums=('SKIP'
+            '8b0dba4e5bf5dcebc8a13f273c950adb0f26b5a40c1fb5998e04f48335be19b6'
+            'ebf7090ca1202e2c2ccd1aa5bb03e6ac911c458141a1cedda9b41f9c26c2602c')
+
+build() {
+  cd "$srcdir/$pkgbase/src"
+
+  ../contrib/build-versioning/generate-build-version.sh build.h # Tag binaries
+
+  PIE=1 CPPFLAGS_HEADLESS="-z noexecstack" make -f Makefile.unix neucoind
+  PIE=1 CPPFLAGS_HEADLESS="-z noexecstack" make -f Makefile.unix neucoin-qt
+}
+
+package_neucoin-daemon-git() {
+  pkgdesc="Neucoin is a peer-to-peer network PoS based digital currency - daemon"
+  depends=(boost-libs miniupnpc openssl)
+  conflicts=(${pkgname%-*})-daemon
+
+  cd "$srcdir/$pkgbase"
+
+  install -Dm644 ../neucoind.service "$pkgdir"/usr/lib/systemd/user/neucoind.service
+  install -Dm755 src/neucoind "$pkgdir"/usr/bin/neucoind
+}
+
+package_neucoin-qt-git() {
+  pkgdesc="Neucoin is a peer-to-peer network PoS based digital currency - Qt"
+  depends=(boost-libs qt5-base miniupnpc qrencode openssl)
+  install=neucoin-qt.install
+  conflicts=(${pkgname%-*})-qt
+
+  cd "$srcdir/$pkgbase"
+  install -Dm755 src/neucoin-qt "$pkgdir"/usr/bin/neucoin-qt
+}
