@@ -306,7 +306,7 @@ bool AppInit2(int argc, char* argv[])
 #endif
     fPrintToConsole = GetBoolArg("-printtoconsole");
     fPrintToDebugger = GetBoolArg("-printtodebugger");
-    fLogTimestamps = GetBoolArg("-logtimestamps");
+    fLogTimestamps = GetBoolArg("-logtimestamps", true);
 
 #ifndef QT_GUI
     for (int i = 1; i < argc; i++)
