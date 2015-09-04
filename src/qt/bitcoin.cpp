@@ -197,9 +197,9 @@ int main(int argc, char *argv[])
         QString applicationFilePath = QString(path);
 	QString applicationDirPath = QFileInfo(applicationFilePath).path();
 
-        if (QFileInfo(QDir::cleanPath(QDir(applicationDirPath).absoluteFilePath(".."))).isBundle())
+        if (QFileInfo(QDir::cleanPath(QDir(applicationDirPath).absoluteFilePath("../.."))).isBundle())
         {
-            QString pluginPath = QDir::cleanPath(QDir(applicationDirPath).absoluteFilePath("../Contents/Plugins"));
+            QString pluginPath = QDir::cleanPath(QDir(applicationDirPath).absoluteFilePath("../Plugins"));
             QStringList pluginPaths = QStringList() << pluginPath;
             QCoreApplication::setLibraryPaths(pluginPaths);
         }
