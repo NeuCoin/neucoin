@@ -9,6 +9,7 @@ svg_stroke=(
  "32#10"
  "48#6"
  "64#4"
+ "80#4"
 "128#4"
 "256#4")
 
@@ -56,6 +57,8 @@ for i in ${svg_stroke[@]}; do
                     "${PIXMAP_FOLDER}/neucoin${PIX_SIZE}.png"
   $CONVERT -geometry "$PIX_SIZE" -background none "$TMP_FILE" \
                     "${PIXMAP_FOLDER}/neucoin${PIX_SIZE}.bmp"
+  $CONVERT -geometry "$PIX_SIZE" -background none "$TMP_FILE" \
+                    "${PIXMAP_FOLDER}/neucoin${PIX_SIZE}.xpm"
   ico_list_bmp="${ico_file_list} ${PIXMAP_FOLDER}/neucoin${PIX_SIZE}.bmp"
   ico_list_png="${ico_file_list} ${PIXMAP_FOLDER}/neucoin${PIX_SIZE}.png"
 done
