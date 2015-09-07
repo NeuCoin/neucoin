@@ -12,6 +12,12 @@ LDFLAGS_QT =
 LIBRARIES_HEADLESS = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl
 LIBRARIES_QT = boost_system$(BOOST_SUFFIX) boost_filesystem$(BOOST_SUFFIX) boost_program_options$(BOOST_SUFFIX) boost_thread$(BOOST_SUFFIX) db_cxx crypto ssl png qrencode z Qt$(QT_MID_SUFFIX)Core Qt$(QT_MID_SUFFIX)Gui Qt$(QT_MID_SUFFIX)Widgets
 
+ifeq ($(USE_UPNP),1)
+    CXXFLAGS += -DUSE_UPNP
+    LIBRARIES_HEADLESS += miniupnpc
+    LIBRARIES_QT += miniupnpc
+endif
+
 SOURCES_COMMON = \
   $(CONSTANTS) \
   CheckClientSanity.cpp \
