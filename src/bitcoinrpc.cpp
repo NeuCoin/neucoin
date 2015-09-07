@@ -1322,7 +1322,7 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     {
         string msg = "addmultisigaddress <nrequired> <'[\"key\",\"key\"]'> [account]\n"
             "Adds a nrequired-to-sign multisignature address to the wallet.\n"
-            "Each key is a bitcoin address, or an hex-encoded public key.\n"
+            "Each key is a " COIN_NAME " address, or an hex-encoded public key.\n"
             "If [account] is specified, assign address to [account].\n";
         throw runtime_error(msg);
     }
