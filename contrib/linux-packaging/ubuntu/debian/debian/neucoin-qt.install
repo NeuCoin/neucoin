@@ -1,0 +1,6 @@
+debian/bin/neucoin-qt usr/bin
+src/neucoin-qt usr/lib/neucoin
+share/pixmaps/neucoin32.xpm usr/share/pixmaps
+share/pixmaps/neucoin80.xpm usr/share/pixmaps
+debian/neucoin-qt.desktop usr/share/applications
+debian/neucoin-qt.protocol usr/share/kde4/services/

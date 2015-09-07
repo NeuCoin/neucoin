@@ -1,0 +1,2 @@
+debian/bin/neucoind usr/bin
+src/neucoind usr/lib/neucoin

@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+# -*- mode: makefile; coding: utf-8 -*-
+
+#DEB_MAKE_CHECK_TARGET = test_neucoin
+#build/neucoind::
+#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_neucoin)
+
+DEB_INSTALL_EXAMPLES_neucoind += debian/examples/*
+DEB_INSTALL_MANPAGES_neucoind += debian/manpages/*
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	cd share; ./gengraphics.sh svg/neucoin_ico.svg
+	cd src; $(MAKE) -f Makefile.unix neucoind
+	cd src; $(MAKE) -f Makefile.unix neucoin-qt
+
+override_dh_auto_clean:
+	cd src; $(MAKE) -f Makefile.unix clean
+
+#override_dh_auto_configure:
+#	qmake neucoin-qt.pro USE_QRCODE=1
+
+override_dh_auto_test:
+#	cd src; $(MAKE) -f makefile.unix test_neucoin
+#	src/test_neucoin
+
+# Ensure wrapper is set executable
+binary-post-install/neucoind:
+	chmod +x $(cdbs_curdestdir)usr/bin/neucoind
+binary-post-install/neucoin-qt:
+	chmod +x $(cdbs_curdestdir)usr/bin/neucoin-qt

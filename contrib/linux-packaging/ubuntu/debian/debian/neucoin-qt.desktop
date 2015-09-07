@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=NeuCoin
+Comment=NeuCoin P2P Cryptocurrency
+Comment[fr]=NeuCoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=NeuCoin, eşten eşe kriptografik sanal para birimi
+Exec=/usr/bin/neucoin-qt
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/neucoin80.xpm
+MimeType=x-scheme-handler/neucoin;
+Categories=Office;

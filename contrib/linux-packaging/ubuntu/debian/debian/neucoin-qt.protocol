@@ -1,0 +1,11 @@
+[Protocol]
+exec=neucoin-qt '%u'
+protocol=neucoin
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false

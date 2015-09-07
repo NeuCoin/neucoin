@@ -1,0 +1,1 @@
+extend-diff-ignore = "(^|/)(.*\.o|.*\.d|.*\.moc|.*\.make\.cxxflags|.*\.make\.ldflags|share/pixmaps/.*)$"
