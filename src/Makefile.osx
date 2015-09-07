@@ -27,3 +27,6 @@ include Makefile.common
 
 $(TARGET_QT).app: $(TARGET_QT)
 	../contrib/osx-packaging/make-bundle.sh $@ $<
+
+$(TARGET_QT).dmg: $(TARGET_QT).app
+	../contrib/osx-packaging/make-dmg.sh $@ $<

@@ -26,5 +26,6 @@ ui_*.h
 /src/neucoin-qt.exe
 
 /src/neucoin-qt.app
+/src/neucoin-qt.dmg
 
 /share/pixmaps

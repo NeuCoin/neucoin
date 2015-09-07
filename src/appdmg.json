@@ -1,0 +1,10 @@
+{
+    "title" : "Neucoin",
+    "icon" : "Icon.icns",
+    "background" : "Background.png",
+    "icon-size" : 80,
+    "contents" : [
+        { "x" : 490, "y" : 360, "type" : "link", "path" : "/Applications" },
+        { "x" : 210, "y" : 360, "type" : "file", "path" : "neucoin-qt.app" }
+    ]
+}
