@@ -2,7 +2,7 @@
 
 pkgbase=neucoin
 pkgname=('neucoin-daemon-git' 'neucoin-qt-git')
-pkgver=0.2.1
+pkgver=0.8.0
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.neucoin.org/"

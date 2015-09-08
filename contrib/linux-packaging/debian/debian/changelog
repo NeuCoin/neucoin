@@ -1,4 +1,4 @@
-neucoin (0.2.1~dfsg-1) stable; urgency=low
+neucoin (0.8.0~dfsg-1) stable; urgency=low
 
   [ Sylvain Laurent ]
   * Initial release, forking from ppcoin.
