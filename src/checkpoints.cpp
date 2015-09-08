@@ -353,12 +353,13 @@ namespace Checkpoints
 
         CKey key;
 
-        while (ERR_get_error());
+        while (ERR_get_error()) ; // Reset errors
         printf("Errors have been reset\n");
 
         key.SetPrivKey(CPrivKey(vchPrivKey.begin(), vchPrivKey.end())); // if key is not correct openssl may crash
 
-        for (int error; error = ERR_get_error(); )
+        int error;
+        while ((error = ERR_get_error()))
             printf("%s\n", ERR_error_string(error, NULL));
 
         if (!key.Sign(Hash(checkpoint.vchMsg.begin(), checkpoint.vchMsg.end()), checkpoint.vchSig))

@@ -970,7 +970,7 @@ void CWallet::AvailableCoins(unsigned int nSpendTime, vector<COutput>& vCoins, b
             if ((pcoin->IsCoinBase() || pcoin->IsCoinStake()) && pcoin->GetBlocksToMaturity() > 0)
                 continue;
 
-            for (int i = 0; i < pcoin->vout.size(); i++)
+            for (size_t i = 0; i < pcoin->vout.size(); i++)
             {
                 if (pcoin->nTime > nSpendTime)
                     continue;  // ppcoin: timestamp must not exceed spend time
@@ -1903,7 +1903,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64& nBalanceInQuestion, bool
         CTxIndex txindex;
         if (!txdb.ReadTxIndex(pcoin->GetHash(), txindex))
             continue;
-        for (int n=0; n < pcoin->vout.size(); n++)
+        for (size_t n=0; n < pcoin->vout.size(); n++)
         {
             if (IsMine(pcoin->vout[n]) && pcoin->IsSpent(n) && (txindex.vSpent.size() <= n || txindex.vSpent[n].IsNull()))
             {

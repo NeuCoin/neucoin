@@ -1662,13 +1662,19 @@ Value listtransactions(const Array& params, bool fHelp)
     for (TxItems::reverse_iterator it = txByTime.rbegin(); it != txByTime.rend(); ++it)
     {
         CWalletTx *const pwtx = (*it).second.first;
+
         if (pwtx != 0)
             ListTransactions(*pwtx, strAccount, 0, true, ret);
+
         CAccountingEntry *const pacentry = (*it).second.second;
+
         if (pacentry != 0)
             AcentryToJSON(*pacentry, strAccount, ret);
 
-        if (ret.size() >= (nCount+nFrom)) break;
+        if (ret.size() >= static_cast<unsigned int>(nCount+nFrom))
+        {
+            break;
+        }
     }
     // ret is newest to oldest
 

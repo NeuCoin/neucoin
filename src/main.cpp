@@ -538,7 +538,7 @@ bool CTransaction::CheckTransaction() const
 
     // Check for negative or overflow output values
     int64 nValueOut = 0;
-    for (int i = 0; i < vout.size(); i++)
+    for (size_t i = 0; i < vout.size(); i++)
     {
         const CTxOut& txout = vout[i];
         if (txout.IsEmpty() && (!IsCoinBase()) && (!IsCoinStake()))
@@ -1910,7 +1910,7 @@ bool CBlock::CheckBlock() const
             return DoS(100, error("CheckBlock() : more than one coinbase"));
 
     // ppcoin: only the second transaction can be the optional coinstake
-    for (int i = 2; i < vtx.size(); i++)
+    for (size_t i = 2; i < vtx.size(); i++)
         if (vtx[i].IsCoinStake())
             return DoS(100, error("CheckBlock() : coinstake in wrong position"));
 
@@ -2338,11 +2338,13 @@ bool CheckDiskSpace(uint64 nAdditionalBytes)
 
 FILE* OpenBlockFile(unsigned int nFile, unsigned int nBlockPos, const char* pszMode)
 {
-    if (nFile == -1)
+    if (nFile == static_cast<unsigned int>(-1))
         return NULL;
+
     FILE* file = fopen((GetDataDir() / strprintf("blk%04d.dat", nFile)).string().c_str(), pszMode);
     if (!file)
         return NULL;
+
     if (nBlockPos != 0 && !strchr(pszMode, 'a') && !strchr(pszMode, 'w'))
     {
         if (fseek(file, nBlockPos, SEEK_SET) != 0)

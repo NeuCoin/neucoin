@@ -102,12 +102,11 @@ CAddrInfo* CAddrMan::Create(const CAddress &addr, const CNetAddr &addrSource, in
     return &mapInfo[nId];
 }
 
-void CAddrMan::SwapRandom(int nRndPos1, int nRndPos2)
+void CAddrMan::SwapRandom(size_t nRndPos1, size_t nRndPos2)
 {
     if (nRndPos1 == nRndPos2)
         return;
 
-    assert(nRndPos1 >= 0 && nRndPos2 >= 0);
     assert(nRndPos1 < vRandom.size() && nRndPos2 < vRandom.size());
 
     int nId1 = vRandom[nRndPos1];
@@ -123,7 +122,7 @@ void CAddrMan::SwapRandom(int nRndPos1, int nRndPos2)
     vRandom[nRndPos2] = nId1;
 }
 
-int CAddrMan::SelectTried(int nKBucket)
+int CAddrMan::SelectTried(size_t nKBucket)
 {
     std::vector<int> &vTried = vvTried[nKBucket];
 
@@ -131,13 +130,17 @@ int CAddrMan::SelectTried(int nKBucket)
     // find the least recently tried among them
     int64 nOldest = -1;
     int nOldestPos = -1;
+
     for (unsigned int i = 0; i < ADDRMAN_TRIED_ENTRIES_INSPECT_ON_EVICT && i < vTried.size(); i++)
     {
         int nPos = GetRandInt(vTried.size() - i) + i;
         int nTemp = vTried[nPos];
+
         vTried[nPos] = vTried[i];
         vTried[i] = nTemp;
+
         assert(nOldest == -1 || mapInfo.count(nTemp) == 1);
+
         if (nOldest == -1 || mapInfo[nTemp].nLastSuccess < mapInfo[nOldest].nLastSuccess) {
            nOldest = nTemp;
            nOldestPos = nPos;
@@ -147,9 +150,10 @@ int CAddrMan::SelectTried(int nKBucket)
     return nOldestPos;
 }
 
-int CAddrMan::ShrinkNew(int nUBucket)
+int CAddrMan::ShrinkNew(size_t nUBucket)
 {
-    assert(nUBucket >= 0 && nUBucket < vvNew.size());
+    assert(nUBucket < vvNew.size());
+
     std::set<int> &vNew = vvNew[nUBucket];
 
     // first look for deletable items

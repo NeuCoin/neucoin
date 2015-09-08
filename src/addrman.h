@@ -204,16 +204,16 @@ protected:
     CAddrInfo* Create(const CAddress &addr, const CNetAddr &addrSource, int *pnId = NULL);
 
     // Swap two elements in vRandom.
-    void SwapRandom(int nRandomPos1, int nRandomPos2);
+    void SwapRandom(size_t nRandomPos1, size_t nRandomPos2);
 
     // Return position in given bucket to replace.
-    int SelectTried(int nKBucket);
+    int SelectTried(size_t nKBucket);
 
     // Remove an element from a "new" bucket.
     // This is the only place where actual deletes occur.
     // They are never deleted while in the "tried" table, only possibly evicted back to the "new" table.
-    int ShrinkNew(int nUBucket);
- 
+    int ShrinkNew(size_t nUBucket);
+
     // Move an entry from the "new" table(s) to the "tried" table
     // @pre vvUnkown[nOrigin].count(nId) != 0
     void MakeTried(CAddrInfo& info, int nId, int nOrigin);

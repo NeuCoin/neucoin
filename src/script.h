@@ -37,7 +37,6 @@ enum txnouttype
     TX_PUBKEYHASH,
     TX_SCRIPTHASH,
     TX_MULTISIG,
-    TX_COINSTAKE,
     TX_NULL_DATA,
     TX_COLDMINTING
 };
