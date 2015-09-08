@@ -7,17 +7,17 @@ QT_MID_SUFFIX = 5
 
 include Makefile.default
 
-CXXFLAGS += -I $(BOOST_PATH) -I $(DB_PATH)/build_unix -I $(OPENSSL_PATH)/include -I $(QRENCODE_PATH) -I $(QTBASE_PATH)/include/QtCore -I $(QTBASE_PATH)/include/QtGui -I $(QTBASE_PATH)/include/QtWidgets -I $(QTBASE_PATH)/include
+CXXFLAGS += -I $(BOOST_PATH) -I $(DB_PATH)/build_unix -I $(OPENSSL_PATH)/include -I $(QRENCODE_PATH) -I $(QTBASE_PATH)/include/QtCore -I $(QTBASE_PATH)/include/QtGui -I $(QTBASE_PATH)/include/QtWidgets -I $(QTBASE_PATH)/include -I $(MINIUPNPC_PATH) -DSTATICLIB -DMINIUPNP_STATICLIB
 
-LDFLAGS_HEADLESS += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH)
-LDFLAGS_QT += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH) -L $(LIBPNG_PATH)/.libs -L $(QRENCODE_PATH)/.libs -L $(QTBASE_PATH)/lib -L $(QTBASE_PATH)/plugins/platforms
+LDFLAGS_HEADLESS += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH) -L $(MINIUPNPC_PATH)
+LDFLAGS_QT += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH) -L $(LIBPNG_PATH)/.libs -L $(QRENCODE_PATH)/.libs -L $(QTBASE_PATH)/lib -L $(QTBASE_PATH)/plugins/platforms -L $(MINIUPNPC_PATH)
 
 LDFLAGS_HEADLESS += -static-libgcc -static-libstdc++ -static
 LDFLAGS_QT += -static-libgcc -static-libstdc++ -static
 
 LDFLAGS_QT += -Wl,-subsystem,windows
 
-LIBRARIES_HEADLESS := kernel32 user32 gdi32 comdlg32 winspool winmm shell32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 ws2_32 shlwapi $(LIBRARIES_HEADLESS)
-LIBRARIES_QT := kernel32 user32 gdi32 comdlg32 winspool winmm shell32 imm32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 ws2_32 shlwapi qtharfbuzzng $(LIBRARIES_QT) Qt5PlatformSupport qtmain qwindows
+LIBRARIES_HEADLESS := kernel32 user32 gdi32 comdlg32 winspool winmm shell32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 ws2_32 shlwapi iphlpapi $(LIBRARIES_HEADLESS)
+LIBRARIES_QT := kernel32 user32 gdi32 comdlg32 winspool winmm shell32 imm32 comctl32 ole32 oleaut32 uuid rpcrt4 advapi32 ws2_32 shlwapi iphlpapi qtharfbuzzng $(LIBRARIES_QT) Qt5PlatformSupport qtmain qwindows
 
 include Makefile.common
