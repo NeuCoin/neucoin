@@ -58,8 +58,8 @@ blockheight_t                     COINBASE_MATURITY           = 500;
 //                                If you use a non-zero COIN_PREMINE value, the first mined PoW block will have this reward. Otherwise, it will be POW_BLOCK_REWARD as usual
 //                                Note that MAX_MONEY_STACK doesn't prevent the coin amount from exceeding its value - ie. that it isn't a hard limit for how much money will the blockchain handle
 
-money_t                           MAX_MONEY_STACK             = 500000000000 * COIN;
-money_t                           COIN_PREMINE                =   3000000000 * COIN;
+money_t                           MAX_MONEY_STACK             = 500000000000u * COIN;
+money_t                           COIN_PREMINE                =   3000000000u * COIN;
 
 //                                If you submit a transaction to the network, you need to put at least MIN_TX_FEES coins for the client to accept it
 //                                You also need to put at least MIN_RELAY_TX_FEES, otherwise the other nodes will not relay it -
