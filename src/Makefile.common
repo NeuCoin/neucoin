@@ -6,6 +6,7 @@ LRELEASE ?= lrelease
 MOC      ?= moc
 UIC      ?= uic
 RCC      ?= rcc
+FIND     ?= find
 
 # Custom GNU Make function that reverse a word list
 reverse = $(if $(1),$(call reverse,$(wordlist 2,$(words $(1)),$(1)))) $(firstword $(1))
@@ -28,9 +29,17 @@ endif
 
 default: force $(TARGET_HEADLESS)
 
+ifneq ($(NO_QT),1)
 all: force $(TARGET_HEADLESS) $(TARGET_QT)
+else
+all: force $(TARGET_HEADLESS)
+endif
 
--include $(DEPENDENCIES_HEADLESS) $(DEPENDENCIES_QT)
+-include $(DEPENDENCIES_HEADLESS)
+
+ifneq ($(NO_QT),1)
+  -include $(DEPENDENCIES_QT)
+endif
 
 .make.cxxflags: force
 	@HASH=`$(MD5SUM) <<< '$(CXXFLAGS)'`; echo "$$HASH" | cmp -s - $@ || echo "$$HASH" > $@
@@ -41,11 +50,11 @@ all: force $(TARGET_HEADLESS) $(TARGET_QT)
 $(TARGET_HEADLESS): $(OBJECTS_HEADLESS) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_HEADLESS) $(LDFLAGS_HEADLESS) $(call librarify, $(LIBRARIES_HEADLESS))
 
-$(TARGET_QT): $(OBJECTS_QT) .make.ldflags
-	$(CXX) -o $@ $(OBJECTS_QT) $(LDFLAGS_QT) $(call librarify, $(LIBRARIES_QT))
-
 build.h: force
 	../contrib/build-versioning/generate-build-version.sh $@
+
+$(TARGET_QT): $(OBJECTS_QT) .make.ldflags
+	$(CXX) -o $@ $(OBJECTS_QT) $(LDFLAGS_QT) $(call librarify, $(LIBRARIES_QT))
 
 %.qm: %.ts
 	$(LRELEASE) -qm $@ $<
@@ -68,17 +77,24 @@ ui_%.h: %.ui
 %.cpp.o: %.cpp .make.cxxflags
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
+ifneq ($(NO_QT),1)
 generated_files: force \
 	$(join $(dir $(filter %.ui, $(SOURCES_QT))), $(patsubst %.ui, ui_%.h, $(notdir $(filter %.ui, $(SOURCES_QT))))) \
 	$(join $(dir $(filter %.h, $(SOURCES_QT))), $(patsubst %.h, %.moc, $(notdir $(filter %.h, $(SOURCES_QT))))) \
-	init.qt.cpp wallet.qt.cpp build.h
+	init.qt.cpp wallet.qt.cpp \
+	build.h
+else
+generated_files: force \
+	build.h
+endif
 
 clean: force
-	$(RM) -f **/*.o
-	$(RM) -f **/*.d
-	$(RM) -f **/*.moc
-	$(RM) -f **/ui_*.h
-	$(RM) -f **/*.qrc.cpp
+	$(FIND) -name '*.o' -delete
+	$(FIND) -name '*.d' -delete
+	$(FIND) -name '*.qrc.cpp' -delete
+	$(FIND) -name '*.qt.cpp' -delete
+	$(FIND) qt -name '*.moc' -delete
+	$(FIND) qt -name 'ui_*.h' -delete
 
 fclean: clean
 	$(RM) -f $(TARGET_HEADLESS)

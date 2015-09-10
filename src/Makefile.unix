@@ -7,8 +7,11 @@ QT_MID_SUFFIX = 5
 
 include Makefile.default
 
-CXXFLAGS += $(shell pkg-config Qt5Core Qt5Gui Qt5Widgets --cflags)
 CXXFLAGS += -fPIE
+
+ifneq ($(NO_QT),1)
+  CXXFLAGS += $(shell pkg-config Qt5Core Qt5Gui Qt5Widgets --cflags)
+endif
 
 LIBRARIES_HEADLESS := rt pthread $(LIBRARIES_HEADLESS)
 LIBRARIES_QT := rt pthread $(LIBRARIES_QT)
