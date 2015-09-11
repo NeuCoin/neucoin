@@ -50,6 +50,8 @@ void ApplyTestnetParameters(void)
 
     POW_BLOCK_REWARD           = 1141 * COIN;
 
+    POW_DUMMY_BLOCK_COUNT      = 0;
+
     STAKE_MIN_AGE              = 138240 * SECOND / 2;
     STAKE_MAX_AGE              = 138240 * SECOND / 2;
     MODIFIER_INTERVAL_BASE     = 200 * MINUTE / 2;

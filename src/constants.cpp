@@ -99,6 +99,11 @@ timestamp_t                       POS_TARGET_SPACING          = 1 * MINUTE;
 
 money_t                           POW_BLOCK_REWARD            = 1141 * COIN;
 
+//                                Number of blocks that will have a null reward (exactly 1 cent - we didn't want to risk anything by putting a zero reward) - useful if you want to delay the network until your premine is able to mint, but don't want to be rewarded for the new blocks (which would effectively give you an extra premine if they did)
+//                                Note that this number includes the premine block, if any
+
+blockheight_t                     POW_DUMMY_BLOCK_COUNT       = 1500;
+
 //                                Reward for each PoS block mined - should be IGNORED by GetProofOfStakeReward() if zero
 //                                You probably don't want to use it in production, since it totally ignores the coinAge or any other parameter - it's only usage is for testing purposes only
 
