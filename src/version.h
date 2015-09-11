@@ -11,8 +11,8 @@
 // versioning
 //
 
-#define COIN_VERSION_MAJOR      0
-#define COIN_VERSION_MINOR      8
+#define COIN_VERSION_MAJOR      1
+#define COIN_VERSION_MINOR      0
 #define COIN_VERSION_REVISION   0
 #define COIN_VERSION_BUILD      0
 
