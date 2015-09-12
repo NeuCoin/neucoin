@@ -33,7 +33,6 @@ void ApplyTestnetParameters(void)
     GENESIS_BLOCK_NONCE        = 2179980296;
     GENESIS_BLOCK_VERSION      = 1;
 
-    BLOCK_CHECKPOINTS          = boost::assign::map_list_of(0, GENESIS_HASH)((8 * WEEK) / (10 * MINUTE) + (8 * WEEK) / (1 * MINUTE), hash_t("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
     STAKE_MODIFIER_CHECKPOINTS = boost::assign::map_list_of(0, 0xfd11f4e7);
 
     POW_MAX_BLOCK              = std::numeric_limits< blockheight_t >::max();
@@ -58,4 +57,6 @@ void ApplyTestnetParameters(void)
     STAKE_COIN_STEP            = 1 * COIN;
     STAKE_AGE_STEP             = 1 * DAY / 2;
     TARGET_TIMESPAN            = 2 * HOUR / 2;
+
+    BLOCK_CHECKPOINTS          = boost::assign::map_list_of(0, GENESIS_HASH)((8 * WEEK) / POW_TARGET_SPACING + (8 * WEEK) / POS_TARGET_SPACING, hash_t("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
 }
