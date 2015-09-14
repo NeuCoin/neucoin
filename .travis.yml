@@ -6,6 +6,7 @@ before_install:
 
     # Client dependencies
     - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa && sudo apt-get update -qq # Travis actually requires to manual add this apt repository (not required in Ubuntu 14.04)
+    - sudo apt-key update # Maintainers keys might change
     - sudo apt-get install -qq g++ make libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libdb++-dev libssl-dev libqrencode-dev libpng-dev qt5-default pkg-config
 
     # Tests dependencies
