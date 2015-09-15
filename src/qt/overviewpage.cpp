@@ -1,6 +1,7 @@
 #include "overviewpage.h"
 #include "ui_overviewpage.h"
 
+#include "clientmodel.h"
 #include "walletmodel.h"
 #include "optionsmodel.h"
 #include "transactiontablemodel.h"
@@ -68,10 +69,35 @@ void OverviewPage::setNumTransactions(int count)
     ui->labelNumTransactions->setText(QLocale::system().toString(count));
 }
 
+void OverviewPage::setClientModel(ClientModel *clientModel)
+{
+    this->clientModel = clientModel;
+
+    if (clientModel)
+    {
+        this->setHeadHash(clientModel->getHeadHash());
+        connect(clientModel, SIGNAL(headChanged(QString)), this, SLOT(setHeadHash(QString)));
+
+        this->setNumBlocks(clientModel->getNumBlocks());
+        connect(clientModel, SIGNAL(numBlocksChanged(int)), this, SLOT(setNumBlocks(int)));
+    }
+}
+
+void OverviewPage::setHeadHash(QString headHash)
+{
+    this->ui->labelHead->setText(headHash.left(8));
+}
+
+void OverviewPage::setNumBlocks(int count)
+{
+    this->ui->labelHeight->setText(QLocale::system().toString(count));
+}
+
 void OverviewPage::setModel(WalletModel *model)
 {
     this->model = model;
-    if(model)
+
+    if (model)
     {
         // Set up transaction list
         TransactionFilterProxy *filter = new TransactionFilterProxy();

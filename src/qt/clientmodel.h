@@ -22,15 +22,20 @@ public:
     OptionsModel *getOptionsModel();
 
     int getNumConnections() const;
+
     int getNumBlocks() const;
     int getNumBlocksAtStartup();
+
+    QString getHeadHash() const;
 
     QDateTime getLastBlockDate() const;
 
     //! Return true if core is doing initial block download
     bool inInitialBlockDownload() const;
+
     //! Return conservative estimate of total number of blocks, or 0 if unknown
     int getNumBlocksOfPeers() const;
+
     //! Return warnings to be displayed in status bar
     QString getStatusBarWarnings() const;
 
@@ -43,6 +48,7 @@ private:
 
     int cachedNumConnections;
     int cachedNumBlocks;
+    QString cachedHeadHash;
     QString cachedStatusBar;
 
     int numBlocksAtStartup;
@@ -50,6 +56,7 @@ private:
 signals:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count);
+    void headChanged(QString head);
 
     //! Asynchronous error notification
     void error(const QString &title, const QString &message, bool modal);

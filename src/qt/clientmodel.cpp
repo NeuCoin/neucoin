@@ -22,6 +22,11 @@ int ClientModel::getNumConnections() const
     return vNodes.size();
 }
 
+QString ClientModel::getHeadHash() const
+{
+    return QString(hashBestChain.GetHex().c_str());
+}
+
 int ClientModel::getNumBlocks() const
 {
     return nBestHeight;
@@ -42,11 +47,16 @@ void ClientModel::update()
 {
     int newNumConnections = getNumConnections();
     int newNumBlocks = getNumBlocks();
+    QString newHeadHash = getHeadHash();
     QString newStatusBar = getStatusBarWarnings();
 
-    if(cachedNumConnections != newNumConnections)
+    if (cachedNumConnections != newNumConnections)
         emit numConnectionsChanged(newNumConnections);
-    if(cachedNumBlocks != newNumBlocks || cachedStatusBar != newStatusBar)
+
+    if (cachedHeadHash != newHeadHash)
+        emit headChanged(newHeadHash);
+
+    if (cachedNumBlocks != newNumBlocks || cachedStatusBar != newStatusBar)
     {
         // Simply emit a numBlocksChanged for now in case the status message changes,
         // so that the view updates the status bar.
@@ -58,6 +68,7 @@ void ClientModel::update()
 
     cachedNumConnections = newNumConnections;
     cachedNumBlocks = newNumBlocks;
+    cachedHeadHash = newHeadHash;
     cachedStatusBar = newStatusBar;
 }
 

@@ -26,6 +26,7 @@ namespace Ui
     class OverviewPage;
 }
 
+class ClientModel;
 class WalletModel;
 
 class TxViewDelegate : public QAbstractItemDelegate
@@ -110,9 +111,13 @@ public:
     explicit OverviewPage(QWidget *parent = 0);
     ~OverviewPage();
 
+    void setClientModel(ClientModel *clientModel);
     void setModel(WalletModel *model);
 
 public slots:
+    void setHeadHash(QString headHash);
+    void setNumBlocks(int count);
+
     void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance);
     void setNumTransactions(int count);
 
@@ -121,7 +126,10 @@ signals:
 
 private:
     Ui::OverviewPage *ui;
+
+    ClientModel *clientModel;
     WalletModel *model;
+
     qint64 currentBalance;
     qint64 currentStake;
     qint64 currentUnconfirmedBalance;

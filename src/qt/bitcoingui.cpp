@@ -323,8 +323,11 @@ void BitcoinGUI::createToolBars()
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
 {
     this->clientModel = clientModel;
+
     if(clientModel)
     {
+        overviewPage->setClientModel(clientModel);
+
         // Keep up to date with client
         setNumConnections(clientModel->getNumConnections());
         connect(clientModel, SIGNAL(numConnectionsChanged(int)), this, SLOT(setNumConnections(int)));
@@ -342,6 +345,7 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
 void BitcoinGUI::setWalletModel(WalletModel *walletModel)
 {
     this->walletModel = walletModel;
+
     if(walletModel)
     {
         // Report errors from wallet thread
@@ -349,7 +353,6 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
 
         // Put transaction list in tabs
         transactionView->setModel(walletModel);
-
         overviewPage->setModel(walletModel);
         addressBookPage->setModel(walletModel->getAddressTableModel());
         receiveCoinsPage->setModel(walletModel->getAddressTableModel());
@@ -360,8 +363,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
 
         // Balloon popup for new transaction
-        connect(walletModel->getTransactionTableModel(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-                this, SLOT(incomingTransaction(QModelIndex,int,int)));
+        connect(walletModel->getTransactionTableModel(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(incomingTransaction(QModelIndex,int,int)));
 
         // Ask for passphrase if needed
         connect(walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
