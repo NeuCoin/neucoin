@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
     // Do this early as we don't want to bother initializing if we are just calling IPC
     for (int i = 1; i < argc; i++)
     {
-        if (strlen(argv[i]) >= 7 && strncasecmp(argv[i], COIN_SCHEME ":", 7) == 0)
+        if (strlen(argv[i]) >= 7 && strncasecmp(argv[i], COIN_SCHEME ":", sizeof(COIN_SCHEME)) == 0)
         {
             const char *strURI = argv[i];
             try {
