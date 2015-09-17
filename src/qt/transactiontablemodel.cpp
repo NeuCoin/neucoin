@@ -423,13 +423,20 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord *wtx) const
 QString TransactionTableModel::formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed) const
 {
     QString str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit);
-    if(showUnconfirmed)
+
+    if (wtx->credit + wtx->debit > 0)
+    {
+        str = QString("+") + str;
+    }
+
+    if (showUnconfirmed)
     {
         if(!wtx->status.confirmed || wtx->status.maturity != TransactionStatus::Mature)
         {
             str = QString("[") + str + QString("]");
         }
     }
+
     return QString(str);
 }
 
@@ -622,4 +629,3 @@ QModelIndex TransactionTableModel::index(int row, int column, const QModelIndex 
         return QModelIndex();
     }
 }
-

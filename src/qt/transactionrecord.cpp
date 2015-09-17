@@ -55,44 +55,35 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             //
             BOOST_FOREACH(const CTxOut& txout, wtx.vout)
             {
-                TransactionRecord sub(hash, nTime);
                 CTxDestination address;
+
+                TransactionRecord sub(hash, nTime);
                 sub.idx = parts.size(); // sequence number
                 sub.credit = txout.nValue;
+
                 if (wtx.IsCoinBase())
                 {
                     // Generated
                     sub.type = TransactionRecord::Generated;
+
+                    parts.append(sub);
                 }
-                else if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address))
+                else if (ExtractDestination(txout.scriptPubKey, address))
                 {
-                    // Received by Bitcoin Address
-                    sub.type = TransactionRecord::RecvWithAddress;
-                    sub.address = CBitcoinAddress(address).ToString();
+                    if (IsMine(*wallet, address))
+                    {
+                        // Received by Bitcoin Address
+                        sub.type = TransactionRecord::RecvWithAddress;
+                        sub.address = CBitcoinAddress(address).ToString();
+
+                        parts.append(sub);
+                    }
                 }
                 else
                 {
-                    TransactionRecord sub(hash, nTime);
-                    CBitcoinAddress address;
-                    sub.idx = parts.size(); // sequence number
-                    sub.credit = txout.nValue;
-                    if (wtx.IsCoinBase())
-                    {
-                        // Generated
-                        sub.type = TransactionRecord::Generated;
-                    }
-                    // else if (ExtractAddress(txout.scriptPubKey, address) && wallet->HaveKey(address))
-                    // {
-                    //     // Received by Bitcoin Address
-                    //     sub.type = TransactionRecord::RecvWithAddress;
-                    //     sub.address = address.ToString();
-                    // }
-                    else
-                    {
-                        // Received by IP connection (deprecated features), or a multisignature or other non-simple transaction
-                        sub.type = TransactionRecord::RecvFromOther;
-                        sub.address = mapValue["from"];
-                    }
+                    // Received by IP connection (deprecated features), or a multisignature or other non-simple transaction
+                    sub.type = TransactionRecord::RecvFromOther;
+                    sub.address = mapValue["from"];
 
                     parts.append(sub);
                 }
@@ -123,7 +114,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 //
                 int64 nTxFee = nDebit - wtx.GetValueOut();
 
-                for (int nOut = 0; nOut < wtx.vout.size(); nOut++)
+                for (size_t nOut = 0; nOut < wtx.vout.size(); nOut++)
                 {
                     const CTxOut& txout = wtx.vout[nOut];
                     TransactionRecord sub(hash, nTime);
