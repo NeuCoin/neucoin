@@ -3240,7 +3240,7 @@ static Value generateblock(const Array& params, bool fHelp, bool fProofOfStake)
 
     Array hashes;
 
-    while (hashes.size() < nCount)
+    while (nCount >= 0 && hashes.size() < static_cast<size_t>(nCount))
     {
         uint256 hash;
 
