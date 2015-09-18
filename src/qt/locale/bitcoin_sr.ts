@@ -534,7 +534,7 @@ Are you sure you wish to encrypt your wallet?</source>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="597"/>
-        <source>This transaction is over the size limit.  You can still send it for a fee of %1, which goes to the nodes that process your transaction and helps to support the network.  Do you want to pay the fee?</source>
+        <source>This transaction is over the size limit.  You can still send it for a fee of %1, that will be destroyed to help support the network.  Do you want to pay the fee?</source>
         <translation>Ова трансакција је превелика.   И даље је можете послати уз накнаду од %1, која ће отићи чвору који прерађује трансакцију и помаже издржавању целе мреже.   Да ли желите да дате напојницу?</translation>
     </message>
     <message>
