@@ -1378,9 +1378,16 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     CScript inner;
     inner.SetMultisig(nRequired, pubkeys);
     CScriptID innerID = inner.GetID();
-    pwalletMain->AddCScript(inner);
+    {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    pwalletMain->SetAddressBookName(innerID, strAccount);
+        pwalletMain->MarkDirty();
+        pwalletMain->AddCScript(inner);
+
+        pwalletMain->SetAddressBookName(innerID, strAccount);
+        pwalletMain->ScanForWalletTransactions(pindexGenesisBlock, true);
+        pwalletMain->ReacceptWalletTransactions();
+    }
     return CBitcoinAddress(innerID).ToString();
 }
 
@@ -3217,12 +3224,20 @@ Value addcoldmintingaddress(const Array& params, bool fHelp)
     script.SetColdMinting(mintingKeyID, spendingKeyID);
 
     CScriptID scriptID = script.GetID();
+    {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (!pwalletMain->AddCScript(script))
-        throw JSONRPCError(-4, "Failed to add script to wallet");
+        pwalletMain->MarkDirty();
 
-    if (!pwalletMain->SetAddressBookName(scriptID, strAccount))
-        throw JSONRPCError(-4, "Failed to set the account");
+        if (!pwalletMain->AddCScript(script))
+            throw JSONRPCError(-4, "Failed to add script to wallet");
+
+        if (!pwalletMain->SetAddressBookName(scriptID, strAccount))
+            throw JSONRPCError(-4, "Failed to set the account");
+
+        pwalletMain->ScanForWalletTransactions(pindexGenesisBlock, true);
+        pwalletMain->ReacceptWalletTransactions();
+    }
 
     return CBitcoinAddress(scriptID).ToString();
 }
