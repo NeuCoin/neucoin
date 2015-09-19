@@ -27,9 +27,6 @@ export async function test( ) {
     await sendRpcQuery( client2, { method : 'importprivkey', params : [ mintingPrivateKey ] } );
 
     var { result : coldMintingAddress1 } = await sendRpcQuery( client1, { method : 'addcoldmintingaddress', params : [ mintingAddress, spendingAddress ] } );
-    var { result : coldMintingAddress2 } = await sendRpcQuery( client2, { method : 'addcoldmintingaddress', params : [ mintingAddress, spendingAddress ] } );
-
-    expect( coldMintingAddress1 ).to.equal( coldMintingAddress2 );
 
     var rpc = await sendRpcQuery( client1, { method : 'sendtoaddress', params : [ coldMintingAddress1, 30 ] } );
 
@@ -41,6 +38,10 @@ export async function test( ) {
     expect( rpc.result ).to.equal( 65 );
 
     await delayExecution( 15 );
+
+    var { result : coldMintingAddress2 } = await sendRpcQuery( client2, { method : 'addcoldmintingaddress', params : [ mintingAddress, spendingAddress ] } );
+
+    expect( coldMintingAddress1 ).to.equal( coldMintingAddress2 );
     await mintSomePosBlocks( client2, 1 );
     await delayExecution( 15 );
     await mineForMaturation( client1, 1 );
