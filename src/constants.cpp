@@ -14,7 +14,7 @@ uint16_t                          RPC_PORT                    = 7743;
 //                                These bytes are put at the beginning of every packet, and should be unique to a coin network
 //                                They are designed to be unlikely to occur in normal data. The characters are rarely used upper ascii, not valid as UTF-8, and produce a large 4-byte int at any alignment
 
-uint8_t                           PROTOCOL_MAGIC_BYTES[4]     = { 0xe5, 0xcf, 0x81, 0xde };
+uint8_t                           PROTOCOL_MAGIC_BYTES[4]     = { 0xe5, 0xcf, 0x82, 0xde };
 
 //                                These parameters are used as initial nodes to connect to, from which we will get the other ones
 //                                Each DNS pair gives a source name and a seed name. The first name is used as information source for addrman, and the second name should resolve to a list of seed addresses. The last element of each array has to be null (respectively { 0, 0 } and 0)
@@ -37,16 +37,16 @@ uint8_t                           SCRIPT_ADDRESS_PREFIX       = 112; // "n"
 //                                The following constants define the genesis block of the coin network
 //                                If you change them, the hash will probably be wrong and the genesis invalid (because its hash would be higher than the initial target), and the client will try to generate a new valid genesis at startup
 
-hash_t                            GENESIS_MERKLE_HASH         = hash_t("0xde076db12875d7472d677f11d8d3289c4ceae9bb3d0951a1fde6aed712e36311");
-hash_t                            GENESIS_HASH                = hash_t("0x0000052bba6df3f7601a0cfdfdd4eab14072e66fbabd6870074f92a9a59079b5");
-char const *                      GENESIS_IDENT               = "06-12-15 :: XKCD 1537 :: My new language is great, but it has a few quirks regarding type";
-timestamp_t                       GENESIS_TX_TIME             = 1345083810;
-timestamp_t                       GENESIS_BLOCK_TIME          = 1345084287;
-uint32_t                          GENESIS_BLOCK_NONCE         = 1043276304;
+hash_t                            GENESIS_MERKLE_HASH         = hash_t("0x6cc1b3157225af10b4a9463c781500e42edfdd838552258c022c64a43bfeede4");
+hash_t                            GENESIS_HASH                = hash_t("0x0000091ff3253003c85f4ff7614ce1da7cc6592a5641d5b9f95fde1929bc9754");
+char const *                      GENESIS_IDENT               = "09-11-15 :: XKCD 1576 :: Language isn't a formal system; language is glorious chaos";
+timestamp_t                       GENESIS_TX_TIME             = 1441976184;
+timestamp_t                       GENESIS_BLOCK_TIME          = 1441976184;
+uint32_t                          GENESIS_BLOCK_NONCE         = 172958;
 uint32_t                          GENESIS_BLOCK_VERSION       = 1;
 
-std::map<blockheight_t, hash_t>   BLOCK_CHECKPOINTS           = boost::assign::map_list_of(0, GENESIS_HASH)(1, hash_t("0x000008bf53ebd8a2f33f3147579f9988b56523c6622c45499dd812d06593bf8d"))((8 * WEEK) / (10 * MINUTE) + (8 * WEEK) / (1 * MINUTE), hash_t("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
-std::map<blockheight_t, uint32_t> STAKE_MODIFIER_CHECKPOINTS  = boost::assign::map_list_of(0, 0x0e00670b);
+std::map<blockheight_t, hash_t>   BLOCK_CHECKPOINTS           = boost::assign::map_list_of(0, GENESIS_HASH)(600, hash_t("0000002116c928d1b212578d6d13ada478bb22cc7f82c38a743ee6084d2690de"));
+std::map<blockheight_t, uint32_t> STAKE_MODIFIER_CHECKPOINTS  = boost::assign::map_list_of(0, 0xfd11f4e7);
 
 //                                The maturity is the number of block required for a coinbase/coinstake transaction to be confirmed by the network (excluding the block which embeds the transaction)
 //                                Since you need to include your transaction in a block, and the COINBASE_MATURITY cannot be lower than 1, you will always need at least two blocks before maturing
@@ -98,6 +98,11 @@ timestamp_t                       POS_TARGET_SPACING          = 1 * MINUTE;
 //                                Reward for each PoW block mined, until POW_MAX_BLOCK (from which it will become null)
 
 money_t                           POW_BLOCK_REWARD            = 1141 * COIN;
+
+//                                Number of blocks that will have a null reward (exactly 1 cent - we didn't want to risk anything by putting a zero reward) - useful if you want to delay the network until your premine is able to mint, but don't want to be rewarded for the new blocks (which would effectively give you an extra premine if they did)
+//                                Note that this number includes the premine block, if any
+
+blockheight_t                     POW_DUMMY_BLOCK_COUNT       = 800;
 
 //                                Reward for each PoS block mined - should be IGNORED by GetProofOfStakeReward() if zero
 //                                You probably don't want to use it in production, since it totally ignores the coinAge or any other parameter - it's only usage is for testing purposes only

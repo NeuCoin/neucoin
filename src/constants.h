@@ -61,6 +61,8 @@ extern uint32_t                          MAX_BLOCK_SIZE;
 
 extern blockheight_t                     POW_MAX_BLOCK;
 
+extern blockheight_t                     POW_DUMMY_BLOCK_COUNT;
+
 extern target_t                          POW_INITIAL_TARGET;
 extern target_t                          POS_INITIAL_TARGET;
 
