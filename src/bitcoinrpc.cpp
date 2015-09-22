@@ -1198,13 +1198,13 @@ Value sendfrom(const Array& params, bool fHelp)
 {
     if (pwalletMain->IsCrypted() && (fHelp || params.size() < 3 || params.size() > 6))
         throw runtime_error(
-            "sendfrom <fromaddress> <toaddress> <amount> [minconf=1] [comment] [comment-to]\n"
-            "Creates a transaction transfering <amount> coins from <fromaddress> to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
+            "sendfrom <fromaccount> <toaddress> <amount> [minconf=1] [comment] [comment-to]\n"
+            "Creates a transaction transfering <amount> coins from <fromaccount> to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
             "Your wallet being encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() < 3 || params.size() > 6))
         throw runtime_error(
-            "sendfrom <fromaddress> <toaddress> <amount> [minconf=1] [comment] [comment-to]\n"
-            "Creates a transaction transfering <amount> coins to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
+            "sendfrom <fromaccount> <toaddress> <amount> [minconf=1] [comment] [comment-to]\n"
+            "Creates a transaction transfering <amount> coins from <fromaccount> to <toaddress>, with <amount> being a real and rounded to the nearest 0.000001.\n"
             "If your wallet is encryped, this command requires the wallet passphrase to be set with walletpassphrase first.\n");
 
     string strAccount = AccountFromValue(params[0]);
