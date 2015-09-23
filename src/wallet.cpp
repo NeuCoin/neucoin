@@ -1287,9 +1287,7 @@ bool CWallet::CreateTransaction(CScript scriptPubKey, int64 nValue, CWalletTx& w
 // ppcoin: create coin stake transaction
 bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64 nSearchInterval, CTransaction& txNew)
 {
-    CBlockIndex const * pLastBlockIndex = DYN_POW_TAIL;
-
-
+    CBlockIndex const * pLastBlockIndex = GetLastBlockIndex(pindexBest, false);
     int64 nCombineThreshold = GetProofOfWorkReward(pLastBlockIndex->nHeight) / COMBINE_THRESHOLD;
 
     CBigNum bnTargetPerCoinDay;
@@ -1475,7 +1473,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         CTxDB txdb("r");
         if (!txNew.GetCoinAge(txdb, nCoinAge))
             return error("CreateCoinStake : failed to calculate coin age");
-        nCredit += GetProofOfStakeReward(nCoinAge, DYN_POS_HEIGHT);
+        nCredit += GetProofOfStakeReward(nCoinAge, pindexBest->nHeight);
     }
 
     int64 nMinFee = 0;
