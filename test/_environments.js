@@ -1,12 +1,14 @@
 export var fastChain = {
 
-    GENESIS_MERKLE_HASH        : `hash_t("0xde076db12875d7472d677f11d8d3289c4ceae9bb3d0951a1fde6aed712e36311")`,
-    GENESIS_HASH               : `hash_t("0xa2437a6611e8e0554ceb7e4d42ce25f31a849ae3e4b48b5a31bf969e4bec928a")`,
-    GENESIS_TIME               : `1345084287`,
-    GENESIS_NONCE              : `1043276304`,
+    GENESIS_MERKLE_HASH        : `hash_t("0x6cc1b3157225af10b4a9463c781500e42edfdd838552258c022c64a43bfeede4")`,
+    GENESIS_HASH               : `hash_t("0xa23c0f252952dab41e98ba678a73f1844c872bd39d57df7851a01da3f112fb94")`,
+    GENESIS_TIME               : `1441976184`,
+    GENESIS_NONCE              : `172958`,
 
     BLOCK_CHECKPOINTS          : `boost::assign::map_list_of(0, GENESIS_HASH)`,
     STAKE_MODIFIER_CHECKPOINTS : `boost::assign::map_list_of(0, 0xfd11f4e7)`,
+
+    POW_MAX_BLOCK              : `std::numeric_limits<blockheight_t>::max()`,
 
     POW_INITIAL_TARGET         : `target_t(~uint256(0))`,
     POS_INITIAL_TARGET         : `target_t(~uint256(0))`,
@@ -29,10 +31,10 @@ export var fastChain = {
 
 export var mediumFastChain = {
 
-    GENESIS_MERKLE_HASH        : `hash_t("0xde076db12875d7472d677f11d8d3289c4ceae9bb3d0951a1fde6aed712e36311")`,
-    GENESIS_HASH               : `hash_t("0xa2437a6611e8e0554ceb7e4d42ce25f31a849ae3e4b48b5a31bf969e4bec928a")`,
-    GENESIS_TIME               : `1345084287`,
-    GENESIS_NONCE              : `1043276304`,
+    GENESIS_MERKLE_HASH        : `hash_t("0x6cc1b3157225af10b4a9463c781500e42edfdd838552258c022c64a43bfeede4")`,
+    GENESIS_HASH               : `hash_t("0xa23c0f252952dab41e98ba678a73f1844c872bd39d57df7851a01da3f112fb94")`,
+    GENESIS_TIME               : `1441976184`,
+    GENESIS_NONCE              : `172958`,
 
     BLOCK_CHECKPOINTS          : `boost::assign::map_list_of(0, GENESIS_HASH)`,
     STAKE_MODIFIER_CHECKPOINTS : `boost::assign::map_list_of(0, 0xfd11f4e7)`,
@@ -57,12 +59,14 @@ export var mediumFastChain = {
 
 export var smallChain = {
 
-    COIN_PREMINE      : `0 * COIN`,
+    COIN_PREMINE          : `0 * COIN`,
 
-    POW_BLOCK_REWARD  : `1 * COIN`,
-    POS_BLOCK_REWARD  : `1 * COIN`,
+    POW_DUMMY_BLOCK_COUNT : `0`,
 
-    MIN_TX_FEES       : `0 * COIN`,
-    MIN_RELAY_TX_FEES : `0 * COIN`
+    POW_BLOCK_REWARD      : `1 * COIN`,
+    POS_BLOCK_REWARD      : `1 * COIN`,
+
+    MIN_TX_FEES           : `0 * COIN`,
+    MIN_RELAY_TX_FEES     : `0 * COIN`
 
 };
