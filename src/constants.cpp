@@ -78,7 +78,7 @@ uint32_t                          MAX_BLOCK_SIZE              = 1000000;
 //                                Maximal number of PoW blocks, after which their reward become null
 //                                You can use std::numeric_limits< blockheight_t >::max( ) to disable this parameter
 
-blockheight_t                     POW_MAX_BLOCK               = 52596;
+blockheight_t                     POW_MAX_BLOCK               = (1 * YEAR) / (10 * MINUTE) + (1 * YEAR) / (1 * MINUTE);
 
 //                                Initial network targets
 
