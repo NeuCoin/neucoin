@@ -9,6 +9,9 @@ include Makefile.default
 
 CXXFLAGS += -I $(BOOST_PATH) -I $(DB_PATH)/build_unix -I $(OPENSSL_PATH)/include -I $(QRENCODE_PATH) -I $(QTBASE_PATH)/include/QtCore -I $(QTBASE_PATH)/include/QtGui -I $(QTBASE_PATH)/include/QtWidgets -I $(QTBASE_PATH)/include -I $(MINIUPNPC_PATH) -DSTATICLIB -DMINIUPNP_STATICLIB
 
+SOURCES_QT += ../contrib/windows-packaging/neucoin-qt.rc
+OBJECTS_QT += ../contrib/windows-packaging/neucoin-qt.res
+
 LDFLAGS_HEADLESS += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH) -L $(MINIUPNPC_PATH)
 LDFLAGS_QT += -L $(BOOST_PATH)/stage/lib -L $(DB_PATH)/build_unix -L $(OPENSSL_PATH) -L $(LIBPNG_PATH)/.libs -L $(QRENCODE_PATH)/.libs -L $(QTBASE_PATH)/lib -L $(QTBASE_PATH)/plugins/platforms -L $(MINIUPNPC_PATH)
 

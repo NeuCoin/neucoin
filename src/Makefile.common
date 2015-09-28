@@ -3,6 +3,7 @@ SHELL     = bash
 MD5SUM   ?= md5sum
 CAT      ?= cat
 LRELEASE ?= lrelease
+WINDRES  ?= windres
 MOC      ?= moc
 UIC      ?= uic
 RCC      ?= rcc
@@ -55,6 +56,9 @@ build.h: force
 
 $(TARGET_QT): $(OBJECTS_QT) .make.ldflags
 	$(CXX) -o $@ $(OBJECTS_QT) $(LDFLAGS_QT) $(call librarify, $(LIBRARIES_QT))
+
+%.res: %.rc
+	../contrib/windows-packaging/safe-run $(WINDRES) $< -O coff -o $@
 
 %.qm: %.ts
 	$(LRELEASE) -qm $@ $<

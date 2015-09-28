@@ -1,14 +1,29 @@
+# Unix
+
 *.o
 *.d
+
+# Windows
+
+*.res
+
+# OSX
+
+.DS_Store
+
+# Qt
 
 *.qrc.cpp
 *.qm
 ui_*.h
 *.moc
 
+# Editors
+
 *~
 .#*
-.DS_Store
+
+# Binaries & Generated files
 
 /src/core
 
