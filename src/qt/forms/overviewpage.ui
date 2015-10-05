@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
-    <height>342</height>
+    <width>1003</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -78,7 +78,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
@@ -104,7 +104,7 @@
          <widget class="QLabel" name="labelHead">
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
@@ -181,12 +181,12 @@
          <widget class="QLabel" name="labelStake">
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
           <property name="text">
-           <string notr="true">0 BTC</string>
+           <string notr="true">0 NEU</string>
           </property>
          </widget>
         </item>
@@ -194,12 +194,12 @@
          <widget class="QLabel" name="labelUnconfirmed">
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
           <property name="text">
-           <string notr="true">0 BTC</string>
+           <string notr="true">0 NEU</string>
           </property>
          </widget>
         </item>
@@ -207,12 +207,12 @@
          <widget class="QLabel" name="labelBalance">
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
           <property name="text">
-           <string notr="true">0 BTC</string>
+           <string notr="true">100000000.000000 NEU</string>
           </property>
          </widget>
         </item>
@@ -220,7 +220,7 @@
          <widget class="QLabel" name="labelNumTransactions">
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>170</width>
             <height>0</height>
            </size>
           </property>
