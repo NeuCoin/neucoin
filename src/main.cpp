@@ -2631,7 +2631,7 @@ string GetWarnings(string strFor)
     if (Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 10))
     {
         nPriority = 100;
-        strStatusBar = "Warning: No sync-checkpoint received for quite a long time.";
+        strStatusBar = "Notice: No sync-checkpoint received for quite a long time. Not an issue per-se.";
     }
 
     // ppcoin: if detected invalid checkpoint enter safe mode
