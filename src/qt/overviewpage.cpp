@@ -85,7 +85,7 @@ void OverviewPage::setClientModel(ClientModel *clientModel)
 
 void OverviewPage::setHeadHash(QString headHash)
 {
-    this->ui->labelHead->setText(headHash.left(8));
+    this->ui->labelHead->setText(headHash.right(8));
 }
 
 void OverviewPage::setNumBlocks(int count)
