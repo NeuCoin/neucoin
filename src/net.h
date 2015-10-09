@@ -620,9 +620,27 @@ public:
 
 
 
+class CBlock;
 
+void RelayBlock(const CBlock& block, const uint256& hash);
 
+void RelayBlock(const CBlock& tx, const uint256& hash, const CDataStream& ss);
 
+inline void AddRelay(const CInv& inv, const CDataStream& ss)
+{
+    LOCK(cs_mapRelay);
+
+    // Expire old relay messages
+    while (!vRelayExpiration.empty() && vRelayExpiration.front().first < GetTime())
+    {
+        mapRelay.erase(vRelayExpiration.front().second);
+        vRelayExpiration.pop_front();
+    }
+
+    // Save original serialized message so newer versions are preserved
+    mapRelay.insert(std::make_pair(inv, ss));
+    vRelayExpiration.push_back(std::make_pair(GetTime() + 15 * 60, inv));
+}
 
 inline void RelayInventory(const CInv& inv)
 {
@@ -646,20 +664,7 @@ void RelayMessage(const CInv& inv, const T& a)
 template<>
 inline void RelayMessage<>(const CInv& inv, const CDataStream& ss)
 {
-    {
-        LOCK(cs_mapRelay);
-        // Expire old relay messages
-        while (!vRelayExpiration.empty() && vRelayExpiration.front().first < GetTime())
-        {
-            mapRelay.erase(vRelayExpiration.front().second);
-            vRelayExpiration.pop_front();
-        }
-
-        // Save original serialized message so newer versions are preserved
-        mapRelay.insert(std::make_pair(inv, ss));
-        vRelayExpiration.push_back(std::make_pair(GetTime() + 15 * 60, inv));
-    }
-
+    AddRelay(inv, ss);
     RelayInventory(inv);
 }
 

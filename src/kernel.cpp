@@ -4,11 +4,53 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include <map>
+#include <set>
+#include <utility>
+
 #include "constants.h"
 #include "kernel.h"
 #include "db.h"
 
 using namespace std;
+
+static std::map<pos_kernel_t, std::set<hash_t> > gBlacklistedProofOfStakeKernels;
+static std::map<hash_t, pos_kernel_t> gBlacklistedProofOfStakeBlocks;
+
+void BlacklistProofOfStake(pos_kernel_t const & proofOfStake, hash_t const & blockHash)
+{
+    gBlacklistedProofOfStakeKernels[proofOfStake].insert(blockHash);
+    gBlacklistedProofOfStakeBlocks.insert(std::make_pair(blockHash, proofOfStake));
+}
+
+void CleanProofOfStakeBlacklist(pos_kernel_t const & proofOfStake)
+{
+    if (!IsProofOfStakeBlacklisted(proofOfStake))
+        return ;
+
+    BOOST_FOREACH(hash_t const & hash, gBlacklistedProofOfStakeKernels.at(proofOfStake))
+        gBlacklistedProofOfStakeBlocks.erase(hash);
+
+    gBlacklistedProofOfStakeKernels.erase(proofOfStake);
+}
+
+void CleanProofOfStakeBlacklist(hash_t const & blockHash)
+{
+    if (!IsProofOfStakeBlacklisted(blockHash))
+        return ;
+
+    CleanProofOfStakeBlacklist(gBlacklistedProofOfStakeBlocks[blockHash]);
+}
+
+bool IsProofOfStakeBlacklisted(pos_kernel_t const & proofOfStake)
+{
+    return gBlacklistedProofOfStakeKernels.count(proofOfStake) > 0;
+}
+
+bool IsProofOfStakeBlacklisted(hash_t const & blockHash)
+{
+    return gBlacklistedProofOfStakeBlocks.count(blockHash) > 0;
+}
 
 // Get the last stake modifier and its generation time from a given block
 static bool GetLastStakeModifier(const CBlockIndex* pindex, uint64& nStakeModifier, int64& nModifierTime)
@@ -322,6 +364,10 @@ bool CheckProofOfStake(const CBlockIndex * pindexPrev, const CTransaction& tx, u
     CBlock block;
     if (!block.ReadFromDisk(txindex.pos.nFile, txindex.pos.nBlockPos, false))
         return fDebug? error("CheckProofOfStake() : read block failed") : false; // unable to read block of previous transaction
+
+    // Check that the proof-of-stake hasn't been blacklisted
+    if (IsProofOfStakeBlacklisted(block.GetProofOfStake()))
+        return tx.DoS(100, error("CheckProofOfStake() : Blacklisted Proof-of-Stake"));
 
     if (!CheckStakeKernelHash(pindexPrev, nBits, block, txindex.pos.nTxPos - txindex.pos.nBlockPos, txPrev, txin.prevout, tx.nTime, hashProofOfStake, fDebug))
         return tx.DoS(1, error("CheckProofOfStake() : INFO: check kernel failed on coinstake %s, hashProof=%s", tx.GetHash().ToString().c_str(), hashProofOfStake.ToString().c_str())); // may occur during initial download or if behind on block chain sync

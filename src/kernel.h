@@ -6,6 +6,19 @@
 
 #include "main.h"
 
+typedef std::pair<COutPoint, unsigned int> pos_kernel_t;
+
+// Blacklist a kernel, and link a block hash to it
+void BlacklistProofOfStake(pos_kernel_t const & proofOfStake, hash_t const & blockHash);
+
+// Remove a kernel from the blacklist, with all its associated blocks
+void CleanProofOfStakeBlacklist(pos_kernel_t const & proofOfStake);
+void CleanProofOfStakeBlacklist(hash_t const & blockHash);
+
+// Check if a kernel or a block has been blacklisted
+bool IsProofOfStakeBlacklisted(pos_kernel_t const & proofOfStake);
+bool IsProofOfStakeBlacklisted(hash_t const & blockHash);
+
 int64 GetStakeModifierSelectionInterval(void);
 
 // Compute the hash modifier for proof-of-stake

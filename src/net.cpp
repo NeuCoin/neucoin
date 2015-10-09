@@ -6,6 +6,7 @@
 
 #include "constants.h"
 #include "macros.h"
+#include "main.h"
 #include "irc.h"
 #include "db.h"
 #include "net.h"
@@ -1744,3 +1745,17 @@ public:
     }
 }
 instance_of_cnetcleanup;
+
+void RelayBlock(const CBlock& block, const uint256& hash)
+{
+    CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+    ss.reserve(10000);
+    ss << block;
+    RelayBlock(block, hash, ss);
+}
+
+void RelayBlock(const CBlock& tx, const uint256& hash, const CDataStream& ss)
+{
+    CInv inv(MSG_BLOCK, hash);
+    RelayMessage(inv, ss);
+}

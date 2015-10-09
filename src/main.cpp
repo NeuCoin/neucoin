@@ -2043,10 +2043,29 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         return error("ProcessBlock() : already have block (orphan) %s", hash.ToString().substr(0,20).c_str());
 
     // ppcoin: check proof-of-stake
-    // Limited duplicity on stake: prevents block flood attack
-    // Duplicate stake allowed only when there is orphan child block
-    if (pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
-        return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
+    if (pblock->IsProofOfStake())
+    {
+        std::pair<COutPoint, unsigned int> proofOfStake = pblock->GetProofOfStake();
+
+        if (pindexBest->IsProofOfStake() && proofOfStake.first == pindexBest->prevoutStake)
+        {
+            if (!pblock->CheckBlockSignature())
+                return error("ProcessBlock() : invalid signature in a duplicate Proof-of-Stake kernel");
+
+            RelayBlock(*pblock, hash);
+            BlacklistProofOfStake(proofOfStake, hash);
+
+            CTxDB txdb;
+            if (!pblock->SetBestChain(txdb, pindexBest->pprev))
+                return error("ProcessBlock() : Proof-of-stake rollback failed");
+
+            return error("ProcessBlock() : duplicate Proof-of-Stake kernel (%s, %d) in block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
+        }
+        else if (setStakeSeen.count(proofOfStake) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
+        {
+            return error("ProcessBlock() : duplicate Proof-of-Stake kernel (%s, %d) in block %s", proofOfStake.first.ToString().c_str(), proofOfStake.second, hash.ToString().c_str());
+        }
+    }
 
     // Preliminary checks
     if (!pblock->CheckBlock())
@@ -2074,6 +2093,9 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     if (!IsInitialBlockDownload())
         Checkpoints::AskForPendingSyncCheckpoint(pfrom);
 
+    // We remove the previous block from the blacklisted kernels, if needed
+    CleanProofOfStakeBlacklist(pblock->hashPrevBlock);
+
     // Find the previous block
     std::map<uint256, CBlockIndex*>::iterator parentBlockIt = mapBlockIndex.find(pblock->hashPrevBlock);
 
@@ -2086,21 +2108,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 
         // ppcoin: check proof-of-stake
         if (pblock2->IsProofOfStake())
-        {
-            // Limited duplicity on stake: prevents block flood attack
-            // Duplicate stake allowed only when there is orphan child block
-            if (setStakeSeenOrphan.count(pblock2->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
-            {
-                error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for orphan block %s", pblock2->GetProofOfStake().first.ToString().c_str(), pblock2->GetProofOfStake().second, hash.ToString().c_str());
-                //pblock2 will not be needed, free it
-                delete pblock2;
-                return false;
-            }
-            else
-            {
-                setStakeSeenOrphan.insert(pblock2->GetProofOfStake());
-            }
-        }
+            setStakeSeenOrphan.insert(pblock2->GetProofOfStake());
 
         mapOrphanBlocks.insert(make_pair(hash, pblock2));
         mapOrphanBlocksByPrev.insert(make_pair(pblock2->hashPrevBlock, pblock2));
