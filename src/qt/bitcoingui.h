@@ -46,7 +46,7 @@ public:
         functionality.
     */
     void setWalletModel(WalletModel *walletModel);
-    
+
 protected:
     void changeEvent(QEvent *e);
     void closeEvent(QCloseEvent *event);
@@ -85,6 +85,7 @@ private:
     QAction *toggleHideAction;
     QAction *exportAction;
     QAction *encryptWalletAction;
+    QAction *unlockWalletAction;
     QAction *backupWalletAction;
     QAction *changePassphraseAction;
     QAction *aboutQtAction;
@@ -158,17 +159,25 @@ private slots:
         The new items are those between start and end inclusive, under the given parent item.
     */
     void incomingTransaction(const QModelIndex & parent, int start, int end);
+
     /** Encrypt the wallet */
     void encryptWallet(bool status);
-    /** Backup the wallet */
-    void backupWallet();
-    /** Change encrypted wallet passphrase */
-    void changePassphrase();
+
+    /** Ask for pass phrase to unlock wallet temporarily */
+    void unlockWallet(bool status);
+
     /** Ask for pass phrase to unlock wallet temporarily */
     void unlockWallet();
 
+    /** Backup the wallet */
+    void backupWallet();
+
+    /** Change encrypted wallet passphrase */
+    void changePassphrase();
+
     /** Show window if hidden, unminimize when minimized */
     void showNormalIfMinimized();
+
     /** Hide window if visible, show if hidden */
     void toggleHidden();
 };
