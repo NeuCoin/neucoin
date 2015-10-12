@@ -15,12 +15,6 @@
 
 extern bool fWalletUnlockMintOnly;
 
-// -- The following split & combine thresholds are important to security
-// -- Should not be adjusted if you don't understand the consequences
-
-static const int64_t  COMBINE_THRESHOLD = 3;
-static const uint32_t STAKE_SPLIT_AGE   = 90 * DAY;
-
 class CWalletTx;
 class CReserveKey;
 class CWalletDB;

@@ -84,6 +84,9 @@ extern uint32_t                          MODIFIER_INTERVAL_RATIO;
 extern money_t                           STAKE_COIN_STEP;
 extern timestamp_t                       STAKE_AGE_STEP;
 
+extern uint64_t                          STAKE_COMBINE_THRESHOLD;
+extern timestamp_t                       STAKE_SPLIT_AGE;
+
 extern timestamp_t                       TARGET_TIMESPAN;
 
 extern std::string                       CHECKPOINT_PUBLIC_KEY;

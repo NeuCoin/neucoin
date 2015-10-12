@@ -125,6 +125,16 @@ uint32_t                          MODIFIER_INTERVAL_RATIO     = 18;
 money_t                           STAKE_COIN_STEP             = 1 * COIN;
 timestamp_t                       STAKE_AGE_STEP              = 1 * DAY;
 
+//                                The client will try to aggregate multiple inputs when staking until the coin amount exceed the COMBINE_THRESHOLD
+//                                Note that this number is a divider : the higher it is, the less coins will be combined in a single pass
+
+uint64_t                          STAKE_COMBINE_THRESHOLD     = 3;
+
+//                                The client will try to split the utxo as much as possible until they stake at most every STAKE_SPLIT_AGE
+//                                You probably want to limit this variable to the STAKE_MAX_AGE, or you will end up losing compound interest (thanks timengler for the heads-up)
+
+timestamp_t                       STAKE_SPLIT_AGE             = STAKE_MAX_AGE;
+
 //                                The target doesn't change immediately to take the new work difficulty in account - it is actually spread over an amount of time, the TARGET_TIMESPAN
 
 timestamp_t                       TARGET_TIMESPAN             = 2 * HOUR;
@@ -140,6 +150,7 @@ std::string                       CHECKPOINT_PRIVATE_KEY      = ""; // Do NOT se
 std::string                       CALERT_PUBLIC_KEY           = "04307016586db2c746625934216faae1382d7a1da71b163d94f7dc8854a97443ea80f2c3181ea11c5591da3e2944c19b5e9d0d5955fed1b75026ace30b369ed9a2";
 
 // -- These variables should probably not be modified, since they rely on the previous ones
+// -- Don't forget that the testnet code also has to change them if it changes the variables they depend from
 
 money_t                           MIN_TXOUT_AMOUNT            = MIN_TX_FEES;
 

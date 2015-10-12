@@ -13,6 +13,7 @@
 #include "ui_interface.h"
 #include "kernel.h"
 #include "base58.h"
+#include "constants.h"
 #include "macros.h"
 
 #include "GetProofOfWorkReward.h"
@@ -1288,7 +1289,7 @@ bool CWallet::CreateTransaction(CScript scriptPubKey, int64 nValue, CWalletTx& w
 bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64 nSearchInterval, CTransaction& txNew)
 {
     CBlockIndex const * pLastBlockIndex = GetLastBlockIndex(pindexBest, false);
-    int64 nCombineThreshold = GetProofOfWorkReward(pLastBlockIndex->nHeight) / COMBINE_THRESHOLD;
+    int64 nCombineThreshold = GetProofOfWorkReward(pLastBlockIndex->nHeight) / STAKE_COMBINE_THRESHOLD;
 
     CBigNum bnTargetPerCoinDay;
     bnTargetPerCoinDay.SetCompact(nBits);
