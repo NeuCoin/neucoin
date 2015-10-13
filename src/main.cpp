@@ -2056,7 +2056,11 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
             BlacklistProofOfStake(proofOfStake, hash);
 
             CTxDB txdb;
-            if (!pblock->SetBestChain(txdb, pindexBest->pprev))
+
+            CBlock bestPrevBlock;
+            bestPrevBlock.ReadFromDisk(pindexBest->pprev);
+
+            if (!bestPrevBlock.SetBestChain(txdb, pindexBest->pprev))
                 return error("ProcessBlock() : Proof-of-stake rollback failed");
 
             return error("ProcessBlock() : duplicate Proof-of-Stake kernel (%s, %d) in block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
