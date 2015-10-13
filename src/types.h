@@ -22,6 +22,7 @@ static timestamp_t const MINUTE = 60 * SECOND;
 static timestamp_t const HOUR   = 60 * MINUTE;
 static timestamp_t const DAY    = 24 * HOUR;
 static timestamp_t const WEEK   = 7 * DAY;
-static timestamp_t const YEAR   = 52 * WEEK;
+static timestamp_t const MONTH  = 730 * HOUR;
+static timestamp_t const YEAR   = 365 * DAY;
 
 #include "bignum.h"

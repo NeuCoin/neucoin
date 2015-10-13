@@ -12,9 +12,35 @@ A RPC ("Remote Procedure Call") is a way to perform low-level operations on a ru
 
 Just don't. If you really must, launch the client with `gen=1`, but really, don't. The embedded miner is extremely inefficient, and should only be used for testing purposes.
 
+Note that this note also includes the Qt client (since the headless client and the Qt client share the same miner source code). In both case, use a third-party miner, such as CPUMiner.
+
 ## How can i disable stake generation?
 
 Run the client with `stakegen=0`. Note that you won't mint anything as long as this option is set.
+
+## What does `Estimated time to stake` means?
+
+This time is the time that it would statistically take for your coins to stake with a probability of 90%. Some notes:
+
+  - **This display is purely informative, and does not reflect the actual time you will have to wait.** Because the amount displayed is the statistically time required for the probability to stake becomes greater than 90%, the estimated stake time is *not* a countdown (it will not decrease at every second/minute/...). Indeed, statistically speaking, the fact that you didn't staked yet doesn't increase your chances to stake from now on. The only things that will affect the estimation are the amount of coins currently staking, and the current network difficulty.
+
+  - The estimation only takes into account what is currently available for staking, right now. It means that it won't take into account the coins that haven't matured yet, neither those that haven't yet reached the minimal stake age.
+
+**Remember: you may stake before this estimated time, or after.**
+
+## Why isn't my client minting?
+
+Your client might not be minting for a few reasons:
+
+  - Your wallet is encrypted, and you have to unlock it in order to mint (otherwise the client can't access your coins). In such a case, you just have to unlock it by using the "Unlock Wallet" menu item.
+
+  - You might not hold any available unspend output right now. Remember that in order for an unspend output to be available for staking, some rules apply:
+
+    - If the unspend output comes from a block reward (PoS or PoW), it has to mature before you're able to spend it (it means that you have to wait about 500 blocks)
+    - Each unspend output has to be at least 1.6 days old before becoming eligible to staking
+    - Each utxo has to contain at least one coin before becoming eligible to staking
+
+  - Or you might have run the client with the `-stakegen=0` option, which prevents the coins from minting.
 
 ## How can i allow someone to mint for me without them being able to actually spend my coins?
 

@@ -93,6 +93,7 @@ public:
     {
         nWalletVersion = FEATURE_BASE;
         nWalletMaxVersion = FEATURE_BASE;
+        nEstimatedStakeTime = -1;
         fFileBacked = false;
         nMasterKeyMaxID = 0;
         pwalletdbEncryption = NULL;
@@ -101,11 +102,14 @@ public:
     {
         nWalletVersion = FEATURE_BASE;
         nWalletMaxVersion = FEATURE_BASE;
+        nEstimatedStakeTime = -1;
         strWalletFile = strWalletFileIn;
         fFileBacked = true;
         nMasterKeyMaxID = 0;
         pwalletdbEncryption = NULL;
     }
+
+    timestamp_t nEstimatedStakeTime;
 
     std::map<uint256, CWalletTx> mapWallet;
     std::vector<uint256> vWalletUpdated;
@@ -115,6 +119,8 @@ public:
     std::map<CTxDestination, std::string> mapAddressBook;
 
     CPubKey vchDefaultKey;
+
+    timestamp_t GetEstimatedStakeTime(void);
 
     // check whether we are allowed to upgrade (or already support) to the named feature
     bool CanSupportFeature(enum WalletFeature wf) { return nWalletMaxVersion >= wf; }

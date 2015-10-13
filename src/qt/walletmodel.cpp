@@ -38,6 +38,11 @@ qint64 WalletModel::getUnconfirmedBalance() const
     return wallet->GetUnconfirmedBalance();
 }
 
+qint64 WalletModel::getEstimatedStakeTime() const
+{
+    return wallet->GetEstimatedStakeTime();
+}
+
 int WalletModel::getNumTransactions() const
 {
     int numTransactions = 0;
@@ -55,13 +60,13 @@ void WalletModel::update()
     int newNumTransactions = getNumTransactions();
     EncryptionStatus newEncryptionStatus = getEncryptionStatus();
 
-    if(cachedBalance != newBalance || cachedUnconfirmedBalance != newUnconfirmedBalance)
+    if (cachedBalance != newBalance || cachedUnconfirmedBalance != newUnconfirmedBalance)
         emit balanceChanged(newBalance, getStake(), newUnconfirmedBalance);
 
-    if(cachedNumTransactions != newNumTransactions)
+    if (cachedNumTransactions != newNumTransactions)
         emit numTransactionsChanged(newNumTransactions);
 
-    if(cachedEncryptionStatus != newEncryptionStatus)
+    if (cachedEncryptionStatus != newEncryptionStatus)
         emit encryptionStatusChanged(newEncryptionStatus);
 
     cachedBalance = newBalance;
@@ -213,40 +218,56 @@ WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const
 
 bool WalletModel::setWalletEncrypted(bool encrypted, const SecureString &passphrase)
 {
-    if(encrypted)
+    bool ret;
+
+    if (encrypted)
     {
         // Encrypt
-        return wallet->EncryptWallet(passphrase);
+        ret = wallet->EncryptWallet(passphrase);
     }
     else
     {
         // Decrypt -- TODO; not supported yet
-        return false;
+        ret = false;
     }
+
+    if (ret)
+        this->update();
+
+    return ret;
 }
 
 bool WalletModel::setWalletLocked(bool locked, const SecureString &passPhrase)
 {
-    if(locked)
+    bool ret;
+
+    if (locked)
     {
         // Lock
-        return wallet->Lock();
+        ret = wallet->Lock();
     }
     else
     {
         // Unlock
-        return wallet->Unlock(passPhrase);
+        ret = wallet->Unlock(passPhrase);
     }
+
+    if (ret)
+        this->update();
+
+    return ret;
 }
 
 bool WalletModel::changePassphrase(const SecureString &oldPass, const SecureString &newPass)
 {
     bool retval;
+
     {
         LOCK(wallet->cs_wallet);
         wallet->Lock(); // Make sure wallet is locked before attempting pass change
         retval = wallet->ChangeWalletPassphrase(oldPass, newPass);
     }
+
     return retval;
 }
 

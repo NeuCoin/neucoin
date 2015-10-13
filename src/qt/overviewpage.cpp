@@ -2,6 +2,7 @@
 #include "ui_overviewpage.h"
 
 #include "clientmodel.h"
+#include "types.h"
 #include "walletmodel.h"
 #include "optionsmodel.h"
 #include "transactiontablemodel.h"
@@ -77,6 +78,7 @@ void OverviewPage::setClientModel(ClientModel *clientModel)
     {
         this->setHeadHash(clientModel->getHeadHash());
         connect(clientModel, SIGNAL(headChanged(QString)), this, SLOT(setHeadHash(QString)));
+        connect(clientModel, SIGNAL(headChanged(QString)), this, SLOT(refreshEstimatedStakeTime()));
 
         this->setNumBlocks(clientModel->getNumBlocks());
         connect(clientModel, SIGNAL(numBlocksChanged(int)), this, SLOT(setNumBlocks(int)));
@@ -107,17 +109,54 @@ void OverviewPage::setModel(WalletModel *model)
         filter->setSortRole(Qt::EditRole);
         filter->sort(TransactionTableModel::Date, Qt::DescendingOrder);
 
-        ui->listTransactions->setModel(filter);
-        ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
+        this->ui->listTransactions->setModel(filter);
+        this->ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
-        // Keep up to date with wallet
-        setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance());
+        this->refreshEstimatedStakeTime();
+        connect(model, SIGNAL(encryptionStatusChanged(int)), this, SLOT(refreshEstimatedStakeTime()));
+
+        this->setBalance(model->getBalance(), model->getStake(), model->getUnconfirmedBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64)));
 
-        setNumTransactions(model->getNumTransactions());
+        this->setNumTransactions(model->getNumTransactions());
         connect(model, SIGNAL(numTransactionsChanged(int)), this, SLOT(setNumTransactions(int)));
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(displayUnitChanged()));
+    }
+}
+
+void OverviewPage::refreshEstimatedStakeTime()
+{
+    timestamp_t estimatedStakeTime = this->model->getEstimatedStakeTime();
+
+    if (estimatedStakeTime == -1)
+    {
+        this->ui->labelEstimatedStakeTime->setText(tr("Not minting") + " <sup><a href='https://github.com/NeuCoin/neucoin-dev/blob/master/doc/faq.md#what-does-estimated-time-to-stake-means'>" + tr("(why?)") + "</a></sup>");
+    }
+    else if (estimatedStakeTime >= MONTH)
+    {
+        timestamp_t months = estimatedStakeTime / MONTH + 1;
+        this->ui->labelEstimatedStakeTime->setText(tr("± %n month(s)", NULL, months));
+    }
+    else if (estimatedStakeTime >= WEEK)
+    {
+        timestamp_t weeks = estimatedStakeTime / WEEK + 1;
+        this->ui->labelEstimatedStakeTime->setText(tr("± %n week(s)", NULL, weeks));
+    }
+    else if (estimatedStakeTime >= DAY)
+    {
+        timestamp_t days = estimatedStakeTime / DAY + 1;
+        this->ui->labelEstimatedStakeTime->setText(tr("± %n day(s)", NULL, days));
+    }
+    else if (estimatedStakeTime >= HOUR)
+    {
+        timestamp_t hours = estimatedStakeTime / HOUR + 1;
+        this->ui->labelEstimatedStakeTime->setText(tr("± %n hour(s)", NULL, hours));
+    }
+    else
+    {
+        timestamp_t minutes = estimatedStakeTime / MINUTE + 1;
+        this->ui->labelEstimatedStakeTime->setText(tr("± %n minute(s)", NULL, minutes));
     }
 }
 

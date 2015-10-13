@@ -121,6 +121,8 @@ public slots:
     void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance);
     void setNumTransactions(int count);
 
+    void refreshEstimatedStakeTime();
+
 signals:
     void transactionClicked(const QModelIndex &index);
 

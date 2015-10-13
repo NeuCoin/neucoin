@@ -52,6 +52,7 @@ public:
     qint64 getBalance() const;
     qint64 getStake() const;
     qint64 getUnconfirmedBalance() const;
+    qint64 getEstimatedStakeTime() const;
     int getNumTransactions() const;
     EncryptionStatus getEncryptionStatus() const;
 
