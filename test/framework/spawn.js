@@ -102,7 +102,9 @@ export async function spawnClient( options = { } ) {
     }
 
     var client = spawn( CLIENT_PATH, commandLine );
-    GLOBAL.addToKillList( client.pid );
+
+    var removeFromKillList = GLOBAL.addToKillList( client.pid );
+    client.on( 'exit', removeFromKillList );
 
     client.port = last( compact( flatten( [ options.port ] ) ) );
     client.rpcPort = last( compact( flatten( [ options.rpcport ] ) ) );
