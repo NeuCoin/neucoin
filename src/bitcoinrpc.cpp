@@ -3567,7 +3567,7 @@ string JSONRPCRequest(const string& strMethod, const Array& params, const Value&
     return write_string(Value(request), false) + "\n";
 }
 
-string JSONRPCReply(const Value& result, const Value& error, const Value& id)
+Object JSONRPCReplyObj(const Value& result, const Value& error, const Value& id)
 {
     Object reply;
     if (error.type() != null_type)
@@ -3576,6 +3576,12 @@ string JSONRPCReply(const Value& result, const Value& error, const Value& id)
         reply.push_back(Pair("result", result));
     reply.push_back(Pair("error", error));
     reply.push_back(Pair("id", id));
+    return reply;
+}
+
+string JSONRPCReply(const Value& result, const Value& error, const Value& id)
+{
+    Object reply = JSONRPCReplyObj(result, error, id);
     return write_string(Value(reply), false) + "\n";
 }
 
@@ -3677,6 +3683,80 @@ void ThreadRPCServer(void* parg)
     delete pMiningKey; pMiningKey = NULL;
 
     printf("ThreadRPCServer exiting\n");
+}
+
+class JSONRequest
+{
+public:
+    Value id;
+    string strMethod;
+    Array params;
+
+    JSONRequest() { id = Value::null; }
+    void parse(const Value& valRequest);
+};
+
+void JSONRequest::parse(const Value& valRequest)
+{
+    // Parse request
+    if (valRequest.type() != obj_type)
+        throw JSONRPCError(-32600, "Invalid Request object");
+    const Object& request = valRequest.get_obj();
+
+    // Parse id now so errors from here on will have the id
+    id = find_value(request, "id");
+
+    // Parse method
+    Value valMethod = find_value(request, "method");
+    if (valMethod.type() == null_type)
+        throw JSONRPCError(-32600, "Missing method");
+    if (valMethod.type() != str_type)
+        throw JSONRPCError(-32600, "Method must be a string");
+    strMethod = valMethod.get_str();
+    if (strMethod != "getwork" && strMethod != "getmemorypool")
+        printf("ThreadRPCServer method=%s\n", strMethod.c_str());
+
+    // Parse params
+    Value valParams = find_value(request, "params");
+    if (valParams.type() == array_type)
+        params = valParams.get_array();
+    else if (valParams.type() == null_type)
+        params = Array();
+    else
+        throw JSONRPCError(-32600, "Params must be an array");
+}
+
+static Object JSONRPCExecOne(const Value& req)
+{
+    Object rpc_result;
+
+    JSONRequest jreq;
+    try {
+        jreq.parse(req);
+
+        Value result = tableRPC.execute(jreq.strMethod, jreq.params);
+        rpc_result = JSONRPCReplyObj(result, Value::null, jreq.id);
+    }
+    catch (Object& objError)
+    {
+        rpc_result = JSONRPCReplyObj(Value::null, objError, jreq.id);
+    }
+    catch (std::exception& e)
+    {
+        rpc_result = JSONRPCReplyObj(Value::null,
+                                     JSONRPCError(-32700, e.what()), jreq.id);
+    }
+
+    return rpc_result;
+}
+
+static string JSONRPCExecBatch(const Array& vReq)
+{
+    Array ret;
+    for (unsigned int reqIdx = 0; reqIdx < vReq.size(); reqIdx++)
+        ret.push_back(JSONRPCExecOne(vReq[reqIdx]));
+
+    return write_string(Value(ret), false) + "\n";
 }
 
 void ThreadRPCServer2(void* parg)
@@ -3801,51 +3881,37 @@ void ThreadRPCServer2(void* parg)
             continue;
         }
 
-        Value id = Value::null;
+        JSONRequest jreq;
         try
         {
             // Parse request
             Value valRequest;
-            if (!read_string(strRequest, valRequest) || valRequest.type() != obj_type)
+            if (!read_string(strRequest, valRequest))
                 throw JSONRPCError(-32700, "Parse error");
-            const Object& request = valRequest.get_obj();
 
-            // Parse id now so errors from here on will have the id
-            id = find_value(request, "id");
+            string strReply;
 
-            // Parse method
-            Value valMethod = find_value(request, "method");
-            if (valMethod.type() == null_type)
-                throw JSONRPCError(-32600, "Missing method");
-            if (valMethod.type() != str_type)
-                throw JSONRPCError(-32600, "Method must be a string");
-            string strMethod = valMethod.get_str();
-            if (strMethod != "getwork" && strMethod != "getblocktemplate")
-                printf("ThreadRPCServer method=%s\n", strMethod.c_str());
+            // singleton request
+            if (valRequest.type() == obj_type) {
+                jreq.parse(valRequest);
+                Value result = tableRPC.execute(jreq.strMethod, jreq.params);
+                // Send reply
+                strReply = JSONRPCReply(result, Value::null, jreq.id);
 
-            // Parse params
-            Value valParams = find_value(request, "params");
-            Array params;
-            if (valParams.type() == array_type)
-                params = valParams.get_array();
-            else if (valParams.type() == null_type)
-                params = Array();
+            // array of requests
+            } else if (valRequest.type() == array_type)
+                strReply = JSONRPCExecBatch(valRequest.get_array());
             else
-                throw JSONRPCError(-32600, "Params must be an array");
-
-            Value result = tableRPC.execute(strMethod, params);
-
-            // Send reply
-            string strReply = JSONRPCReply(result, Value::null, id);
+                throw JSONRPCError(-32700, "Top-level object parse error");
             stream << HTTPReply(200, strReply) << std::flush;
         }
         catch (Object& objError)
         {
-            ErrorReply(stream, objError, id);
+            ErrorReply(stream, objError, jreq.id);
         }
         catch (std::exception& e)
         {
-            ErrorReply(stream, JSONRPCError(-32700, e.what()), id);
+            ErrorReply(stream, JSONRPCError(-32700, e.what()), jreq.id);
         }
     }
 }
