@@ -2050,7 +2050,12 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         if (pindexBest->IsProofOfStake() && proofOfStake.first == pindexBest->prevoutStake)
         {
             if (!pblock->CheckBlockSignature())
+            {
+                if (pfrom)
+                    pfrom->Misbehaving(100);
+
                 return error("ProcessBlock() : invalid signature in a duplicate Proof-of-Stake kernel");
+            }
 
             RelayBlock(*pblock, hash);
             BlacklistProofOfStake(proofOfStake, hash);
