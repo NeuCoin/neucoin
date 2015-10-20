@@ -25,3 +25,5 @@
     ```
     $> make -f Makefile.osx all
     ```
+
+  - Note that you can also build a .app OSX package (by using `make -f Makefile.osx neucoin-qt.app`) and/or a .dmg OSX bundle (by using `make -f Makefile.osx neucoin-qt.dmg`). In this case, be sure to install [appdmg](https://github.com/LinusU/node-appdmg) first.
