@@ -1,5 +1,6 @@
 #include <algorithm>
-#include <cmath>
+
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #include "StakeStats.h"
 #include "bignum.h"
@@ -46,7 +47,7 @@ timestamp_t StakeStats::GetEstimatedStakeTime(double expectedChancesToMint)
     double expectedChancesNotToMint = std::max(0., 1. - expectedChancesToMint);
     double expectedEventCount = log(expectedChancesNotToMint) / log(m_ProbabilitiesNotToMint);
 
-    if (isinf(expectedEventCount))
+    if (boost::math::isinf(expectedEventCount))
         return -1;
 
     return static_cast<timestamp_t>(expectedEventCount);
