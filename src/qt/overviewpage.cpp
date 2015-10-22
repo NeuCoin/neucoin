@@ -21,6 +21,9 @@ OverviewPage::OverviewPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->labelEstimatedStakeTimeName->setOpenExternalLinks(true);
+    ui->labelEstimatedStakeTime->setOpenExternalLinks(true);
+
     // Balance: <balance>
     ui->labelBalance->setFont(QFont("Monospace", -1, QFont::Bold));
     ui->labelBalance->setToolTip(tr("Your current balance"));
@@ -131,7 +134,7 @@ void OverviewPage::refreshEstimatedStakeTime()
 
     if (estimatedStakeTime == -1)
     {
-        this->ui->labelEstimatedStakeTime->setText(tr("Not minting") + " <sup><a href='https://github.com/NeuCoin/neucoin-dev/blob/master/doc/faq.md#what-does-estimated-time-to-stake-means'>" + tr("(why?)") + "</a></sup>");
+        this->ui->labelEstimatedStakeTime->setText(tr("Not minting") + " <sup><a href='https://github.com/NeuCoin/neucoin/blob/master/doc/faq.md#what-does-estimated-time-to-stake-means'>" + tr("(why?)") + "</a></sup>");
     }
     else if (estimatedStakeTime >= MONTH)
     {

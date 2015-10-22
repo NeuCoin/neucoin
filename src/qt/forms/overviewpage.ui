@@ -61,7 +61,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Estimated stake time: &lt;sup&gt;&lt;a href='https://github.com/NeuCoin/neucoin-dev/blob/master/doc/faq.md#why-isnt-my-client-minting'&gt;?&lt;/a&gt;&lt;/sup&gt;</string>
+           <string>Estimated stake time: &lt;sup&gt;&lt;a href='https://github.com/NeuCoin/neucoin/blob/master/doc/faq.md#why-isnt-my-client-minting'&gt;?&lt;/a&gt;&lt;/sup&gt;</string>
           </property>
          </widget>
         </item>
