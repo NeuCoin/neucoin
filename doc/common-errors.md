@@ -4,7 +4,7 @@
 
 ### I can't mine with CPU Miner 2.4+
 
-The 2.4 branch unfortunately uses a new RPC that is not yet ready to be used in Peercoin / Neucoin. To fix this, just use a lower version (we did our tests with the v2.3.2 and everything went fine).
+The 2.4 branch unfortunately uses a new RPC that is not yet ready to be used in Peercoin / Neucoin. To fix this, just use a lower version (we did our tests with the v2.3.2 and everything went fine), or try using the `--no-gbt` option when starting CPU Miner.
 
 ## Build errors
 
