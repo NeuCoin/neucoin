@@ -530,6 +530,22 @@ Value getgenerate(const Array& params, bool fHelp)
 }
 
 
+Value setstaking(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "setstaking <staking>\n"
+            "Enables or disables the PoS block generation, according to the <staking> boolean switch.\n");
+
+    fStaking = params[0].get_bool();
+
+    mapArgs["-stakegen"] = (fStaking ? "1" : "0");
+    printf("Minting %s\n", fStaking ? "enabled" : "disabled");
+
+    return Value::null;
+}
+
+
 Value setgenerate(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
@@ -3315,6 +3331,7 @@ static const CRPCCommand vRPCCommands[] =
     { "getdifficulty",          &getdifficulty,          true },
     { "getgenerate",            &getgenerate,            true },
     { "setgenerate",            &setgenerate,            true },
+    { "setstaking",             &setstaking,             true },
     { "gethashespersec",        &gethashespersec,        true },
     { "getnetworkghps",         &getnetworkghps,         true },
     { "getinfo",                &getinfo,                true },
@@ -4032,6 +4049,7 @@ Array RPCConvertValues(const std::string &strMethod, const std::vector<std::stri
     //
     if (strMethod == "setgenerate"            && n > 0) ConvertTo<bool>(params[0]);
     if (strMethod == "setgenerate"            && n > 1) ConvertTo<boost::int64_t>(params[1]);
+    if (strMethod == "setstaking"             && n > 0) ConvertTo<bool>(params[0]);
     if (strMethod == "sendtoaddress"          && n > 1) ConvertTo<double>(params[1]);
     if (strMethod == "settxfee"               && n > 0) ConvertTo<double>(params[0]);
     if (strMethod == "getreceivedbyaddress"   && n > 1) ConvertTo<boost::int64_t>(params[1]);

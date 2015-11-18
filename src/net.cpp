@@ -1450,12 +1450,20 @@ void ThreadMessageHandler2(void* parg)
 void static ThreadStakeMinter(void* parg)
 {
     printf("ThreadStakeMinter started\n");
+    printf("Minting %s\n", fStaking ? "enabled" : "disabled");
     CWallet* pwallet = (CWallet*)parg;
     try
     {
-        vnThreadsRunning[THREAD_MINTER]++;
-        BitcoinMiner(pwallet, true);
-        vnThreadsRunning[THREAD_MINTER]--;
+        while (!fShutdown)
+        {
+            // ppcoin: mint proof-of-stake blocks in the background
+            if (!fStaking)
+                continue;
+            vnThreadsRunning[THREAD_MINTER]++;
+            BitcoinMiner(pwallet, true);
+            vnThreadsRunning[THREAD_MINTER]--;
+            Sleep(1000);
+        }
     }
     catch (std::exception& e) {
         vnThreadsRunning[THREAD_MINTER]--;
@@ -1681,10 +1689,7 @@ void StartNode(void* parg)
     // Generate coins in the background
     GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain);
 
-    // ppcoin: mint proof-of-stake blocks in the background
-    if (!GetBoolArg("-stakegen", true)) {
-        printf("Minting disabled\n");
-    } else if (!CreateThread(ThreadStakeMinter, pwalletMain)) {
+    if (!CreateThread(ThreadStakeMinter, pwalletMain)) {
         printf("Error: CreateThread(ThreadStakeMinter) failed\n");
     }
 }

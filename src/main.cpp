@@ -4076,13 +4076,15 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 
 void static ThreadBitcoinMiner(void* parg);
 
+bool fStaking = true;
 static bool fGenerateBitcoins = false;
 static bool fLimitProcessors = false;
 static int nLimitProcessors = -1;
 
 bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, uint64 nTimeout)
 {
-    printf("CPUMiner started for proof-of-%s\n", fProofOfStake? "stake" : "work");
+    printf("CPUMiner started for proof-of-%s (%d)\n", fProofOfStake? "stake" : "work",
+                                                      vnThreadsRunning[fProofOfStake? THREAD_MINTER : THREAD_MINER]);
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     uint64 nStartTime = GetTime();
@@ -4093,7 +4095,7 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
 
     while (minedBlock || fGenerateBitcoins || fProofOfStake)
     {
-        if (fShutdown)
+        if (fShutdown || (fProofOfStake && !fStaking))
             return false;
 
         if (nTimeout && (GetTime() - nStartTime > nTimeout))
@@ -4103,7 +4105,7 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
         {
             Sleep(1000);
 
-            if (fShutdown)
+            if (fShutdown || (fProofOfStake && !fStaking))
                 return false;
 
             if (!minedBlock && (!fGenerateBitcoins && !fProofOfStake))
@@ -4243,7 +4245,7 @@ bool BitcoinMiner(CWallet *pwallet, bool fProofOfStake, uint256 * minedBlock, ui
             }
 
             // Check for stop or if block needs to be rebuilt
-            if (fShutdown)
+            if (fShutdown || (fProofOfStake && !fStaking))
                 return false;
             if (!minedBlock && !fGenerateBitcoins)
                 return false;

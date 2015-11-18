@@ -1294,7 +1294,7 @@ bool CWallet::CreateTransaction(CScript scriptPubKey, int64 nValue, CWalletTx& w
 
 timestamp_t CWallet::GetEstimatedStakeTime(void)
 {
-    if (!GetBoolArg("-stakegen", true))
+    if (!fStaking)
         return -1;
 
     if (IsCrypted() && IsLocked())

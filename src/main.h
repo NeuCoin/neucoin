@@ -69,6 +69,7 @@ extern std::map<uint256, CBlock*> mapOrphanBlocks;
 
 // Settings
 extern int64 nTransactionFee;
+extern bool fStaking;
 
 class CReserveKey;
 class CTxDB;
