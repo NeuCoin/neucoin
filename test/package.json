@@ -1,6 +1,9 @@
 {
     "dependencies" : {
-        "babel" : "*",
+        "babel-register" : "*",
+        "babel-polyfill" : "*",
+        "babel-preset-stage-1" : "*",
+        "babel-preset-es2015" : "*",
         "chai" : "*",
         "lodash" : "*",
         "mkdirp" : "*",

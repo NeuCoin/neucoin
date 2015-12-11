@@ -1,7 +1,8 @@
 if ( ! require( 'fs' ).existsSync( __dirname + '/_config.js' ) )
     throw new Error( 'You need a _config.js file to run the tests. You may want to copy and edit the _config.js.example file.' );
 
-require( 'babel/register' )( { stage : 1 } );
+require( 'babel-register' )();
+require( 'babel-polyfill' );
 
 GLOBAL.expect = require( 'chai' ).expect;
 GLOBAL.bitcore = require( 'bitcore' );
