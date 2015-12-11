@@ -17,7 +17,7 @@
       - msys-automake (bin)
       - msys-libtool (bin)
 
-    Then valid by going to "Installation" > "Apply Changes" > "Apply"
+    Then confirm by going to "Installation" > "Apply Changes" > "Apply"
 
 ## Prepare the dependencies
 
