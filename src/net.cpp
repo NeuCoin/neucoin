@@ -1689,9 +1689,14 @@ void StartNode(void* parg)
     // Generate coins in the background
     GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain);
 
+    if (mapArgs.count("-stakegen"))
+        fStaking = static_cast<bool>(atoi(mapArgs["-stakegen"]));
+
+#ifndef TESTING
     if (!CreateThread(ThreadStakeMinter, pwalletMain)) {
         printf("Error: CreateThread(ThreadStakeMinter) failed\n");
     }
+#endif
 }
 
 bool StopNode()

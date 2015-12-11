@@ -1,10 +1,10 @@
-import { compileWith }                 from './framework/compilation';
-import { mineSomePowBlocks }           from './framework/mining';
-import { sendRpcQuery }                from './framework/query';
-import { spawnClient }                 from './framework/spawn';
-import { delayExecution }              from './framework/time';
+import { compileWith }                          from './framework/compilation';
+import { mineSomePowBlocks, mintSomePosBlocks } from './framework/mining';
+import { sendRpcQuery }                         from './framework/query';
+import { spawnClient }                          from './framework/spawn';
+import { delayExecution }                       from './framework/time';
 
-import { mediumFastChain, smallChain } from './_environments';
+import { mediumFastChain, smallChain }          from './_environments';
 
 let BLOCKS_TO_WAIT = 200;
 
@@ -12,7 +12,7 @@ export async function test( ) {
 
     await compileWith( mediumFastChain, smallChain, { COIN_PREMINE : `1000 * COIN` } );
 
-    var client1 = await spawnClient( { stakegen : true } );
+    var client1 = await spawnClient( { } );
     var client2 = await spawnClient( { addnode : client1.target } );
 
     // We have to mine at least 63 more blocks before getting enough entropy for the
@@ -25,9 +25,7 @@ export async function test( ) {
 
     var { result : blockCount } = await sendRpcQuery( client1, { method : 'getblockcount' } );
 
-    // We wait a long time, and expect to get about 100%(~20%) of the expected block count
-
-    await delayExecution( 6 * BLOCKS_TO_WAIT );
+    await mintSomePosBlocks( client1, BLOCKS_TO_WAIT );
 
     var rpc = await sendRpcQuery( client1, { method : 'getblockcount' } );
 

@@ -539,7 +539,6 @@ Value setstaking(const Array& params, bool fHelp)
 
     fStaking = params[0].get_bool();
 
-    mapArgs["-stakegen"] = (fStaking ? "1" : "0");
     printf("Minting %s\n", fStaking ? "enabled" : "disabled");
 
     return Value::null;
@@ -3271,6 +3270,7 @@ static Value generateblock(const Array& params, bool fHelp, bool fProofOfStake)
 
     Array hashes;
 
+    fStaking = true;
     while (nCount >= 0 && hashes.size() < static_cast<size_t>(nCount))
     {
         uint256 hash;
@@ -3280,6 +3280,7 @@ static Value generateblock(const Array& params, bool fHelp, bool fProofOfStake)
 
         hashes.push_back(hash.ToString());
     }
+    fStaking = false;
 
     return hashes;
 }
@@ -3306,8 +3307,8 @@ Value generatestake(const Array& params, bool fHelp)
             "generate proof of stake blocks"
         );
 
-    if (GetBoolArg("-stakegen", true))
-        throw JSONRPCError(-3, "Cannot manually generate a proof-of-Work block if the client run with -stakegen=1");
+    if (fStaking)
+        throw JSONRPCError(-3, "Cannot manually generate a proof-of-Work block if staking is enabled");
 
     return generateblock(params, fHelp, true);
 }
