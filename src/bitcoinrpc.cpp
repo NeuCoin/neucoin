@@ -2770,9 +2770,9 @@ Value getrawtransaction(const Array& params, bool fHelp)
 
 Value listunspent(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() > 3)
+    if (fHelp || params.size() > 4)
         throw runtime_error(
-            "listunspent [minconf=1] [maxconf=9999999]  [\"address\",...]\n"
+            "listunspent [minconf=1] [maxconf=9999999]  [\"address\",...] [mintingonly=false]\n"
             "Returns array of unspent transaction outputs\n"
             "with between minconf and maxconf (inclusive) confirmations.\n"
             "Optionally filtered to only include txouts paid to specified addresses.\n"
@@ -2805,9 +2805,13 @@ Value listunspent(const Array& params, bool fHelp)
         }
     }
 
+    bool fMintingOnly = false;
+    if (params.size() > 3)
+        fMintingOnly = params[3].get_bool();
+
     Array results;
     vector<COutput> vecOutputs;
-    pwalletMain->AvailableCoins((unsigned int)GetAdjustedTime(), vecOutputs, false);
+    pwalletMain->AvailableCoins((unsigned int)GetAdjustedTime(), vecOutputs, true, fMintingOnly);
     BOOST_FOREACH(const COutput& out, vecOutputs)
     {
         if (out.nDepth < nMinDepth || out.nDepth > nMaxDepth)
@@ -4102,6 +4106,7 @@ Array RPCConvertValues(const std::string &strMethod, const std::vector<std::stri
     if (strMethod == "listunspent"            && n > 0) ConvertTo<boost::int64_t>(params[0]);
     if (strMethod == "listunspent"            && n > 1) ConvertTo<boost::int64_t>(params[1]);
     if (strMethod == "listunspent"            && n > 2) ConvertTo<Array>(params[2]);
+    if (strMethod == "listunspent"            && n > 3) ConvertTo<bool>(params[3]);
     if (strMethod == "getrawtransaction"      && n > 1) ConvertTo<boost::int64_t>(params[1]);
     if (strMethod == "createrawtransaction"   && n > 0) ConvertTo<Array>(params[0]);
     if (strMethod == "createrawtransaction"   && n > 1) ConvertTo<Object>(params[1]);
