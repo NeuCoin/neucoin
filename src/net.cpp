@@ -1456,13 +1456,13 @@ void static ThreadStakeMinter(void* parg)
     {
         while (!fShutdown)
         {
+            Sleep(1000);
             // ppcoin: mint proof-of-stake blocks in the background
             if (!fStaking)
                 continue;
             vnThreadsRunning[THREAD_MINTER]++;
             BitcoinMiner(pwallet, true);
             vnThreadsRunning[THREAD_MINTER]--;
-            Sleep(1000);
         }
     }
     catch (std::exception& e) {
