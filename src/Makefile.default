@@ -1,3 +1,5 @@
+PROFILING ?= 0
+
 CONSTANTS ?= constants.cpp
 
 BOOST_SUFFIX ?= #NO SUFFIX
@@ -16,6 +18,12 @@ ifeq ($(USE_UPNP),1)
     CXXFLAGS += -DUSE_UPNP
     LIBRARIES_HEADLESS += miniupnpc
     LIBRARIES_QT += miniupnpc
+endif
+
+ifeq ($(PROFILING),1)
+   CXXFLAGS += -g -pg
+   LDFLAGS_HEADLESS += -g -pg
+   LDFLAGS_QT += -g -pg
 endif
 
 SOURCES_COMMON = \
