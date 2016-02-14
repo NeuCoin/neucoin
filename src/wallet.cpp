@@ -1968,7 +1968,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64& nBalanceInQuestion, bool
 // ppcoin: disable transaction (only for coinstake)
 void CWallet::DisableTransaction(const CTransaction &tx)
 {
-    if (!tx.IsCoinStake() || !IsFromMe(tx))
+    if (!tx.IsCoinStake() || !(IsFromMe(tx) || IsMineForMintingOnly(tx)))
         return; // only disconnecting coinstake requires marking input unspent
 
     LOCK(cs_wallet);
@@ -1978,7 +1978,7 @@ void CWallet::DisableTransaction(const CTransaction &tx)
         if (mi != mapWallet.end())
         {
             CWalletTx& prev = (*mi).second;
-            if (txin.prevout.n < prev.vout.size() && IsMine(prev.vout[txin.prevout.n]))
+            if (txin.prevout.n < prev.vout.size() && (IsMine(prev.vout[txin.prevout.n]) || IsMineForMintingOnly(prev.vout[txin.prevout.n])))
             {
                 prev.MarkUnspent(txin.prevout.n);
                 prev.WriteToDisk();

@@ -127,7 +127,7 @@ void SyncWithWallets(const CTransaction& tx, const CBlock* pblock, bool fUpdate,
         if (tx.IsCoinStake())
         {
             BOOST_FOREACH(CWallet* pwallet, setpwalletRegistered)
-                if (pwallet->IsFromMe(tx))
+                if (pwallet->IsFromMe(tx) || pwallet->IsMineForMintingOnly(tx))
                     pwallet->DisableTransaction(tx);
         }
         return;
