@@ -1206,6 +1206,13 @@ Value addnode(const Array& params, bool fHelp)
         ConnectNode(addr);
     }
 
+    if (strCommand == "remove")
+    {
+        CNode *pnode = FindNode((CService)addr);
+        if (pnode)
+            pnode->CloseSocketDisconnect();
+    }
+
     return Value::null;
 }
 
