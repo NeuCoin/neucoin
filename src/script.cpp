@@ -370,7 +370,7 @@ static bool IsValidPubKey(valtype const & vchPubKey)
     return true;
 }
 
-bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, const CTransaction& txTo, unsigned int nIn, int nHashType)
+bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, const CTransaction& txTo, unsigned int nIn, int nHashType, MapPrevTx *inputs)
 {
     CAutoBN_CTX pctx;
     CScript::const_iterator pc = script.begin();
@@ -452,7 +452,7 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, co
 
                 case OP_MINT:
                 {
-                    CBigNum bn(txTo.IsRestrictedCoinStake() ? 1 : 0);
+                    CBigNum bn(txTo.IsRestrictedCoinStake(inputs) ? 1 : 0);
                     stack.push_back(bn.getvch());
                 }
                 break;
@@ -1764,14 +1764,14 @@ bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, vecto
 }
 
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, const CTransaction& txTo, unsigned int nIn,
-                  bool fValidatePayToScriptHash, int nHashType)
+                  bool fValidatePayToScriptHash, int nHashType, MapPrevTx *inputs)
 {
     vector<vector<unsigned char> > stack, stackCopy;
-    if (!EvalScript(stack, scriptSig, txTo, nIn, nHashType))
+    if (!EvalScript(stack, scriptSig, txTo, nIn, nHashType, inputs))
         return false;
     if (fValidatePayToScriptHash)
         stackCopy = stack;
-    if (!EvalScript(stack, scriptPubKey, txTo, nIn, nHashType))
+    if (!EvalScript(stack, scriptPubKey, txTo, nIn, nHashType, inputs))
         return false;
     if (stack.empty())
         return false;
@@ -1789,7 +1789,7 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, const C
         CScript pubKey2(pubKeySerialized.begin(), pubKeySerialized.end());
         popstack(stackCopy);
 
-        if (!EvalScript(stackCopy, pubKey2, txTo, nIn, nHashType))
+        if (!EvalScript(stackCopy, pubKey2, txTo, nIn, nHashType, inputs))
             return false;
         if (stackCopy.empty())
             return false;
@@ -1845,7 +1845,7 @@ bool SignSignature(const CKeyStore &keystore, const CTransaction& txFrom, CTrans
     return SignSignature(keystore, txout.scriptPubKey, txTo, nIn, nHashType);
 }
 
-bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsigned int nIn, bool fValidatePayToScriptHash, int nHashType)
+bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsigned int nIn, bool fValidatePayToScriptHash, int nHashType, MapPrevTx *inputs)
 {
     assert(nIn < txTo.vin.size());
     const CTxIn& txin = txTo.vin[nIn];
@@ -1856,7 +1856,7 @@ bool VerifySignature(const CTransaction& txFrom, const CTransaction& txTo, unsig
     if (txin.prevout.hash != txFrom.GetHash())
         return false;
 
-    if (!VerifyScript(txin.scriptSig, txout.scriptPubKey, txTo, nIn, fValidatePayToScriptHash, nHashType))
+    if (!VerifyScript(txin.scriptSig, txout.scriptPubKey, txTo, nIn, fValidatePayToScriptHash, nHashType, inputs))
         return false;
 
     return true;

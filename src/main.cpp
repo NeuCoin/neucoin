@@ -462,7 +462,7 @@ int CMerkleTx::SetMerkleBranch(const CBlock* pblock)
 
 
 
-bool CTransaction::IsRestrictedCoinStake() const
+bool CTransaction::IsRestrictedCoinStake(MapPrevTx *inputs = NULL) const
 {
     if (!IsCoinStake())
         return false;
@@ -474,12 +474,21 @@ bool CTransaction::IsRestrictedCoinStake() const
     {
         const COutPoint& prevout = vin[i].prevout;
 
-        CTxDB txdb("r");
         CTransaction txPrev;
-        CTxIndex txindex;
-        if (!txPrev.ReadFromDisk(txdb, prevout, txindex))
-            return false;
-        txdb.Close();
+
+        if (inputs && inputs->count(prevout.hash) > 0)
+        {
+            MapPrevTx::iterator it = inputs->find(prevout.hash);
+            txPrev = it->second.second;
+        }
+        else
+        {
+            CTxDB txdb("r");
+            CTxIndex txindex;
+            if (!txPrev.ReadFromDisk(txdb, prevout, txindex))
+                return false;
+            txdb.Close();
+        }
 
         const CTxOut& prevtxo = txPrev.vout[prevout.n];
         const CScript& prevScript = prevtxo.scriptPubKey;
@@ -1272,11 +1281,11 @@ bool CTransaction::ConnectInputs(CTxDB& txdb, MapPrevTx inputs,
             if (!(fBlock && (nBestHeight < Checkpoints::GetTotalBlocksEstimate())))
             {
                 // Verify signature
-                if (!VerifySignature(txPrev, *this, i, fStrictPayToScriptHash, 0))
+                if (!VerifySignature(txPrev, *this, i, fStrictPayToScriptHash, 0, &inputs))
                 {
                     // only during transition phase for P2SH: do not invoke anti-DoS code for
                     // potentially old clients relaying bad P2SH transactions
-                    if (fStrictPayToScriptHash && VerifySignature(txPrev, *this, i, false, 0))
+                    if (fStrictPayToScriptHash && VerifySignature(txPrev, *this, i, false, 0, &inputs))
                         return error("ConnectInputs() : %s P2SH VerifySignature failed", GetHash().ToString().substr(0,10).c_str());
 
                     return DoS(100,error("ConnectInputs() : %s VerifySignature failed", GetHash().ToString().substr(0,10).c_str()));
